@@ -1,17 +1,15 @@
-import React, { useEffect, useState, useContext } from 'react';
-import Tweet from './Tweet';
+import React, { useEffect, useContext } from 'react';
+import Tweet from '../../../common/Tweet';
 import { getDocs, onSnapshot, collection } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase-config';
 import { UserContext } from '../../../Context/UserContext';
 
 const Tweets = () => {
-  const { user } = useContext(UserContext);
-  const [tweets, setTweets] = useState([]);
+  const { user, setTweets, tweets } = useContext(UserContext);
 
   const getTweets = async (id) => {
     const usersTweetsRef = collection(db, 'users', id, 'tweets');
     onSnapshot(usersTweetsRef, (tweet) => {
-      console.log(usersTweetsRef);
       const tweetsCollection = [];
       tweet.forEach((tweet) => {
         tweetsCollection.push(Object.assign({ id: tweet.id }, tweet.data()));
@@ -39,6 +37,7 @@ const Tweets = () => {
       setTweets([]);
     };
   }, [user]);
+
   return (
     <div className="flex flex-col gap-3 relative ">
       {tweets.map((tweet) => {

@@ -5,9 +5,10 @@ const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState({});
+  const [tweets, setTweets] = useState([]);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, tweets, setTweets }}>
       {children}
     </UserContext.Provider>
   );

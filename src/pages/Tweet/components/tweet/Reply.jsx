@@ -1,10 +1,11 @@
-import React, { useState, useContext } from 'react';
-import { db } from '../../firebase/firebase-config';
-import { doc, setDoc, Timestamp } from 'firebase/firestore';
-import { UserContext } from '../../Context/UserContext';
 import uniqid from 'uniqid';
+import React, { useState, useContext } from 'react';
+import TextareaAutosize from 'react-textarea-autosize';
+import { db } from '../../../../firebase/firebase-config';
+import { doc, setDoc, Timestamp } from 'firebase/firestore';
+import { UserContext } from '../../../../Context/UserContext';
 
-function Tweet() {
+function Reply({ username }) {
   const { user } = useContext(UserContext);
   const [tweetInput, setTweetInput] = useState('');
 
@@ -17,6 +18,7 @@ function Tweet() {
     const tweetsRef = doc(db, 'users', `${user.uid}`, 'tweets', `${TWEET_ID}`);
     await setDoc(tweetsRef, {
       profileURL: user.photoURL,
+      username: user.displayName,
       author: user.uid,
       tweet: tweetInput,
       likes: [],
@@ -27,15 +29,18 @@ function Tweet() {
   };
 
   return (
-    <div className="flex flex-col gap-3 relative  p-5 border-b border-gray-500 border-solid">
-      <div className="flex gap-5">
-        <div className="w-12 h-12 bg-black rounded-3xl"></div>
-        <textarea
-          type="text"
-          placeholder="What's happening?"
-          className="resize-none text-xl grow border-b border-grey outline-none"
-          onChange={handleTweetInput}
-        ></textarea>
+    <div className="flex flex-col relative px-5 pb ">
+      <div className="flex gap-5 items-center">
+        <div className="w-12 h-12  bg-black rounded-3xl"></div>
+        <div>
+          <p>Replying to @{username}</p>
+          <TextareaAutosize
+            type="text"
+            placeholder="Tweet Your Reply?"
+            className="resize-none text-xl grow outline-none py-3"
+            onChange={handleTweetInput}
+          />
+        </div>
       </div>
       <button
         className="p-2.5 bg-blue-500 text-white rounded-3xl w-20 self-end"
@@ -47,4 +52,4 @@ function Tweet() {
   );
 }
 
-export default Tweet;
+export default Reply;

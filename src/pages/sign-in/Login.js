@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase/firebase-config';
 import { UserContext } from '../../Context/UserContext';
-import Signup from './Signup';
+import Signup from '../sign-up/Signup';
 
 function Login() {
   const { setUser } = useContext(UserContext);
