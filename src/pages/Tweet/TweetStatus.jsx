@@ -2,17 +2,32 @@ import { useParams } from 'react-router-dom';
 import Tweet from './components/tweet/Tweet';
 import { UserContext } from '../../Context/UserContext';
 import React, { useContext, useEffect, useState } from 'react';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
+import Comments from './components/comments/Comments';
 
 function TweetStatus() {
   const { id } = useParams();
   const [tweet, setTweet] = useState({});
   const [renderComponent, setRenderComponent] = useState(false);
-  const { tweets, user } = useContext(UserContext);
+  const { tweets, user, setCurrentTweet } = useContext(UserContext);
 
-  const searchForTweet = () => {
-    tweets.forEach((tweet) => {
-      // eslint-disable-next-line no-unused-expressions
-      tweet.id === id ? setTweet(tweet) : false;
+  const searchForTweet = async () => {
+    tweets.forEach(async (tweet) => {
+      if (tweet.id === id) {
+        setTweet(tweet);
+        setCurrentTweet(tweet);
+      }
+      const tweetRef = doc(
+        db,
+        'users',
+        `${tweet.author}`,
+        'tweets',
+        `${tweet.id}`
+      );
+      onSnapshot(tweetRef, (tweet) => {
+        setTweet(tweet.data());
+      });
     });
   };
 
@@ -39,7 +54,9 @@ function TweetStatus() {
           likes={tweet.likes}
           retweets={tweet.retweets}
           tweetInfomation={tweet}
+          type={tweet.type}
         ></Tweet>
+        <Comments author={tweet.author} id={id}></Comments>
         <p>Your are logged with {user.email}</p>
         <button className="bg-black text-white">Logout</button>
       </div>

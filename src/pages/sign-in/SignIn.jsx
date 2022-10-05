@@ -1,20 +1,17 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase/firebase-config';
 import { UserContext } from '../../Context/UserContext';
-import Signup from '../sign-up/Signup';
+import { Link, useNavigate } from 'react-router-dom';
 
-function Login() {
+function SignIn() {
+  const navigate = useNavigate();
   const { setUser } = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [hasAccount, setHasAccount] = useState(false);
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) => {
-      console.log(currentUser);
-      setUser(currentUser);
-    });
+  onAuthStateChanged(auth, (currentUser) => {
+    setUser(currentUser);
   });
 
   const handleEmail = (event) => {
@@ -28,9 +25,10 @@ function Login() {
   const LoginUser = async (event) => {
     event.preventDefault();
     await signInWithEmailAndPassword(auth, email, password);
+    navigate('/');
   };
 
-  const loginForm = (
+  return (
     <React.Fragment>
       <form
         onSubmit={LoginUser}
@@ -52,16 +50,12 @@ function Login() {
         <button type="submit" className="bg-white text-black">
           Login
         </button>
-        <button onClick={(e) => setHasAccount(!hasAccount)}>Login</button>
+        <Link to="/sign-up">
+          <button>sign up</button>
+        </Link>
       </form>
     </React.Fragment>
   );
-
-  if (hasAccount) {
-    return loginForm;
-  } else {
-    return <Signup setHasAccount={setHasAccount} hasAccount={hasAccount} />;
-  }
 }
 
-export default Login;
+export default SignIn;

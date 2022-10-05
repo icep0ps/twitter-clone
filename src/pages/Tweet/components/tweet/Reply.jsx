@@ -5,7 +5,7 @@ import { db } from '../../../../firebase/firebase-config';
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
 import { UserContext } from '../../../../Context/UserContext';
 
-function Reply({ username }) {
+function Reply({ username, author, id }) {
   const { user } = useContext(UserContext);
   const [tweetInput, setTweetInput] = useState('');
 
@@ -16,7 +16,23 @@ function Reply({ username }) {
   const tweet = async () => {
     const TWEET_ID = uniqid();
     const tweetsRef = doc(db, 'users', `${user.uid}`, 'tweets', `${TWEET_ID}`);
+    const tweetCommentsRef = doc(
+      db,
+      'users',
+      `${author}`,
+      'tweets',
+      `${id}`,
+      'comments',
+      `${TWEET_ID}`
+    );
+
     await setDoc(tweetsRef, {
+      comment: TWEET_ID,
+    });
+
+    await setDoc(tweetCommentsRef, {
+      replyingTo: author,
+      type: 'comment',
       profileURL: user.photoURL,
       username: user.displayName,
       author: user.uid,
@@ -32,9 +48,10 @@ function Reply({ username }) {
     <div className="flex flex-col relative px-5 pb ">
       <div className="flex gap-5 items-center">
         <div className="w-12 h-12  bg-black rounded-3xl"></div>
-        <div>
+        <div className="w-full">
           <p>Replying to @{username}</p>
           <TextareaAutosize
+            cols="35"
             type="text"
             placeholder="Tweet Your Reply?"
             className="resize-none text-xl grow outline-none py-3"

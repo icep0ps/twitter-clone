@@ -1,15 +1,18 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase/firebase-config';
 import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   updateProfile,
 } from 'firebase/auth';
-import { setDoc, doc, Timestamp } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { UserContext } from '../../Context/UserContext';
+import { setDoc, doc, Timestamp } from 'firebase/firestore';
+import React, { useState, useEffect, useContext } from 'react';
 
-const Signup = ({ hasAccount, setHasAccount }) => {
+const Signup = () => {
+  const navigate = useNavigate();
+
   const [bio, setBio] = useState('');
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
@@ -63,6 +66,7 @@ const Signup = ({ hasAccount, setHasAccount }) => {
     event.preventDefault();
     const user = await createUserWithEmailAndPassword(auth, email, password);
     await createUserInFirestore(user.user.uid);
+    navigate('/');
   };
 
   return (
@@ -105,7 +109,9 @@ const Signup = ({ hasAccount, setHasAccount }) => {
         <button type="submit" className="bg-white text-black">
           Signup
         </button>
-        <button onClick={(e) => setHasAccount(!hasAccount)}>Login</button>
+        <Link to="/sign-in">
+          <button>sign in</button>
+        </Link>
       </form>
     </React.Fragment>
   );
