@@ -1,15 +1,14 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import Tweet from './components/tweet/Tweet';
 import { UserContext } from '../../Context/UserContext';
 import React, { useContext, useEffect, useState } from 'react';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
 import Comments from './components/comments/Comments';
 
 function TweetStatus() {
   const { id } = useParams();
+  let location = useLocation();
   const [tweet, setTweet] = useState({});
-  const [renderComponent, setRenderComponent] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { tweets, user, setCurrentTweet } = useContext(UserContext);
 
   const searchForTweet = async () => {
@@ -18,31 +17,19 @@ function TweetStatus() {
         setTweet(tweet);
         setCurrentTweet(tweet);
       }
-      const tweetRef = doc(
-        db,
-        'users',
-        `${tweet.author}`,
-        'tweets',
-        `${tweet.id}`
-      );
-      onSnapshot(tweetRef, (tweet) => {
-        setTweet(tweet.data());
-      });
+      setIsLoading(false);
     });
-  };
-
-  const isTweetInfoReady = () => {
-    // eslint-disable-next-line no-unused-expressions
-    tweet.likes ? setRenderComponent(true) : false;
   };
 
   useEffect(() => {
     searchForTweet();
-    isTweetInfoReady();
+    console.log('rendering');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tweet, renderComponent]);
+  }, [location]);
 
-  if (renderComponent) {
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  } else {
     return (
       <div className="col-start-2 flex flex-col gap-5 border-x border-gray-500 border-solid">
         <h1 className="bg-black text-white text-xl p-4">Tweet</h1>
@@ -56,7 +43,11 @@ function TweetStatus() {
           tweetInfomation={tweet}
           type={tweet.type}
         ></Tweet>
-        <Comments author={tweet.author} id={id}></Comments>
+        <Comments
+          author={tweet.author}
+          id={id}
+          tweetInfomation={tweet}
+        ></Comments>
         <p>Your are logged with {user.email}</p>
         <button className="bg-black text-white">Logout</button>
       </div>

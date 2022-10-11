@@ -1,23 +1,35 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import CommentsIcon from '../assets/svgs/CommentsIcon';
-import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { Link } from 'react-router-dom';
 import LikeIcon from '../assets/svgs/LikeIcon';
+import ShareIcon from '../assets/svgs/ShareIcon';
+import { db } from '../firebase/firebase-config';
 import { UserContext } from '../Context/UserContext';
 import RetweetIcon from '../assets/svgs/RetweetIcon';
-import ShareIcon from '../assets/svgs/ShareIcon';
-import { Link } from 'react-router-dom';
-function Tweet({
-  id,
-  author,
-  username,
-  tweet,
-  likes,
-  retweets,
-  tweetInfomation,
-}) {
+import CommentsIcon from '../assets/svgs/CommentsIcon';
+import React, { useContext, useEffect, useState } from 'react';
+import {
+  arrayUnion,
+  doc,
+  setDoc,
+  updateDoc,
+  getDoc,
+  deleteDoc,
+} from 'firebase/firestore';
+
+function Tweet(props) {
+  const {
+    id,
+    author,
+    username,
+    tweet,
+    likes,
+    retweets,
+    tweetInfomation,
+    type,
+  } = props;
+
   const { user } = useContext(UserContext);
   const [tweetRef, setTweetRef] = useState('');
+  const [isFollowing, setIsFollowing] = useState(true);
 
   useEffect(() => {
     switch (tweetInfomation.type) {
@@ -40,13 +52,18 @@ function Tweet({
       default:
         return;
     }
-  }, []);
+  }, [isFollowing]);
 
   const follow = async () => {
     const userRef = doc(db, 'users', `${user.uid}`, 'following', `${author}`);
-    await setDoc(userRef, {
-      hello: 'hello',
-    });
+    const following = await getDoc(userRef);
+    if (following.exists()) {
+      await deleteDoc(userRef);
+      setIsFollowing(false);
+    } else {
+      await setDoc(userRef, {});
+      setIsFollowing(true);
+    }
   };
 
   const like = async () => {
@@ -66,25 +83,26 @@ function Tweet({
 
     const yourTweetsRef = doc(db, 'users', `${user.uid}`, 'tweets', `${id}`);
     await setDoc(yourTweetsRef, {
-      type: 'retweet',
+      type: type,
       author: tweetInfomation.author,
       retweetedBy: user.uid,
       retweeter: user.displayName,
-      tweetID: id,
+      id: id,
     });
   };
 
   return (
     <div className="flex flex-col border-b border-gray-500 border-solid gap-3 px-5 pb-3 relative">
+      <button className="right-10 absolute" onClick={follow}>
+        {isFollowing ? 'following' : 'follow'}
+      </button>
       <Link to={`/status/${id}`}>
         {tweetInfomation.retweetedBy ? (
           <p>{tweetInfomation.retweetedBy} retweeted</p>
         ) : (
           ''
         )}
-        <button className="right-10 absolute" onClick={follow}>
-          follow
-        </button>
+
         <div className="flex gap-5 ">
           <div className="w-12 h-12  bg-black rounded-3xl"></div>
           <div className="w-5/6">

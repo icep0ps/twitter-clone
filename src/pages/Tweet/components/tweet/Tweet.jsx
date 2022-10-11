@@ -6,7 +6,14 @@ import ShareIcon from '../../../../assets/svgs/ShareIcon';
 import { UserContext } from '../../../../Context/UserContext';
 import RetweetIcon from '../../../../assets/svgs/RetweetIcon';
 import CommentsIcon from '../../../../assets/svgs/CommentsIcon';
-import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore';
+import {
+  arrayUnion,
+  deleteDoc,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import { Link, Outlet } from 'react-router-dom';
 
 function Tweet(props) {
@@ -14,9 +21,17 @@ function Tweet(props) {
 
   const { user } = useContext(UserContext);
 
-  const follow = async () => {
+  const isfollow = async () => {
     const userRef = doc(db, 'users', `${author}`, 'following', `${user.uid}`);
-    await setDoc(userRef, user.uid);
+    const following = await getDoc(userRef);
+
+    if (following.exists()) {
+      await deleteDoc(userRef);
+      return false;
+    } else {
+      await setDoc(userRef, {});
+      return true;
+    }
   };
 
   const like = async () => {
@@ -45,18 +60,21 @@ function Tweet(props) {
         <div className="flex flex-col gap-3">
           <div className="flex gap-3">
             <div className="w-12 h-12  bg-black rounded-3xl"></div>
-            <p className="username flex items-center gap-1 ">
-              {username}{' '}
-              <span className="text-xs text-gray-500">@{username}</span>
-            </p>
+            <button className="right-10 absolute" onClick={isfollow}>
+              {isfollow() ? 'following' : 'unfollow'}
+            </button>
+            <Link to={`/profile/${author}`}>
+              <p className="username flex items-center gap-1 ">
+                {username}{' '}
+                <span className="text-xs text-gray-500">@{username}</span>
+              </p>
+            </Link>
           </div>
           <div className="w-5/6">
             <p>{tweet}</p>
           </div>
         </div>
-        <button className="right-10 absolute" onClick={follow}>
-          follow
-        </button>
+
         <div className="flex gap-5 "></div>
         <div className="flex justify-start gap-3 border-y border-y-black py-4">
           <Link to={`/status/${id}/retweets`}>

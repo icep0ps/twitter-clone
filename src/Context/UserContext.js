@@ -6,6 +6,7 @@ const UserContext = createContext();
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [tweets, setTweets] = useState([]);
+  const [retweets, setRetweets] = useState([]);
   const [currentTweet, setCurrentTweet] = useState({});
 
   return (
@@ -17,6 +18,8 @@ const UserProvider = ({ children }) => {
         setTweets,
         currentTweet,
         setCurrentTweet,
+        retweets,
+        setRetweets,
       }}
     >
       {children}

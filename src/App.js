@@ -1,6 +1,8 @@
 import './App.css';
 import React, { useContext } from 'react';
 import Home from './pages/home/Home';
+import Sidebar from './common/Sidebar';
+import Profile from './pages/profile/Profile';
 import SignIn from './pages/sign-in/SignIn';
 import Signup from './pages/sign-up/Signup';
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -20,6 +22,8 @@ function App() {
 
   return (
     <div className="grid grid-cols-[1fr_2fr_1fr] self-center w-full">
+      {user != null ? <Sidebar /> : ''}
+
       <Routes>
         <Route
           path="/"
@@ -31,6 +35,7 @@ function App() {
           <Route path="likes" element={<Likes />}></Route>
           <Route path="retweets" element={<Retweets />}></Route>
         </Route>
+        <Route path="/profile/:id" element={<Profile />}></Route>
       </Routes>
     </div>
   );

@@ -15,7 +15,7 @@ function Reply({ username, author, id }) {
 
   const tweet = async () => {
     const TWEET_ID = uniqid();
-    const tweetsRef = doc(db, 'users', `${user.uid}`, 'tweets', `${TWEET_ID}`);
+    const replyRef = doc(db, 'users', `${user.uid}`, 'replies', `${TWEET_ID}`);
     const tweetCommentsRef = doc(
       db,
       'users',
@@ -26,8 +26,11 @@ function Reply({ username, author, id }) {
       `${TWEET_ID}`
     );
 
-    await setDoc(tweetsRef, {
-      comment: TWEET_ID,
+    await setDoc(replyRef, {
+      type: 'comment',
+      author: author,
+      id: TWEET_ID,
+      orignalPost: id,
     });
 
     await setDoc(tweetCommentsRef, {

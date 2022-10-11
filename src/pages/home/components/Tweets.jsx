@@ -5,22 +5,33 @@ import { UserContext } from '../../../Context/UserContext';
 import { getDocs, onSnapshot, collection, doc } from 'firebase/firestore';
 
 const Tweets = () => {
-  const { user } = useContext(UserContext);
-  const [tweets, setTweets] = useState([]);
-  const [retweets, setRetweets] = useState([]);
+  const { user, tweets, setTweets } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
 
   const getTweets = async (user_id) => {
     const usersTweetsRef = collection(db, 'users', `${user_id}`, 'tweets');
 
-    onSnapshot(usersTweetsRef, (querySnapshot) => {
+    onSnapshot(usersTweetsRef, (doc) => {
       const tweetsCollection = [];
-      querySnapshot.forEach(async (tweet) => {
+      doc.forEach(async (tweet) => {
         const tweetInformation = tweet.data();
         const { type, retweeter } = tweetInformation;
-        type === 'retweet'
-          ? getRetweets(tweetInformation, retweeter)
-          : tweetsCollection.push(tweetInformation);
+        switch (type) {
+          case 'retweet':
+            console.log('this is a retweet', tweetInformation);
+            getRetweets(tweetInformation, retweeter);
+            break;
+          case 'tweet':
+            console.log('this is a tweet');
+            tweetsCollection.push(tweetInformation);
+            break;
+          case 'comment':
+            getComments(tweetInformation, retweeter);
+            console.log('this is a comment');
+            break;
+          default:
+            return;
+        }
         setTweets(tweetsCollection);
         setIsLoading(false);
       });
@@ -33,18 +44,42 @@ const Tweets = () => {
       'users',
       `${tweet.author}`,
       'tweets',
-      `${tweet.tweetID}`
+      `${tweet.id}`
     );
-    onSnapshot(tweetRef, (querySnapshot) => {
-      const tweet = querySnapshot.data();
+    onSnapshot(tweetRef, (doc) => {
+      const tweet = doc.data();
+      console.log(tweet, tweetRef);
       const { id } = tweet;
       const retweet = Object.assign({ retweetedBy: retweeter }, tweet);
-      setRetweets((prev) => {
+      setTweets((prev) => {
         if (prev) {
           const updated = prev.filter((tweet) => tweet.id !== id);
           return updated.concat(retweet);
         } else {
-          return retweets.concat(retweet);
+          return tweets.concat(retweet);
+        }
+      });
+    });
+  };
+
+  const getComments = async (tweet, retweeter) => {
+    const tweetRef = doc(
+      db,
+      'users',
+      `${tweet.author}`,
+      'tweets',
+      `${tweet.id}`
+    );
+    onSnapshot(tweetRef, (doc) => {
+      const tweet = doc.data();
+      const { id } = tweet;
+      const retweet = Object.assign({ retweetedBy: retweeter }, tweet);
+      setTweets((prev) => {
+        if (prev) {
+          const updated = prev.filter((tweet) => tweet.id !== id);
+          return updated.concat(retweet);
+        } else {
+          return tweets.concat(retweet);
         }
       });
     });
@@ -73,8 +108,9 @@ const Tweets = () => {
   } else {
     return (
       <div className="flex flex-col gap-3 relative ">
-        {tweets.concat(retweets).map((tweet) => {
+        {tweets.map((tweet) => {
           const { id, author, likes, retweets, username } = tweet;
+          console.log(tweet);
           return (
             <Tweet
               id={id}

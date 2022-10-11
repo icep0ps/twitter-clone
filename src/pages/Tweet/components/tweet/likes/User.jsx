@@ -1,7 +1,6 @@
 import React from 'react';
 
 function User({ username, bio }) {
-  console.log(username);
   return (
     <div className="flex gap-3">
       <div className="w-12 h-12  bg-black rounded-3xl"></div>

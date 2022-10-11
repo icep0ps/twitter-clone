@@ -1,11 +1,19 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { UserContext } from '../Context/UserContext';
 
 function Sidebar() {
+  const { user } = useContext(UserContext);
+
   return (
-    <div className="col-start-1">
+    <div className="col-start-1 gap-5">
       <ul className="text-2xl mb-3">
-        <li>Home</li>
-        <li>Profile</li>
+        <Link to={'/'}>
+          <li>Home</li>
+        </Link>
+        <Link to={`/profile/${user.uid}`}>
+          <li>Profile</li>
+        </Link>
       </ul>
     </div>
   );
