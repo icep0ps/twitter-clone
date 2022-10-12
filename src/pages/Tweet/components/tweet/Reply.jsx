@@ -34,6 +34,7 @@ function Reply({ username, author, id }) {
     });
 
     await setDoc(tweetCommentsRef, {
+      id: TWEET_ID,
       replyingTo: author,
       type: 'comment',
       profileURL: user.photoURL,

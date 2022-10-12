@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import React, { useContext } from 'react';
-import { UserContext } from '../Context/UserContext';
+import { UserContext } from '../../Context/UserContext';
 
 function Sidebar() {
   const { user } = useContext(UserContext);

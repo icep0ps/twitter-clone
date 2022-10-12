@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
-import LikeIcon from '../assets/svgs/LikeIcon';
-import ShareIcon from '../assets/svgs/ShareIcon';
-import { db } from '../firebase/firebase-config';
-import { UserContext } from '../Context/UserContext';
-import RetweetIcon from '../assets/svgs/RetweetIcon';
-import CommentsIcon from '../assets/svgs/CommentsIcon';
+import LikeIcon from '../../assets/svgs/LikeIcon';
+import ShareIcon from '../../assets/svgs/ShareIcon';
+import { db } from '../../firebase/firebase-config';
+import { UserContext } from '../../Context/UserContext';
+import RetweetIcon from '../../assets/svgs/RetweetIcon';
+import CommentsIcon from '../../assets/svgs/CommentsIcon';
 import React, { useContext, useEffect, useState } from 'react';
 import {
   arrayUnion,
@@ -102,7 +102,11 @@ function Tweet(props) {
         ) : (
           ''
         )}
-
+        {tweetInfomation.replyingTo ? (
+          <p>replying to @{tweetInfomation.replyingTo} </p>
+        ) : (
+          ''
+        )}
         <div className="flex gap-5 ">
           <div className="w-12 h-12  bg-black rounded-3xl"></div>
           <div className="w-5/6">

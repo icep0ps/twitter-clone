@@ -1,7 +1,7 @@
 import { collection, onSnapshot } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Tweet from '../../../../common/Tweet';
+import Tweet from '../../../../common/components/Tweet';
 import { db } from '../../../../firebase/firebase-config';
 
 function Comments({ id, author }) {

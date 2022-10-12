@@ -1,7 +1,7 @@
 import './App.css';
 import React, { useContext } from 'react';
 import Home from './pages/home/Home';
-import Sidebar from './common/Sidebar';
+import Sidebar from './common/components/Sidebar';
 import Profile from './pages/profile/Profile';
 import SignIn from './pages/sign-in/SignIn';
 import Signup from './pages/sign-up/Signup';

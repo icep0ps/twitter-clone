@@ -15,8 +15,14 @@ function CreateTweet() {
 
   const tweet = async () => {
     const TWEET_ID = uniqid();
-    const tweetsRef = doc(db, 'users', `${user.uid}`, 'tweets', `${TWEET_ID}`);
-    await setDoc(tweetsRef, {
+    const usersTweetsRef = doc(
+      db,
+      'users',
+      `${user.uid}`,
+      'tweets',
+      `${TWEET_ID}`
+    );
+    await setDoc(usersTweetsRef, {
       id: TWEET_ID,
       type: 'tweet',
       author: user.uid,
@@ -25,7 +31,6 @@ function CreateTweet() {
       tweet: tweetInput,
       likes: [],
       retweets: [],
-      comments: [],
       date: Timestamp.now(),
     });
   };
