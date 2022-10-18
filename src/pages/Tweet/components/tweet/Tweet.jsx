@@ -17,9 +17,8 @@ import {
 import { Link, Outlet } from 'react-router-dom';
 
 function Tweet(props) {
-  const { id, author, username, tweet, tweetInfomation } = props;
-
   const { user } = useContext(UserContext);
+  const { id, author, username, tweet, tweetInfomation } = props;
 
   const isfollow = async () => {
     const userRef = doc(db, 'users', `${author}`, 'following', `${user.uid}`);
@@ -50,7 +49,7 @@ function Tweet(props) {
         id: user.uid,
       }),
     });
-    const yourTweetsRef = doc(db, 'users', `${user.uid}`, 'tweets', `${id}`);
+    const yourTweetsRef = doc(db, 'users', `${user.uid}`, 'retweets', `${id}`);
     await setDoc(yourTweetsRef, tweetInfomation);
   };
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import TweetCategories from './components/TweetCategories';
 import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { useParams } from 'react-router-dom';
@@ -45,10 +46,11 @@ function Profile() {
   return (
     <div>
       <Infomation
-        details={user}
+        user={user}
         following={following}
         followers={followers}
       ></Infomation>
+      <TweetCategories id={id} />
     </div>
   );
 }

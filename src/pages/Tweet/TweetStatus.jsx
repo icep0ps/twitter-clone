@@ -23,7 +23,6 @@ function TweetStatus() {
 
   useEffect(() => {
     searchForTweet();
-    console.log('rendering');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
