@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Tweet from '../../../../common/components/Tweet';
 import { db } from '../../../../firebase/firebase-config';
+import { COMMENT } from '../../../../common/helpers/types';
 
 function Comments({ id, author }) {
   const [comments, setComments] = useState([]);
@@ -40,7 +41,7 @@ function Comments({ id, author }) {
             <Tweet
               id={id}
               key={id}
-              type="comment"
+              type={COMMENT}
               username={comment.username}
               author={comment.author}
               tweet={comment.tweet}

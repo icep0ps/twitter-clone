@@ -4,7 +4,7 @@ import useFetchTweets from '../../../../common/hooks/useFetchTweets';
 
 const TweetsCategory = ({ id }) => {
   const { tweets } = useFetchTweets(id);
-  console.log(tweets);
+
 
   return tweets.map((tweet) => {
     return (

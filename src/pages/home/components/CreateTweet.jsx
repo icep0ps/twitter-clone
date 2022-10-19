@@ -4,6 +4,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { db } from '../../../firebase/firebase-config';
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
 import { UserContext } from '../../../Context/UserContext';
+import { TWEET } from '../../../common/helpers/types';
 
 function CreateTweet() {
   const { user } = useContext(UserContext);
@@ -24,7 +25,7 @@ function CreateTweet() {
     );
     await setDoc(usersTweetsRef, {
       id: TWEET_ID,
-      type: 'tweet',
+      type: TWEET,
       author: user.uid,
       profileURL: user.photoURL,
       username: user.displayName,

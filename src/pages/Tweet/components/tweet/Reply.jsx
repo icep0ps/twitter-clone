@@ -4,6 +4,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { db } from '../../../../firebase/firebase-config';
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
 import { UserContext } from '../../../../Context/UserContext';
+import { COMMENT } from '../../../../common/helpers/types';
 
 function Reply({ username, author, id }) {
   const { user } = useContext(UserContext);
@@ -27,7 +28,7 @@ function Reply({ username, author, id }) {
     );
 
     await setDoc(replyRef, {
-      type: 'comment',
+      type: COMMENT,
       author: author,
       id: TWEET_ID,
       orignalPost: id,
@@ -36,7 +37,7 @@ function Reply({ username, author, id }) {
     await setDoc(tweetCommentsRef, {
       id: TWEET_ID,
       replyingTo: author,
-      type: 'comment',
+      type: COMMENT,
       profileURL: user.photoURL,
       username: user.displayName,
       author: user.uid,

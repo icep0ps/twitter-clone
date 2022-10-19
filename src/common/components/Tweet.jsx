@@ -2,26 +2,19 @@ import { Link } from 'react-router-dom';
 import LikeIcon from '../../assets/svgs/LikeIcon';
 import ShareIcon from '../../assets/svgs/ShareIcon';
 import { db } from '../../firebase/firebase-config';
-import { UserContext } from '../../Context/UserContext';
 import RetweetIcon from '../../assets/svgs/RetweetIcon';
 import CommentsIcon from '../../assets/svgs/CommentsIcon';
-import React, { useContext, useEffect, useState } from 'react';
-import {
-  arrayUnion,
-  doc,
-  setDoc,
-  updateDoc,
-  getDoc,
-  deleteDoc,
-} from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { doc } from 'firebase/firestore';
+import ComposeTweet from './ComposeTweet';
+import useRetweet from '../hooks/useRetweet';
+import useLike from '../hooks/useLike';
+import useFollow from '../hooks/useFollow';
 
 function Tweet(props) {
-  const { id, author, username, likes, retweets, tweetInfomation, type } =
-    props;
-
-  const { user } = useContext(UserContext);
   const [tweetRef, setTweetRef] = useState('');
-  const [isFollowing, setIsFollowing] = useState(true);
+  const [isReplying, setIsReplying] = useState(false);
+  const { id, author, username, likes, retweets, tweetInfomation } = props;
 
   useEffect(() => {
     switch (tweetInfomation.type) {
@@ -44,47 +37,15 @@ function Tweet(props) {
       default:
         return;
     }
-  }, [isFollowing]);
+  }, []);
 
-  const follow = async () => {
-    const userRef = doc(db, 'users', `${user.uid}`, 'following', `${author}`);
-    const following = await getDoc(userRef);
-    if (following.exists()) {
-      await deleteDoc(userRef);
-      setIsFollowing(false);
-    } else {
-      await setDoc(userRef, {});
-      setIsFollowing(true);
-    }
-  };
-
-  const like = async () => {
-    await updateDoc(tweetRef, {
-      likes: arrayUnion({
-        id: user.uid,
-      }),
-    });
-  };
-
-  const retweet = async () => {
-    await updateDoc(tweetRef, {
-      retweets: arrayUnion({
-        id: user.uid,
-      }),
-    });
-
-    const yourTweetsRef = doc(db, 'users', `${user.uid}`, 'retweets', `${id}`);
-    await setDoc(yourTweetsRef, {
-      type: tweetInfomation.type,
-      author: tweetInfomation.author,
-      retweetedBy: user.uid,
-      retweeter: user.displayName,
-      id: id,
-    });
-  };
+  const { like } = useLike(tweetRef);
+  const { follow, isFollowing } = useFollow(author);
+  const { retweet } = useRetweet(tweetRef, tweetInfomation);
 
   return (
-    <div className="tweet flex flex-col  gap-3 px-5  relative">
+    <div className="tweet flex flex-col gap-3 px-5 relative">
+      {isReplying ? <ComposeTweet tweet={tweetInfomation} /> : ''}
       <button className="right-10 absolute" onClick={follow}>
         {isFollowing ? 'following' : 'follow'}
       </button>
@@ -115,22 +76,29 @@ function Tweet(props) {
             </p>
             <p>{tweetInfomation.tweet}</p>
           </Link>
-          <div className="flex gap-2 justify-between">
-            <button className=" text-black">
-              <CommentsIcon />
-            </button>
-            <button className=" text-black flex gap-3" onClick={like}>
-              <LikeIcon />
-              {likes.length}
-            </button>
-            <button className=" text-black flex gap-3" onClick={retweet}>
-              <RetweetIcon />
-              {retweets.length}
-            </button>
-            <button className=" text-black flex gap-3">
-              <ShareIcon />
-            </button>
-          </div>
+          {!isReplying ? (
+            <div className="flex gap-2 justify-between">
+              <button
+                className=" text-black"
+                onClick={() => setIsReplying(!isReplying)}
+              >
+                <CommentsIcon />
+              </button>
+              <button className=" text-black flex gap-3" onClick={like}>
+                <LikeIcon />
+                {likes.length}
+              </button>
+              <button className=" text-black flex gap-3" onClick={retweet}>
+                <RetweetIcon />
+                {retweets.length}
+              </button>
+              <button className=" text-black flex gap-3">
+                <ShareIcon />
+              </button>
+            </div>
+          ) : (
+            ''
+          )}
         </div>
       </div>
     </div>

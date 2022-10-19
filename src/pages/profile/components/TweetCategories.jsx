@@ -7,13 +7,10 @@ function TweetCategories({ id }) {
 
   let tabToBeRendered = <TweetsCategory id={id}></TweetsCategory>;
   if (category === 'tweets & replies') {
-    console.log(id);
     tabToBeRendered = <TweetsAndReplies id={id}></TweetsAndReplies>;
   }
 
-  useEffect(() => {
-    console.log(id);
-  }, [category]);
+  useEffect(() => {}, [category]);
 
   return (
     <React.Fragment>
