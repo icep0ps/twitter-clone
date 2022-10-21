@@ -14,7 +14,7 @@ import Likes from './pages/Tweet/components/tweet/likes/Likes';
 import Retweets from './pages/Tweet/components/tweet/likes/Retweets';
 
 function App() {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, currentTweetBiengViewed } = useContext(UserContext);
 
   onAuthStateChanged(auth, (currentUser) => {
     setUser(currentUser);
@@ -31,7 +31,12 @@ function App() {
         ></Route>
         <Route path="/sign-up" element={<Signup />}></Route>
         <Route path="/sign-in" element={<SignIn />}></Route>
-        <Route path="/status/:id" element={<TweetStatus />}>
+        <Route
+          path="/:author/status/:id"
+          element={
+            <TweetStatus currentTweetBiengViewed={currentTweetBiengViewed} />
+          }
+        >
           <Route path="likes" element={<Likes />}></Route>
           <Route path="retweets" element={<Retweets />}></Route>
         </Route>

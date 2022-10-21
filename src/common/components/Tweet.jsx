@@ -1,19 +1,21 @@
+import useLike from '../hooks/useLike';
 import { Link } from 'react-router-dom';
+import { doc } from 'firebase/firestore';
+import ComposeTweet from './ComposeTweet';
+import useFollow from '../hooks/useFollow';
+import useRetweet from '../hooks/useRetweet';
 import LikeIcon from '../../assets/svgs/LikeIcon';
 import ShareIcon from '../../assets/svgs/ShareIcon';
 import { db } from '../../firebase/firebase-config';
+import { UserContext } from '../../Context/UserContext';
 import RetweetIcon from '../../assets/svgs/RetweetIcon';
 import CommentsIcon from '../../assets/svgs/CommentsIcon';
-import React, { useEffect, useState } from 'react';
-import { doc } from 'firebase/firestore';
-import ComposeTweet from './ComposeTweet';
-import useRetweet from '../hooks/useRetweet';
-import useLike from '../hooks/useLike';
-import useFollow from '../hooks/useFollow';
+import React, { useEffect, useState, useContext } from 'react';
 
 function Tweet(props) {
   const [tweetRef, setTweetRef] = useState('');
   const [isReplying, setIsReplying] = useState(false);
+  const { setCurrentTweetBiengViewed } = useContext(UserContext);
   const { id, author, username, likes, retweets, tweetInfomation } = props;
 
   useEffect(() => {
@@ -44,7 +46,10 @@ function Tweet(props) {
   const { retweet } = useRetweet(tweetRef, tweetInfomation);
 
   return (
-    <div className="tweet flex flex-col gap-3 px-5 relative">
+    <div
+      className="tweet flex flex-col gap-3 px-5 relative"
+      onClick={() => setCurrentTweetBiengViewed(tweetInfomation)}
+    >
       {isReplying ? <ComposeTweet tweet={tweetInfomation} /> : ''}
       <button className="right-10 absolute" onClick={follow}>
         {isFollowing ? 'following' : 'follow'}
@@ -69,7 +74,7 @@ function Tweet(props) {
         </div>
 
         <div className="w-5/6">
-          <Link to={`/status/${id}`}>
+          <Link to={`/${author}/status/${id}`}>
             <p className="username flex items-center gap-1 ">
               {username}{' '}
               <span className="text-xs text-gray-500">@{username}</span>

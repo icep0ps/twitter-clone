@@ -1,11 +1,12 @@
-import { useState } from 'react';
 import { COMMENT } from '../helpers/types';
+import { useState } from 'react';
 import { db } from '../../firebase/firebase-config';
+import useFetchMainTweet from './useFetchMainTweet';
 import { onSnapshot, collection, doc, getDoc } from 'firebase/firestore';
 
 function useFetchFollowingTweets() {
-  let originalTweet = {};
   const [tweets, setTweets] = useState([]);
+  const { getMainTweet } = useFetchMainTweet();
 
   const getTweets = async (user_id) => {
     const usersTweetsRef = collection(db, 'users', `${user_id}`, 'tweets');
@@ -43,13 +44,14 @@ function useFetchFollowingTweets() {
           'comments',
           `${id}`
         );
-        await getMainTweet(author);
+        const tweet = await getMainTweet(author, orignalPost);
         const comment = await getDoc(commentRef);
         setTweets((prev) => [
           ...prev,
+
           {
             type: COMMENT,
-            tweet: originalTweet,
+            tweet: tweet.data(),
             comment: comment.data(),
           },
         ]);
@@ -57,17 +59,7 @@ function useFetchFollowingTweets() {
     });
   };
 
-  const getMainTweet = async (user_id) => {
-    const usersTweetsRef = collection(db, 'users', `${user_id}`, 'tweets');
-    onSnapshot(usersTweetsRef, (tweets) => {
-      tweets.forEach(async (tweet) => {
-        const tweetInformation = tweet.data();
-        originalTweet = tweetInformation;
-      });
-    });
-  };
-
-  return [tweets, getTweets, getRetweets, getComments];
+  return { tweets, getTweets, getRetweets, getComments };
 }
 
 export default useFetchFollowingTweets;

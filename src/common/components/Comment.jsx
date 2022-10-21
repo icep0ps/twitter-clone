@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Tweet from './Tweet';
 import { COMMENT } from '../helpers/types';
+import useFetchComment from '../hooks/useFetchComment';
 
-function Comment({ tweet }) {
+function Comment({ comment }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [tweet, getComment] = useFetchComment();
+
+  const seach = async () => {
+    console.log(comment);
+
+    await getComment(comment.comment.author, comment.comment.id);
+    setIsLoading(false);
+  };
+  useEffect(() => {
+    seach();
+  }, []);
+
+  if (isLoading) {
+    return <h1>Loading....</h1>;
+  }
   return (
     <div className=" flex flex-col border-b border-gray-500 border-solid pb-3 relative">
       <Tweet

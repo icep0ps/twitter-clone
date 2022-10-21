@@ -9,7 +9,7 @@ import useFetchFollowingTweets from '../../../common/hooks/useFetchFollowingTwee
 const Tweets = () => {
   const { user } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [tweets, getTweets, getRetweets, getComments] =
+  const { tweets, getTweets, getRetweets, getComments } =
     useFetchFollowingTweets();
 
   const getFollowingTweets = async (id) => {
@@ -17,12 +17,7 @@ const Tweets = () => {
     const usersFollowing = await getDocs(userFollowingRef);
     usersFollowing.forEach(async (person) => {
       const { id } = person;
-      await getTweets(id);
-      await getRetweets(id);
-      await getComments(id);
-      console.log(
-        'it wont load tweet status because you havent set the tweets in the userContext'
-      );
+      await Promise.all([getTweets(id), getRetweets(id), getComments(id)]);
       setIsLoading(false);
     });
   };
@@ -38,10 +33,13 @@ const Tweets = () => {
     <div className="flex flex-col gap-3 relative ">
       {tweets.map((tweet) => {
         if (tweet.type === 'comment') {
-          return <Comment tweet={tweet} />;
+          return <Comment comment={tweet} key={tweet.comment.id} />;
         }
         return (
-          <div className=" flex flex-col border-b border-gray-500 border-solid pb-3 relative">
+          <div
+            className=" flex flex-col border-b border-gray-500 border-solid pb-3 relative"
+            key={tweet.id}
+          >
             <Tweet
               id={tweet.id}
               key={tweet.id}

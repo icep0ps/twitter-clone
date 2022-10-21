@@ -3,27 +3,32 @@ import Tweet from './components/tweet/Tweet';
 import { UserContext } from '../../Context/UserContext';
 import React, { useContext, useEffect, useState } from 'react';
 import Comments from './components/comments/Comments';
+import { COMMENT } from '../../common/helpers/types';
+import useFetchTweet from '../../common/hooks/useFetchTweet';
+import useFetchComment from '../../common/hooks/useFetchComment';
+import Comment from '../../common/components/Comment';
 
-function TweetStatus() {
-  const { id } = useParams();
+function TweetStatus({ currentTweetBiengViewed }) {
   let location = useLocation();
-  const [tweet, setTweet] = useState({});
+  const { author, id } = useParams();
+  const { user } = useContext(UserContext);
+  const { tweet, getTweet } = useFetchTweet();
+  const [comment, getComment] = useFetchComment();
   const [isLoading, setIsLoading] = useState(true);
-  const { tweets, user, setCurrentTweet } = useContext(UserContext);
 
-  const searchForTweet = async () => {
-    tweets.forEach(async (tweet) => {
-      if (tweet.id === id) {
-        setTweet(tweet);
-        setCurrentTweet(tweet);
-      }
-      setIsLoading(false);
-    });
+  const fetchComments = async () => {
+    const {
+      type,
+      author: currentAuthor,
+      id: currentID,
+    } = currentTweetBiengViewed;
+    type === COMMENT && (await getComment(currentAuthor, currentID));
+    console.log('loaction changed');
+    await getTweet(author, id).then(() => setIsLoading(false));
   };
 
   useEffect(() => {
-    searchForTweet();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchComments();
   }, [location]);
 
   if (isLoading) {
@@ -32,19 +37,26 @@ function TweetStatus() {
     return (
       <div className="col-start-2 flex flex-col gap-5 border-x border-gray-500 border-solid">
         <h1 className="bg-black text-white text-xl p-4">Tweet</h1>
-        <Tweet
-          id={id}
-          username={tweet.username}
-          author={tweet.author}
-          tweet={tweet.tweet}
-          likes={tweet.likes}
-          retweets={tweet.retweets}
-          tweetInfomation={tweet}
-          type={tweet.type}
-        ></Tweet>
+        {currentTweetBiengViewed.type === COMMENT ? (
+          <Comment tweet={comment}></Comment>
+        ) : (
+          <Tweet
+            id={id}
+            key={id}
+            username={tweet.username}
+            author={tweet.author}
+            tweet={tweet.tweet}
+            likes={tweet.likes}
+            retweets={tweet.retweets}
+            tweetInfomation={tweet}
+            type={tweet.type}
+          ></Tweet>
+        )}
+
         <Comments
-          author={tweet.author}
           id={id}
+          key={'comments'}
+          author={tweet.author}
           tweetInfomation={tweet}
         ></Comments>
         <p>Your are logged with {user.email}</p>

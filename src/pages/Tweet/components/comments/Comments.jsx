@@ -1,9 +1,8 @@
-import { collection, onSnapshot } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import Tweet from '../../../../common/components/Tweet';
 import { db } from '../../../../firebase/firebase-config';
 import { COMMENT } from '../../../../common/helpers/types';
+import { collection, onSnapshot } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
 
 function Comments({ id, author }) {
   const [comments, setComments] = useState([]);
@@ -37,19 +36,17 @@ function Comments({ id, author }) {
     <>
       {comments.map((comment) => {
         return (
-          <Link to={`/status/${comment.id}`}>
-            <Tweet
-              id={id}
-              key={id}
-              type={COMMENT}
-              username={comment.username}
-              author={comment.author}
-              tweet={comment.tweet}
-              likes={comment.likes}
-              retweets={comment.retweets}
-              tweetInfomation={comment}
-            />
-          </Link>
+          <Tweet
+            id={id}
+            key={comment.id}
+            type={COMMENT}
+            username={comment.username}
+            author={comment.author}
+            tweet={comment.tweet}
+            likes={comment.likes}
+            retweets={comment.retweets}
+            tweetInfomation={comment}
+          />
         );
       })}
     </>

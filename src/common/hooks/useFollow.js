@@ -4,9 +4,9 @@ import { UserContext } from '../../Context/UserContext';
 import { getDoc, doc, deleteDoc, setDoc } from 'firebase/firestore';
 
 const useFollow = (author) => {
+  const { user } = useContext(UserContext);
   const [isFollowing, setIsFollowing] = useState(true);
 
-  const { user } = useContext(UserContext);
   const follow = async () => {
     const userRef = doc(db, 'users', `${user.uid}`, 'following', `${author}`);
     const following = await getDoc(userRef);
