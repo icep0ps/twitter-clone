@@ -13,10 +13,9 @@ const useFetchComment = () => {
       db,
       'users',
       `${userID}`,
-      'replies',
+      'tweets',
       `${commentID}`
     );
-
     const userComment = await getDoc(userCommentRef);
     const { author, orignalPost, id } = userComment.data();
     const tweet = await getMainTweet(author, orignalPost);
@@ -35,8 +34,8 @@ const useFetchComment = () => {
       tweet: tweet.data(),
       comment: finalComment.data(),
     };
-    console.log(mainTweetStructure);
     setComment(mainTweetStructure);
+    return mainTweetStructure;
   };
 
   return [comment, getComment];

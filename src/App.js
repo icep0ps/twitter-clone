@@ -12,31 +12,29 @@ import { UserContext } from './Context/UserContext';
 import TweetStatus from './pages/Tweet/TweetStatus';
 import Likes from './pages/Tweet/components/tweet/likes/Likes';
 import Retweets from './pages/Tweet/components/tweet/likes/Retweets';
+import ComposeTweet from './common/components/ComposeTweet';
 
 function App() {
-  const { user, setUser, currentTweetBiengViewed } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   onAuthStateChanged(auth, (currentUser) => {
     setUser(currentUser);
   });
 
   return (
-    <div className="grid grid-cols-[1fr_2fr_1fr] self-center w-full">
+    <div className="grid grid-cols-[1fr_2fr_1fr] self-center w-full h-full">
       {user != null ? <Sidebar /> : ''}
 
       <Routes>
         <Route
           path="/"
           element={user != null ? <Home /> : <Navigate to="/sign-in" />}
-        ></Route>
+        >
+          <Route path="/compose/tweet" element={<ComposeTweet />}></Route>
+        </Route>
         <Route path="/sign-up" element={<Signup />}></Route>
         <Route path="/sign-in" element={<SignIn />}></Route>
-        <Route
-          path="/:author/status/:id"
-          element={
-            <TweetStatus currentTweetBiengViewed={currentTweetBiengViewed} />
-          }
-        >
+        <Route path="/:author/status/:id" element={<TweetStatus />}>
           <Route path="likes" element={<Likes />}></Route>
           <Route path="retweets" element={<Retweets />}></Route>
         </Route>

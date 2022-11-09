@@ -22,6 +22,12 @@ code {
   margin: 0 auto;
 }
 
+body,
+html,
+#root {
+  height: 100%;
+}
+
 .line {
   background-color: black;
   height: 100%;
@@ -37,6 +43,7 @@ code {
 
 .tweet:last-child .line {
   height: 0;
+  background-color: red;
 }
 
 .category {

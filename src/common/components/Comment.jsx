@@ -3,13 +3,12 @@ import Tweet from './Tweet';
 import { COMMENT } from '../helpers/types';
 import useFetchComment from '../hooks/useFetchComment';
 
-function Comment({ comment }) {
-  const [isLoading, setIsLoading] = useState(true);
+function Comment(props) {
+  const { comment } = props;
   const [tweet, getComment] = useFetchComment();
+  const [isLoading, setIsLoading] = useState(true);
 
   const seach = async () => {
-    console.log(comment);
-
     await getComment(comment.comment.author, comment.comment.id);
     setIsLoading(false);
   };

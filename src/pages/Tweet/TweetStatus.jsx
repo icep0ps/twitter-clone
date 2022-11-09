@@ -3,28 +3,20 @@ import Tweet from './components/tweet/Tweet';
 import { UserContext } from '../../Context/UserContext';
 import React, { useContext, useEffect, useState } from 'react';
 import Comments from './components/comments/Comments';
-import { COMMENT } from '../../common/helpers/types';
 import useFetchTweet from '../../common/hooks/useFetchTweet';
-import useFetchComment from '../../common/hooks/useFetchComment';
 import Comment from '../../common/components/Comment';
+import Reply from './components/tweet/Reply';
 
-function TweetStatus({ currentTweetBiengViewed }) {
+function TweetStatus() {
   let location = useLocation();
   const { author, id } = useParams();
   const { user } = useContext(UserContext);
   const { tweet, getTweet } = useFetchTweet();
-  const [comment, getComment] = useFetchComment();
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchComments = async () => {
-    const {
-      type,
-      author: currentAuthor,
-      id: currentID,
-    } = currentTweetBiengViewed;
-    type === COMMENT && (await getComment(currentAuthor, currentID));
-    console.log('loaction changed');
-    await getTweet(author, id).then(() => setIsLoading(false));
+    await getTweet(author, id);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -37,8 +29,15 @@ function TweetStatus({ currentTweetBiengViewed }) {
     return (
       <div className="col-start-2 flex flex-col gap-5 border-x border-gray-500 border-solid">
         <h1 className="bg-black text-white text-xl p-4">Tweet</h1>
-        {currentTweetBiengViewed.type === COMMENT ? (
-          <Comment tweet={comment}></Comment>
+        {tweet.type === 'comment' ? (
+          <>
+            <Comment comment={tweet}></Comment>
+            <Reply
+              id={tweet.tweet.id}
+              username={tweet.tweet.username}
+              author={tweet.tweet.author}
+            ></Reply>
+          </>
         ) : (
           <Tweet
             id={id}
@@ -52,12 +51,12 @@ function TweetStatus({ currentTweetBiengViewed }) {
             type={tweet.type}
           ></Tweet>
         )}
-
         <Comments
           id={id}
           key={'comments'}
           author={tweet.author}
           tweetInfomation={tweet}
+          location={location}
         ></Comments>
         <p>Your are logged with {user.email}</p>
         <button className="bg-black text-white">Logout</button>

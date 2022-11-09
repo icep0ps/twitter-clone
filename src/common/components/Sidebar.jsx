@@ -15,6 +15,9 @@ function Sidebar() {
           <li>Profile</li>
         </Link>
       </ul>
+      <button className="p-2.5 bg-blue-500 text-white rounded-3xl w-20 self-end">
+        Tweet
+      </button>
     </div>
   );
 }

@@ -12,49 +12,72 @@ function useFetchFollowingTweets() {
     const usersTweetsRef = collection(db, 'users', `${user_id}`, 'tweets');
     onSnapshot(usersTweetsRef, (doc) => {
       doc.forEach(async (tweet) => {
-        setTweets((prevState) => prevState.concat(tweet.data()));
+        console.log(tweet.data().type);
+        switch (tweet.data().type) {
+          case 'tweet':
+            setTweets((prevState) => prevState.concat(tweet.data()));
+            break;
+          case 'comment':
+            await getComments(user_id);
+            break;
+          case 'retweet':
+            await getRetweets(user_id);
+            break;
+          default:
+            return;
+        }
       });
     });
   };
 
   const getRetweets = async (user_id) => {
-    const usersRetweetsRef = collection(db, 'users', `${user_id}`, 'retweets');
+    const usersRetweetsRef = collection(db, 'users', `${user_id}`, 'tweets');
     onSnapshot(usersRetweetsRef, (docs) => {
       docs.forEach(async (tweet) => {
-        const { author, id, retweeter } = tweet.data();
-        const usersTweetsRef = doc(db, 'users', `${author}`, 'tweets', `${id}`);
-        const data = await getDoc(usersTweetsRef);
-        const retweet = Object.assign({ retweeter: retweeter }, data.data());
-        setTweets((prevState) => prevState.concat(retweet));
+        if (tweet.data().type === 'retweet') {
+          const { author, id, retweeter } = tweet.data();
+          const usersTweetsRef = doc(
+            db,
+            'users',
+            `${author}`,
+            'tweets',
+            `${id}`
+          );
+          const data = await getDoc(usersTweetsRef);
+          const retweet = Object.assign({ retweeter: retweeter }, data.data());
+          setTweets((prevState) => prevState.concat(retweet));
+        }
       });
     });
   };
 
   const getComments = async (user_id) => {
-    const tweetRef = collection(db, 'users', `${user_id}`, 'replies');
+    const tweetRef = collection(db, 'users', `${user_id}`, 'tweets');
     onSnapshot(tweetRef, (replies) => {
       replies.forEach(async (reply) => {
-        const { id, author, orignalPost } = reply.data();
-        const commentRef = doc(
-          db,
-          'users',
-          `${author}`,
-          'tweets',
-          `${orignalPost}`,
-          'comments',
-          `${id}`
-        );
-        const tweet = await getMainTweet(author, orignalPost);
-        const comment = await getDoc(commentRef);
-        setTweets((prev) => [
-          ...prev,
+        if (reply.data().type === 'comment') {
+          const { id, author, orignalPost } = reply.data();
+          const commentRef = doc(
+            db,
+            'users',
+            `${author}`,
+            'tweets',
+            `${orignalPost}`,
+            'comments',
+            `${id}`
+          );
+          const tweet = await getMainTweet(author, orignalPost);
+          const comment = await getDoc(commentRef);
+          setTweets((prev) => [
+            ...prev,
 
-          {
-            type: COMMENT,
-            tweet: tweet.data(),
-            comment: comment.data(),
-          },
-        ]);
+            {
+              type: COMMENT,
+              tweet: tweet.data(),
+              comment: comment.data(),
+            },
+          ]);
+        }
       });
     });
   };

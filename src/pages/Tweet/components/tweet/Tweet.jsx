@@ -77,10 +77,10 @@ function Tweet(props) {
         <div className="flex gap-5 "></div>
         <div className="flex justify-start gap-3 border-y border-y-black py-4">
           <Link to={`/status/${id}/retweets`}>
-            <p>{tweetInfomation.retweets.length} Retweets</p>
+            <p>{tweetInfomation.retweets?.length} Retweets</p>
           </Link>
           <Link to={`/status/${id}/likes`}>
-            <p>{tweetInfomation.likes.length} Likes</p>
+            <p>{tweetInfomation.likes?.length} Likes</p>
           </Link>
         </div>
         <div className="flex gap-2 justify-evenly border-b border-b-black py-3">

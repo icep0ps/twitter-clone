@@ -4,7 +4,7 @@ import { UserContext } from '../../Context/UserContext';
 import { doc, updateDoc, arrayUnion, setDoc } from 'firebase/firestore';
 
 function useRetweet(tweetRef, tweetInfomation) {
-  const { id, type, author } = tweetInfomation;
+  const { id, author } = tweetInfomation;
   const { user } = useContext(UserContext);
 
   const retweet = async () => {
@@ -14,9 +14,9 @@ function useRetweet(tweetRef, tweetInfomation) {
       }),
     });
 
-    const yourTweetsRef = doc(db, 'users', `${user.uid}`, 'retweets', `${id}`);
+    const yourTweetsRef = doc(db, 'users', `${user.uid}`, 'tweets', `${id}`);
     await setDoc(yourTweetsRef, {
-      type: type,
+      type: 'retweet',
       author: author,
       retweetedBy: user.uid,
       retweeter: user.displayName,

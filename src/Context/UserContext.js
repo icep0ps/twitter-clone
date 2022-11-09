@@ -6,9 +6,9 @@ const UserContext = createContext();
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [retweets, setRetweets] = useState([]);
-  const [currentTweetBiengViewed, setCurrentTweetBiengViewed] = useState({});
+  const [replyingTo, setReplyingTo] = useState({});
   const [tweetsStorage, setTweetsStorage] = useState([]);
-
+  const [currentTweetBiengViewed, setCurrentTweetBiengViewed] = useState({});
   return (
     <UserContext.Provider
       value={{
@@ -20,6 +20,8 @@ const UserProvider = ({ children }) => {
         setCurrentTweetBiengViewed,
         retweets,
         setRetweets,
+        replyingTo,
+        setReplyingTo,
       }}
     >
       {children}

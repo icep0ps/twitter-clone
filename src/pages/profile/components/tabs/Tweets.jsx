@@ -4,9 +4,9 @@ import useFetchTweets from '../../../../common/hooks/useFetchTweets';
 
 const TweetsCategory = ({ id }) => {
   const { tweets } = useFetchTweets(id);
+  const getTweets = tweets.filter((tweet) => tweet.type === 'tweet');
 
-
-  return tweets.map((tweet) => {
+  return getTweets.map((tweet) => {
     return (
       <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
         <Tweet

@@ -4,7 +4,7 @@ import { COMMENT } from '../../../../common/helpers/types';
 import { collection, onSnapshot } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 
-function Comments({ id, author }) {
+function Comments({ id, author, location }) {
   const [comments, setComments] = useState([]);
 
   const getComments = async () => {
@@ -30,10 +30,10 @@ function Comments({ id, author }) {
 
   useEffect(() => {
     getComments();
-  }, []);
+  }, [location]);
 
   return (
-    <>
+    <div>
       {comments.map((comment) => {
         return (
           <Tweet
@@ -49,7 +49,7 @@ function Comments({ id, author }) {
           />
         );
       })}
-    </>
+    </div>
   );
 }
 

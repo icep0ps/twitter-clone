@@ -1,23 +1,28 @@
 import React from 'react';
 import Tweet from '../../../../common/components/Tweet';
-import useRetweets from '../../../../common/hooks/useRetweets';
+import Comment from '../../../../common/components/Comment';
+import useFetchTweets from '../../../../common/hooks/useFetchTweets';
 
 const TweetsAndReplies = ({ id }) => {
-  const { retweets } = useRetweets(id);
-  return retweets.map((retweet) => {
-    const { id, author, username, tweet, likes, retweets } = retweet;
+  const { tweets } = useFetchTweets(id);
+
+  return tweets.map((tweet) => {
     return (
       <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
-        <Tweet
-          id={id}
-          key={id}
-          author={author}
-          username={username}
-          tweet={tweet.tweet}
-          likes={likes}
-          retweets={retweets}
-          tweetInfomation={tweet}
-        />
+        {tweet.type === 'comment' ? (
+          <Comment comment={tweet} />
+        ) : (
+          <Tweet
+            id={tweet.id}
+            key={tweet.id}
+            author={tweet.author}
+            username={tweet.username}
+            tweet={tweet.tweet.tweet}
+            likes={tweet.likes}
+            retweets={tweet.retweets}
+            tweetInfomation={tweet}
+          />
+        )}
       </div>
     );
   });

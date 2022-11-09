@@ -1,7 +1,6 @@
 import useLike from '../hooks/useLike';
 import { Link } from 'react-router-dom';
 import { doc } from 'firebase/firestore';
-import ComposeTweet from './ComposeTweet';
 import useFollow from '../hooks/useFollow';
 import useRetweet from '../hooks/useRetweet';
 import LikeIcon from '../../assets/svgs/LikeIcon';
@@ -14,9 +13,9 @@ import React, { useEffect, useState, useContext } from 'react';
 
 function Tweet(props) {
   const [tweetRef, setTweetRef] = useState('');
-  const [isReplying, setIsReplying] = useState(false);
-  const { setCurrentTweetBiengViewed } = useContext(UserContext);
-  const { id, author, username, likes, retweets, tweetInfomation } = props;
+  const { setCurrentTweetBiengViewed, setReplyingTo } = useContext(UserContext);
+  const { id, author, username, likes, retweets, tweetInfomation, tweetor } =
+    props;
 
   useEffect(() => {
     switch (tweetInfomation.type) {
@@ -50,21 +49,14 @@ function Tweet(props) {
       className="tweet flex flex-col gap-3 px-5 relative"
       onClick={() => setCurrentTweetBiengViewed(tweetInfomation)}
     >
-      {isReplying ? <ComposeTweet tweet={tweetInfomation} /> : ''}
       <button className="right-10 absolute" onClick={follow}>
         {isFollowing ? 'following' : 'follow'}
       </button>
 
-      {tweetInfomation.retweeter ? (
+      {tweetInfomation.retweeter && (
         <p>{tweetInfomation.retweeter} retweeted</p>
-      ) : (
-        ''
       )}
-      {tweetInfomation.replyingTo ? (
-        <p>replying to @{tweetInfomation.replyingTo} </p>
-      ) : (
-        ''
-      )}
+
       <div className="flex gap-5 ">
         <div className="flex gap-5 ">
           <div className="image">
@@ -72,38 +64,40 @@ function Tweet(props) {
             <div className="line"></div>
           </div>
         </div>
-
         <div className="w-5/6">
-          <Link to={`/${author}/status/${id}`}>
-            <p className="username flex items-center gap-1 ">
-              {username}{' '}
-              <span className="text-xs text-gray-500">@{username}</span>
-            </p>
-            <p>{tweetInfomation.tweet}</p>
-          </Link>
-          {!isReplying ? (
+          <div>
+            <Link to={`/${author}/status/${tweetInfomation.id}`}>
+              <p className="username flex items-center gap-1 ">
+                {username}{' '}
+                <span className="text-xs text-gray-500">@{username}</span>
+              </p>
+              {tweetInfomation.replyingTo && (
+                <p>replying to @{tweetInfomation.replyingTo} </p>
+              )}
+              <p>{tweetInfomation.tweet || tweetor}</p>
+            </Link>
             <div className="flex gap-2 justify-between">
-              <button
-                className=" text-black"
-                onClick={() => setIsReplying(!isReplying)}
-              >
-                <CommentsIcon />
-              </button>
+              <Link to={'/compose/tweet'}>
+                <button
+                  className=" text-black"
+                  onClick={(e) => setReplyingTo(tweetInfomation)}
+                >
+                  <CommentsIcon />
+                </button>
+              </Link>
               <button className=" text-black flex gap-3" onClick={like}>
                 <LikeIcon />
-                {likes.length}
+                {likes?.length}
               </button>
               <button className=" text-black flex gap-3" onClick={retweet}>
                 <RetweetIcon />
-                {retweets.length}
+                {retweets?.length}
               </button>
               <button className=" text-black flex gap-3">
                 <ShareIcon />
               </button>
             </div>
-          ) : (
-            ''
-          )}
+          </div>
         </div>
       </div>
     </div>

@@ -9,15 +9,14 @@ import useFetchFollowingTweets from '../../../common/hooks/useFetchFollowingTwee
 const Tweets = () => {
   const { user } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
-  const { tweets, getTweets, getRetweets, getComments } =
-    useFetchFollowingTweets();
+  const { tweets, getTweets } = useFetchFollowingTweets();
 
   const getFollowingTweets = async (id) => {
     const userFollowingRef = collection(db, 'users', `${id}`, 'following');
     const usersFollowing = await getDocs(userFollowingRef);
     usersFollowing.forEach(async (person) => {
       const { id } = person;
-      await Promise.all([getTweets(id), getRetweets(id), getComments(id)]);
+      await getTweets(id);
       setIsLoading(false);
     });
   };

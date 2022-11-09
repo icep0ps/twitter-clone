@@ -16,7 +16,7 @@ function Reply({ username, author, id }) {
 
   const tweet = async () => {
     const TWEET_ID = uniqid();
-    const replyRef = doc(db, 'users', `${user.uid}`, 'replies', `${TWEET_ID}`);
+    const replyRef = doc(db, 'users', `${user.uid}`, 'tweets', `${TWEET_ID}`);
     const tweetCommentsRef = doc(
       db,
       'users',
