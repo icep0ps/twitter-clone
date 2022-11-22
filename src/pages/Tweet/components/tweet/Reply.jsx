@@ -42,9 +42,7 @@ function Reply({ username, author, id }) {
       username: user.displayName,
       author: user.uid,
       tweet: tweetInput,
-      likes: [],
-      retweets: [],
-      comments: [],
+      parentDocId: id,
       date: Timestamp.now(),
     });
   };

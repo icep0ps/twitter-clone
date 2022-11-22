@@ -68,6 +68,7 @@ function useFetchFollowingTweets() {
           );
           const tweet = await getMainTweet(author, orignalPost);
           const comment = await getDoc(commentRef);
+
           setTweets((prev) => [
             ...prev,
 

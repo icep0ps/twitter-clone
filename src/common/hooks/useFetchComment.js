@@ -16,9 +16,23 @@ const useFetchComment = () => {
       'tweets',
       `${commentID}`
     );
+
     const userComment = await getDoc(userCommentRef);
     const { author, orignalPost, id } = userComment.data();
-    const tweet = await getMainTweet(author, orignalPost);
+    let tweet = await getMainTweet(author, orignalPost);
+
+    if (tweet.data()?.orignalPost) {
+      const tmpRef = doc(
+        db,
+        'users',
+        `${tweet.data().author}`,
+        'tweets',
+        `${tweet.data().orignalPost}`,
+        'comments',
+        `${tweet.data().id}`
+      );
+      tweet = await getDoc(tmpRef);
+    }
     const commentRef = doc(
       db,
       'users',
@@ -28,6 +42,7 @@ const useFetchComment = () => {
       'comments',
       `${id}`
     );
+
     const finalComment = await getDoc(commentRef);
     const mainTweetStructure = {
       type: COMMENT,

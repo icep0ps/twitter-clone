@@ -29,6 +29,7 @@ function TweetStatus() {
     return (
       <div className="col-start-2 flex flex-col gap-5 border-x border-gray-500 border-solid">
         <h1 className="bg-black text-white text-xl p-4">Tweet</h1>
+
         {tweet.type === 'comment' ? (
           <>
             <Comment comment={tweet}></Comment>
@@ -37,6 +38,13 @@ function TweetStatus() {
               username={tweet.tweet.username}
               author={tweet.tweet.author}
             ></Reply>
+            <Comments
+              id={id}
+              key={'comments'}
+              author={tweet.comment.author}
+              tweetInfomation={tweet}
+              location={location}
+            ></Comments>
           </>
         ) : (
           <Tweet

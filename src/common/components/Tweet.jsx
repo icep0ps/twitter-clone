@@ -61,7 +61,8 @@ function Tweet(props) {
         <div className="flex gap-5 ">
           <div className="image">
             <div className=" min-w-[48px] min-h-[48px]  bg-black rounded-3xl"></div>
-            <div className="line"></div>
+            {console.log(tweetInfomation)}
+            {tweetInfomation.parentDocId !== id && <div className="line"></div>}
           </div>
         </div>
         <div className="w-5/6">
