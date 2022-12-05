@@ -20,8 +20,7 @@ function Comment(props) {
     return <h1>Loading....</h1>;
   }
   return (
-    <div className=" flex flex-col border-b border-gray-500 border-solid pb-3 relative">
-      {console.log(tweet)}
+    <div className=" flex flex-col  border-gray-500 border-solid pb-3 relative">
       <Tweet
         id={tweet.tweet.id}
         key={tweet.tweet.id}

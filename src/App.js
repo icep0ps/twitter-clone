@@ -13,6 +13,8 @@ import TweetStatus from './pages/Tweet/TweetStatus';
 import Likes from './pages/Tweet/components/tweet/likes/Likes';
 import Retweets from './pages/Tweet/components/tweet/likes/Retweets';
 import ComposeTweet from './common/components/ComposeTweet';
+import WhoToFollow from './common/components/WhoToFollow';
+import FollowersAndFollowing from './pages/profile/components/followersAndFollowing/FollowersAndFollowing';
 
 function App() {
   const { user, setUser } = useContext(UserContext);
@@ -22,7 +24,7 @@ function App() {
   });
 
   return (
-    <div className="grid grid-cols-[1fr_2fr_1fr] self-center w-full h-full">
+    <div className="grid grid-cols-[1fr_2fr_1.5fr] self-center w-full h-full">
       {user != null ? <Sidebar /> : ''}
 
       <Routes>
@@ -39,7 +41,20 @@ function App() {
           <Route path="retweets" element={<Retweets />}></Route>
         </Route>
         <Route path="/profile/:id" element={<Profile />}></Route>
+        <Route
+          path="profile/:id/followers"
+          element={
+            <FollowersAndFollowing view={'followers'}></FollowersAndFollowing>
+          }
+        ></Route>
+        <Route
+          path="profile/:id/following"
+          element={
+            <FollowersAndFollowing view={'following'}></FollowersAndFollowing>
+          }
+        ></Route>
       </Routes>
+      {user != null ? <WhoToFollow /> : ''}
     </div>
   );
 }

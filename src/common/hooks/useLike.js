@@ -1,10 +1,26 @@
 import { useContext } from 'react';
 import { UserContext } from '../../Context/UserContext';
-import { updateDoc, arrayUnion } from 'firebase/firestore';
+import { updateDoc, arrayUnion, doc, setDoc } from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
 
-const useLike = (tweetRef) => {
+const useLike = (tweetRef, tweet) => {
   const { user } = useContext(UserContext);
+
   const like = async () => {
+    const usersLikesRef = doc(
+      db,
+      'users',
+      `${user.uid}`,
+      'likes',
+      `${tweet.id}`
+    );
+
+    await setDoc(usersLikesRef, {
+      id: tweet.id,
+      author: tweet.author,
+      type: tweet.type,
+    });
+
     await updateDoc(tweetRef, {
       likes: arrayUnion({
         id: user.uid,

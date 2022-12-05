@@ -1,5 +1,5 @@
-import User from './User';
 import React, { useContext } from 'react';
+import User from '../../../../../common/components/User';
 import { UserContext } from '../../../../../Context/UserContext';
 
 const Retweets = () => {

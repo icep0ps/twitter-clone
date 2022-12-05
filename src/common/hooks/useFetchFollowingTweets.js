@@ -12,7 +12,6 @@ function useFetchFollowingTweets() {
     const usersTweetsRef = collection(db, 'users', `${user_id}`, 'tweets');
     onSnapshot(usersTweetsRef, (doc) => {
       doc.forEach(async (tweet) => {
-        console.log(tweet.data().type);
         switch (tweet.data().type) {
           case 'tweet':
             setTweets((prevState) => prevState.concat(tweet.data()));

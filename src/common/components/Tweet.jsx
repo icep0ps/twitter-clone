@@ -13,7 +13,8 @@ import React, { useEffect, useState, useContext } from 'react';
 
 function Tweet(props) {
   const [tweetRef, setTweetRef] = useState('');
-  const { setCurrentTweetBiengViewed, setReplyingTo } = useContext(UserContext);
+  const { setCurrentTweetBiengViewed, setReplyingTo, user } =
+    useContext(UserContext);
   const { id, author, username, likes, retweets, tweetInfomation, tweetor } =
     props;
 
@@ -40,7 +41,7 @@ function Tweet(props) {
     }
   }, []);
 
-  const { like } = useLike(tweetRef);
+  const { like } = useLike(tweetRef, tweetInfomation);
   const { follow, isFollowing } = useFollow(author);
   const { retweet } = useRetweet(tweetRef, tweetInfomation);
 
@@ -49,9 +50,11 @@ function Tweet(props) {
       className="tweet flex flex-col gap-3 px-5 relative"
       onClick={() => setCurrentTweetBiengViewed(tweetInfomation)}
     >
-      <button className="right-10 absolute" onClick={follow}>
-        {isFollowing ? 'following' : 'follow'}
-      </button>
+      {user.uid !== author && (
+        <button className="right-10 absolute" onClick={(e) => follow()}>
+          {isFollowing ? 'following' : 'follow'}
+        </button>
+      )}
 
       {tweetInfomation.retweeter && (
         <p>{tweetInfomation.retweeter} retweeted</p>
@@ -61,7 +64,6 @@ function Tweet(props) {
         <div className="flex gap-5 ">
           <div className="image">
             <div className=" min-w-[48px] min-h-[48px]  bg-black rounded-3xl"></div>
-            {console.log(tweetInfomation)}
             {tweetInfomation.parentDocId !== id && <div className="line"></div>}
           </div>
         </div>
@@ -86,11 +88,14 @@ function Tweet(props) {
                   <CommentsIcon />
                 </button>
               </Link>
-              <button className=" text-black flex gap-3" onClick={like}>
+              <button className=" text-black flex gap-3" onClick={() => like}>
                 <LikeIcon />
                 {likes?.length}
               </button>
-              <button className=" text-black flex gap-3" onClick={retweet}>
+              <button
+                className=" text-black flex gap-3"
+                onClick={() => retweet}
+              >
                 <RetweetIcon />
                 {retweets?.length}
               </button>

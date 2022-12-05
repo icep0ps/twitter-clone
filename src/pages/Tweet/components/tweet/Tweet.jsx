@@ -6,32 +6,14 @@ import ShareIcon from '../../../../assets/svgs/ShareIcon';
 import { UserContext } from '../../../../Context/UserContext';
 import RetweetIcon from '../../../../assets/svgs/RetweetIcon';
 import CommentsIcon from '../../../../assets/svgs/CommentsIcon';
-import {
-  arrayUnion,
-  deleteDoc,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-} from 'firebase/firestore';
+import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore';
+import useFollow from '../../../../common/hooks/useFollow';
 import { Link, Outlet } from 'react-router-dom';
 
 function Tweet(props) {
   const { user } = useContext(UserContext);
   const { id, author, username, tweet, tweetInfomation } = props;
-
-  const isfollow = async () => {
-    const userRef = doc(db, 'users', `${author}`, 'following', `${user.uid}`);
-    const following = await getDoc(userRef);
-
-    if (following.exists()) {
-      await deleteDoc(userRef);
-      return false;
-    } else {
-      await setDoc(userRef, {});
-      return true;
-    }
-  };
+  const { follow, isFollowing } = useFollow(author);
 
   const like = async () => {
     const tweetRef = doc(db, 'users', `${author}`, 'tweets', `${id}`);
@@ -59,9 +41,11 @@ function Tweet(props) {
         <div className="flex flex-col gap-3">
           <div className="flex gap-3">
             <div className="w-12 h-12  bg-black rounded-3xl"></div>
-            <button className="right-10 absolute" onClick={isfollow}>
-              {isfollow() ? 'following' : 'unfollow'}
-            </button>
+            {user.uid !== author && (
+              <button className="right-10 absolute" onClick={(e) => follow()}>
+                {isFollowing ? 'following' : 'follow'}
+              </button>
+            )}
             <Link to={`/profile/${author}`}>
               <p className="username flex items-center gap-1 ">
                 {username}{' '}
@@ -76,10 +60,10 @@ function Tweet(props) {
 
         <div className="flex gap-5 "></div>
         <div className="flex justify-start gap-3 border-y border-y-black py-4">
-          <Link to={`/status/${id}/retweets`}>
+          <Link to={`/${author}/status/${id}/retweets`}>
             <p>{tweetInfomation.retweets?.length} Retweets</p>
           </Link>
-          <Link to={`/status/${id}/likes`}>
+          <Link to={`/${author}/status/${id}/likes`}>
             <p>{tweetInfomation.likes?.length} Likes</p>
           </Link>
         </div>

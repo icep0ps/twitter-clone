@@ -2,7 +2,7 @@ import React from 'react';
 import Tweet from '../../../../common/components/Tweet';
 import useFetchTweets from '../../../../common/hooks/useFetchTweets';
 
-const TweetsCategory = ({ id }) => {
+const Tweets = ({ id }) => {
   const { tweets } = useFetchTweets(id);
   const getTweets = tweets.filter((tweet) => tweet.type === 'tweet');
 
@@ -24,4 +24,4 @@ const TweetsCategory = ({ id }) => {
   });
 };
 
-export default TweetsCategory;
+export default Tweets;
