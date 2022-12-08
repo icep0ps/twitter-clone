@@ -12,7 +12,7 @@ function ComposeTweet() {
   const { replyingTo: tweet } = useContext(UserContext);
 
   return (
-    <div className="fixed w-full h-full bg-gray-500 bg-opacity-75	right-0 left-0 flex justify-center pt-28">
+    <div className="fixed w-full h-full bg-black bg-opacity-10	right-0 left-0 flex justify-center pt-28 z-10	">
       <div className="border-black border-solid border-2 h-fit w-fit rounded-xl p-4 bg-white">
         <span
           onClick={(e) => {

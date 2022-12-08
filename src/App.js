@@ -15,6 +15,7 @@ import Retweets from './pages/Tweet/components/tweet/likes/Retweets';
 import ComposeTweet from './common/components/ComposeTweet';
 import WhoToFollow from './common/components/WhoToFollow';
 import FollowersAndFollowing from './pages/profile/components/followersAndFollowing/FollowersAndFollowing';
+import EditProfile from './pages/profile/components/EditProfile';
 
 function App() {
   const { user, setUser } = useContext(UserContext);
@@ -40,7 +41,9 @@ function App() {
           <Route path="likes" element={<Likes />}></Route>
           <Route path="retweets" element={<Retweets />}></Route>
         </Route>
-        <Route path="/profile/:id" element={<Profile />}></Route>
+        <Route path="/profile/:id" element={<Profile />}>
+          <Route path="settings" element={<EditProfile />}></Route>
+        </Route>
         <Route
           path="profile/:id/followers"
           element={
