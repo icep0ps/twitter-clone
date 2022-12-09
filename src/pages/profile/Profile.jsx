@@ -11,10 +11,12 @@ import { UserContext } from '../../Context/UserContext';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
+import useFollow from '../../common/hooks/useFollow';
 
 function Profile() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { follow, isFollowing } = useFollow(id);
   const { user } = useContext(UserContext);
   const [following, setFollowing] = useState([]);
   const [followers, setFollowers] = useState([]);
@@ -64,7 +66,7 @@ function Profile() {
       <div className="bg-black h-64	relative">
         <div className="w-36 h-36 bg-red-600 rounded-full absolute top-44 left-5"></div>
       </div>
-      {user.uid === userProfileData.id ? (
+      {user.displayName === userProfileData.id ? (
         <button
           className="absolute right-0 border	border-gray-700 text-gray-700 font-semibold  p-3 rounded-full m-3 w-fit text-sm"
           onClick={() => navigate(`/profile/${id}/settings`)}
@@ -72,8 +74,11 @@ function Profile() {
           Edit Profile
         </button>
       ) : (
-        <button className="absolute right-0 bg-black text-white p-3 rounded-full m-3 w-fit text-sm">
-          Follow
+        <button
+          className="absolute right-0 bg-black text-white p-3 rounded-full m-3 w-24 text-sm "
+          onClick={() => follow()}
+        >
+          {isFollowing ? 'Following' : 'follow'}
         </button>
       )}
 

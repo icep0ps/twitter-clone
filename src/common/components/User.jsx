@@ -1,20 +1,20 @@
 import React from 'react';
-import { useEffect } from 'react';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import useFollow from '../hooks/useFollow';
 import { UserContext } from '../../Context/UserContext';
 
 function User({ username, id, bio, showBio = false }) {
   const { user } = useContext(UserContext);
-  const { isFollowing, follow } = useFollow(id);
-
-  useEffect(() => {}, []);
+  const { follow, isFollowing } = useFollow(id);
 
   return (
     <div className="flex gap-3 relative p-3">
-      {user.uid !== id && (
-        <button className="right-10 absolute" onClick={(e) => follow()}>
+      {user.displayName !== id && (
+        <button
+          className="absolute right-0 bg-black text-white py-2 rounded-full m-3 w-24 text-sm "
+          onClick={(e) => follow()}
+        >
           {isFollowing ? 'following' : 'follow'}
         </button>
       )}

@@ -10,7 +10,7 @@ const useLike = (tweetRef, tweet) => {
     const usersLikesRef = doc(
       db,
       'users',
-      `${user.uid}`,
+      `${user.displayName}`,
       'likes',
       `${tweet.id}`
     );
@@ -23,7 +23,7 @@ const useLike = (tweetRef, tweet) => {
 
     await updateDoc(tweetRef, {
       likes: arrayUnion({
-        id: user.uid,
+        id: user.displayName,
       }),
     });
   };

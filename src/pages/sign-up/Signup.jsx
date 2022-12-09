@@ -16,6 +16,7 @@ const Signup = () => {
   const [bio, setBio] = useState('');
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
+  const [userHandle, setUserHandle] = useState('');
   const [location, setLocation] = useState('');
   const [password, setPassword] = useState('');
   const { setUser } = useContext(UserContext);
@@ -26,18 +27,19 @@ const Signup = () => {
     });
   });
 
-  const createUserInFirestore = async (USER_ID) => {
-    const userRef = doc(db, 'users', `${USER_ID}`);
+  const createUserInFirestore = async () => {
+    const userRef = doc(db, 'users', `${userHandle}`);
     const userInformation = await setDoc(userRef, {
-      id: USER_ID,
+      id: userHandle,
       email: email,
       username: username,
       bio: bio,
       location: location,
       joined: Timestamp.now(),
     });
+
     await updateProfile(auth.currentUser, {
-      displayName: username,
+      displayName: userHandle,
       photoURL: '',
     });
     setUser(userInformation);
@@ -62,10 +64,14 @@ const Signup = () => {
     setPassword(event.target.value);
   };
 
+  const handleUserHandle = (event) => {
+    setUserHandle(event.target.value);
+  };
+
   const LoginUser = async (event) => {
     event.preventDefault();
     const user = await createUserWithEmailAndPassword(auth, email, password);
-    await createUserInFirestore(user.user.uid);
+    await createUserInFirestore(user.user.displayName);
     navigate('/');
   };
 
@@ -81,6 +87,12 @@ const Signup = () => {
           placeholder="Username"
           className=" text-black p-1"
           onChange={handleUsername}
+        ></input>
+        <input
+          type="text"
+          placeholder="handle"
+          className=" text-black p-1"
+          onChange={handleUserHandle}
         ></input>
         <input
           type="text"

@@ -18,7 +18,7 @@ code {
 #root {
   display: flex;
   justify-content: center;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -51,7 +51,4 @@ html,
 }
 .category:hover {
   background-color: rgba(15, 20, 25, 0.1);
-}
-a:hover {
-  text-decoration: underline;
 }

@@ -18,6 +18,10 @@ function Tweet(props) {
   const { id, author, username, likes, retweets, tweetInfomation, tweetor } =
     props;
 
+  const { like } = useLike(tweetRef, tweetInfomation);
+  const { follow, isFollowing } = useFollow(author);
+  const { retweet } = useRetweet(tweetRef, tweetInfomation);
+
   useEffect(() => {
     switch (tweetInfomation.type) {
       case 'tweet':
@@ -39,18 +43,14 @@ function Tweet(props) {
       default:
         return;
     }
-  }, []);
-
-  const { like } = useLike(tweetRef, tweetInfomation);
-  const { follow, isFollowing } = useFollow(author);
-  const { retweet } = useRetweet(tweetRef, tweetInfomation);
+  }, [isFollowing]);
 
   return (
     <div
       className="tweet flex flex-col gap-3 px-5 relative"
       onClick={() => setCurrentTweetBiengViewed(tweetInfomation)}
     >
-      {user.uid !== author && (
+      {user.displayName !== author && (
         <button className="right-10 absolute" onClick={(e) => follow()}>
           {isFollowing ? 'following' : 'follow'}
         </button>
@@ -70,16 +70,23 @@ function Tweet(props) {
         <div className="w-5/6">
           <div>
             <Link to={`/${author}/status/${tweetInfomation.id}`}>
-              <p className="username flex items-center gap-1 ">
+              <p className="username flex items-center gap-1 font-bold">
                 {username}{' '}
-                <span className="text-xs text-gray-500">@{username}</span>
+                <span className="text-sm text-gray-500 font-thin">
+                  @{username}
+                </span>
               </p>
               {tweetInfomation.replyingTo && (
-                <p>replying to @{tweetInfomation.replyingTo} </p>
+                <p className="text-sm">
+                  replying to{' '}
+                  <span className="text-blue-500">
+                    @{tweetInfomation.replyingTo}
+                  </span>
+                </p>
               )}
               <p>{tweetInfomation.tweet || tweetor}</p>
             </Link>
-            <div className="flex gap-2 justify-between">
+            <div className="flex gap-2 justify-between py-3">
               <Link to={'/compose/tweet'}>
                 <button
                   className=" text-black"

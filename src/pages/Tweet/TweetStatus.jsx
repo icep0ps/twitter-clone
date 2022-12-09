@@ -5,7 +5,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import Comments from './components/comments/Comments';
 import useFetchTweet from '../../common/hooks/useFetchTweet';
 import Comment from '../../common/components/Comment';
-import Reply from './components/tweet/Reply';
 
 function TweetStatus() {
   let location = useLocation();
@@ -14,30 +13,24 @@ function TweetStatus() {
   const { tweet, getTweet } = useFetchTweet();
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchComments = async () => {
+  const fetchTweetAndComments = async () => {
     await getTweet(author, id);
     setIsLoading(false);
   };
 
   useEffect(() => {
-    fetchComments();
+    fetchTweetAndComments();
   }, [location]);
 
   if (isLoading) {
     return <h1>Loading...</h1>;
   } else {
     return (
-      <div className="col-start-2 flex flex-col gap-5 border-x border-gray-500 border-solid">
-        <h1 className="bg-black text-white text-xl p-4">Tweet</h1>
-
+      <div className="col-start-2 flex flex-col gap-5 border-x border-gray-200 border-solid">
+        <h1 className=" font-semibold text-xl p-4">Tweet</h1>
         {tweet.type === 'comment' ? (
           <>
-            <Comment comment={tweet}></Comment>
-            <Reply
-              id={tweet.tweet.id}
-              username={tweet.tweet.username}
-              author={tweet.tweet.author}
-            ></Reply>
+            <Comment comment={tweet} inTweetStatus={true}></Comment>
             <Comments
               id={id}
               key={'comments'}

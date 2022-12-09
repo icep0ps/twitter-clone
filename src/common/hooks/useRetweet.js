@@ -10,15 +10,21 @@ function useRetweet(tweetRef, tweetInfomation) {
   const retweet = async () => {
     await updateDoc(tweetRef, {
       retweets: arrayUnion({
-        id: user.uid,
+        id: user.displayName,
       }),
     });
 
-    const yourTweetsRef = doc(db, 'users', `${user.uid}`, 'tweets', `${id}`);
+    const yourTweetsRef = doc(
+      db,
+      'users',
+      `${user.displayName}`,
+      'tweets',
+      `${id}`
+    );
     await setDoc(yourTweetsRef, {
       type: 'retweet',
       author: author,
-      retweetedBy: user.uid,
+      retweetedBy: user.displayName,
       retweeter: user.displayName,
       id: id,
     });

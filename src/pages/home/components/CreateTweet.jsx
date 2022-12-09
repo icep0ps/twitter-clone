@@ -24,14 +24,14 @@ function CreateTweet(tweet = { type: 'tweet' }) {
         const usersTweetsRef = doc(
           db,
           'users',
-          `${user.uid}`,
+          `${user.displayName}`,
           'tweets',
           `${TWEET_ID}`
         );
         await setDoc(usersTweetsRef, {
           id: TWEET_ID,
           type: TWEET,
-          author: user.uid,
+          author: user.displayName,
           profileURL: user.photoURL,
           username: user.displayName,
           tweet: tweetInput,
@@ -46,7 +46,7 @@ function CreateTweet(tweet = { type: 'tweet' }) {
         const replyRef = doc(
           db,
           'users',
-          `${user.uid}`,
+          `${user.displayName}`,
           'tweets',
           `${TWEET_ID}`
         );
@@ -73,7 +73,7 @@ function CreateTweet(tweet = { type: 'tweet' }) {
           type: COMMENT,
           profileURL: user.photoURL,
           username: user.displayName,
-          author: user.uid,
+          author: user.displayName,
           tweet: tweetInput,
           likes: [],
           retweets: [],
@@ -87,7 +87,7 @@ function CreateTweet(tweet = { type: 'tweet' }) {
   };
 
   return (
-    <div className="flex flex-col gap-3 relative px-5 pb-3 border-b border-gray-500 border-solid">
+    <div className="flex flex-col gap-3 relative px-5 pb-3 border-b border-gray-200 border-solid">
       <div className="flex gap-5">
         <div className="w-12 h-12  bg-black rounded-3xl"></div>
         {tweet.type === 'comment' && <p>Replying to @{tweetInfo.username}</p>}

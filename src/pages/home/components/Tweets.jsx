@@ -22,7 +22,7 @@ const Tweets = () => {
   };
 
   useEffect(() => {
-    getFollowingTweets(user.uid);
+    getFollowingTweets(user.displayName);
   }, [user]);
 
   if (isLoading) {
@@ -36,7 +36,7 @@ const Tweets = () => {
         }
         return (
           <div
-            className=" flex flex-col border-b border-gray-500 border-solid pb-3 relative"
+            className=" flex flex-col border-b border-gray-200 border-solid pb-3 relative"
             key={tweet.id}
           >
             <Tweet

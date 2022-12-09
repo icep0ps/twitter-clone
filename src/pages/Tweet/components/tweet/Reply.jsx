@@ -16,7 +16,13 @@ function Reply({ username, author, id }) {
 
   const tweet = async () => {
     const TWEET_ID = uniqid();
-    const replyRef = doc(db, 'users', `${user.uid}`, 'tweets', `${TWEET_ID}`);
+    const replyRef = doc(
+      db,
+      'users',
+      `${user.displayName}`,
+      'tweets',
+      `${TWEET_ID}`
+    );
     const tweetCommentsRef = doc(
       db,
       'users',
@@ -40,7 +46,7 @@ function Reply({ username, author, id }) {
       type: COMMENT,
       profileURL: user.photoURL,
       username: user.displayName,
-      author: user.uid,
+      author: user.displayName,
       tweet: tweetInput,
       parentDocId: id,
       likes: [],
@@ -54,7 +60,9 @@ function Reply({ username, author, id }) {
       <div className="flex gap-5 items-center">
         <div className="w-12 h-12  bg-black rounded-3xl"></div>
         <div className="w-full">
-          <p>Replying to @{username}</p>
+          <p className="text-sm">
+            Replying to <span className="text-blue-500">@{username}</span>
+          </p>
           <TextareaAutosize
             cols="35"
             type="text"

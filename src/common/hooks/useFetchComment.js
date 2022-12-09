@@ -21,7 +21,7 @@ const useFetchComment = () => {
     const { author, orignalPost, id } = userComment.data();
     let tweet = await getMainTweet(author, orignalPost);
 
-    if (tweet.data()?.orignalPost) {
+    while (tweet.data()?.orignalPost) {
       const tmpRef = doc(
         db,
         'users',

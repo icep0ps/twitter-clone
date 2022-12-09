@@ -13,7 +13,7 @@ function EditProfile() {
   const [username, setUsername] = useState();
   const [location, setLocation] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const { getUserData, userData } = useFetchUserData();
+  const { getUserData } = useFetchUserData();
 
   function handleUsername(event) {
     setUsername(event.target.value);

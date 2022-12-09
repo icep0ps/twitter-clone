@@ -15,8 +15,8 @@ function WhoToFollow() {
   }, []);
 
   return (
-    <div className="bg-gray-100 h-fit  rounded-xl m-7">
-      <h1>Who to follow</h1>
+    <div className="bg-gray-100 h-fit  rounded-xl m-7 p-3">
+      <h1 className="text-xl font-bold pb-2">Who to follow</h1>
       <div className="flex flex-col  ">
         {users.map((user) => (
           <User

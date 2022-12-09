@@ -19,7 +19,7 @@ function Tweet(props) {
     const tweetRef = doc(db, 'users', `${author}`, 'tweets', `${id}`);
     await updateDoc(tweetRef, {
       likes: arrayUnion({
-        id: user.uid,
+        id: user.displayName,
       }),
     });
   };
@@ -28,46 +28,72 @@ function Tweet(props) {
     const tweetRef = doc(db, 'users', `${author}`, 'tweets', `${id}`);
     await updateDoc(tweetRef, {
       retweets: arrayUnion({
-        id: user.uid,
+        id: user.displayName,
       }),
     });
-    const yourTweetsRef = doc(db, 'users', `${user.uid}`, 'retweets', `${id}`);
+    const yourTweetsRef = doc(
+      db,
+      'users',
+      `${user.displayName}`,
+      'retweets',
+      `${id}`
+    );
     await setDoc(yourTweetsRef, tweetInfomation);
   };
 
   return (
     <>
-      <div className="flex flex-col border-b border-gray-500 border-solid gap-3 px-5 pb-3 relative">
+      <div className="flex flex-col border-b border-gray-200 border-solid gap-3 px-3 pb-3 relative">
         <div className="flex flex-col gap-3">
           <div className="flex gap-3">
             <div className="w-12 h-12  bg-black rounded-3xl"></div>
-            {user.uid !== author && (
+            {user.displayName !== author && (
               <button className="right-10 absolute" onClick={(e) => follow()}>
                 {isFollowing ? 'following' : 'follow'}
               </button>
             )}
             <Link to={`/profile/${author}`}>
-              <p className="username flex items-center gap-1 ">
+              <p className="username flex items-center gap-1 font-semibold">
                 {username}{' '}
-                <span className="text-xs text-gray-500">@{username}</span>
               </p>
+              <p className=" text-sm text-gray-500">@{username}</p>
+              {tweetInfomation.replyingTo && (
+                <p className="text-sm">
+                  replying to{' '}
+                  <span className="text-blue-500">
+                    @{tweetInfomation.replyingTo}
+                  </span>
+                </p>
+              )}
             </Link>
           </div>
           <div className="w-5/6">
-            <p>{tweet}</p>
+            <p className="text-xl">{tweet}</p>
           </div>
         </div>
-
-        <div className="flex gap-5 "></div>
-        <div className="flex justify-start gap-3 border-y border-y-black py-4">
+        <p className="text-gray-400 text-sm">
+          {tweetInfomation.date.toDate().toDateString()}
+        </p>
+        <div className="flex gap-5"></div>
+        <div className="flex justify-start gap-3 border-y border-y-gray-200 py-4">
           <Link to={`/${author}/status/${id}/retweets`}>
-            <p>{tweetInfomation.retweets?.length} Retweets</p>
+            <p>
+              <span className="font-bold">
+                {tweetInfomation.retweets?.length}{' '}
+              </span>{' '}
+              Retweets
+            </p>
           </Link>
           <Link to={`/${author}/status/${id}/likes`}>
-            <p>{tweetInfomation.likes?.length} Likes</p>
+            <p>
+              <span className="font-bold">
+                {tweetInfomation.likes?.length}{' '}
+              </span>
+              Likes
+            </p>
           </Link>
         </div>
-        <div className="flex gap-2 justify-evenly border-b border-b-black py-3">
+        <div className="flex gap-2 justify-evenly border-b border-b-gray-200 py-3">
           <button className=" text-black">
             <CommentsIcon />
           </button>
