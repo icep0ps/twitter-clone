@@ -19,6 +19,7 @@ function TweetStatus() {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     fetchTweetAndComments();
   }, [location]);
 

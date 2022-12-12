@@ -4,6 +4,7 @@ import { doc, getDoc } from 'firebase/firestore';
 
 function useFetchUserData() {
   const [userData, setUserData] = useState();
+  const [username, setUsername] = useState();
 
   async function getUserData(id) {
     const usersRef = doc(db, 'users', `${id}`);

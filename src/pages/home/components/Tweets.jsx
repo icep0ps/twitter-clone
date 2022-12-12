@@ -4,19 +4,19 @@ import { db } from '../../../firebase/firebase-config';
 import Comment from '../../../common/components/Comment';
 import { collection, getDocs } from 'firebase/firestore';
 import { UserContext } from '../../../Context/UserContext';
-import useFetchFollowingTweets from '../../../common/hooks/useFetchFollowingTweets';
+import useFetchTweets from './../../../common/hooks/useFetchTweets';
 
 const Tweets = () => {
   const { user } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
-  const { tweets, getTweets } = useFetchFollowingTweets();
+  const { tweets, getTweets } = useFetchTweets();
 
   const getFollowingTweets = async (id) => {
     const userFollowingRef = collection(db, 'users', `${id}`, 'following');
     const usersFollowing = await getDocs(userFollowingRef);
     usersFollowing.forEach(async (person) => {
       const { id } = person;
-      await getTweets(id);
+      getTweets(id);
       setIsLoading(false);
     });
   };

@@ -16,7 +16,7 @@ function Sidebar() {
   };
 
   return (
-    <div className="col-start-1 gap-5 pr-9">
+    <div className="col-start-1 gap-5 pr-9 w-3/4">
       <ul className="text-2xl mb-3 flex flex-col gap-3">
         <Link to={'/'}>
           <li>Home</li>

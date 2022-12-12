@@ -25,7 +25,7 @@ function App() {
   });
 
   return (
-    <div className="grid grid-cols-[0.9fr_1.8fr_1.2fr] self-center w-full h-full ">
+    <div className="grid grid-cols-[1.3fr_2fr_1.3fr] self-center w-full h-full ">
       {user != null ? <Sidebar /> : ''}
 
       <Routes>

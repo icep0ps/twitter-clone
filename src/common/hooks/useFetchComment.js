@@ -3,8 +3,10 @@ import { COMMENT } from '../helpers/types';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import useFetchMainTweet from './useFetchMainTweet';
+import useFetchUsername from './useFetchUsername';
 
 const useFetchComment = () => {
+  const { getUsername } = useFetchUsername();
   const [comment, setComment] = useState({});
   const { getMainTweet } = useFetchMainTweet();
 
@@ -43,11 +45,15 @@ const useFetchComment = () => {
       `${id}`
     );
 
-    const finalComment = await getDoc(commentRef);
+    const response = await getDoc(commentRef);
+    const replyingComment = response.data();
+    const username = await getUsername(replyingComment.author);
+    replyingComment.username = username;
+
     const mainTweetStructure = {
       type: COMMENT,
       tweet: tweet.data(),
-      comment: finalComment.data(),
+      comment: replyingComment,
     };
     setComment(mainTweetStructure);
     return mainTweetStructure;

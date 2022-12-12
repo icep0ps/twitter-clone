@@ -1,14 +1,16 @@
 import uniqid from 'uniqid';
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { db } from '../../../firebase/firebase-config';
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
 import { UserContext } from '../../../Context/UserContext';
 import { TWEET } from '../../../common/helpers/types';
 import { COMMENT } from '../../../common/helpers/types';
+import useFetchUsername from '../../../common/hooks/useFetchUsername';
 
 function CreateTweet(tweet = { type: 'tweet' }) {
   const { user } = useContext(UserContext);
+  const { getUsername, username } = useFetchUsername();
   const [tweetInfo, setTweetInfo] = useState();
   const [tweetInput, setTweetInput] = useState('');
 
@@ -16,9 +18,12 @@ function CreateTweet(tweet = { type: 'tweet' }) {
     setTweetInput(event.target.value);
   };
 
+  useEffect(() => {
+    getUsername(user.displayName);
+  }, []);
+
   const sendTweet = async () => {
     const TWEET_ID = uniqid();
-    console.log(tweet.type);
     switch (tweet.type) {
       case 'tweet':
         const usersTweetsRef = doc(
@@ -33,7 +38,7 @@ function CreateTweet(tweet = { type: 'tweet' }) {
           type: TWEET,
           author: user.displayName,
           profileURL: user.photoURL,
-          username: user.displayName,
+          username: username,
           tweet: tweetInput,
           likes: [],
           retweets: [],
@@ -72,7 +77,7 @@ function CreateTweet(tweet = { type: 'tweet' }) {
           replyingTo: author,
           type: COMMENT,
           profileURL: user.photoURL,
-          username: user.displayName,
+          username: username,
           author: user.displayName,
           tweet: tweetInput,
           likes: [],
@@ -94,7 +99,7 @@ function CreateTweet(tweet = { type: 'tweet' }) {
         <TextareaAutosize
           type="text"
           placeholder="What's happening?"
-          className="resize-none text-xl grow border-b border-grey outline-none py-3"
+          className="resize-none text-xl grow outline-none py-3"
           onChange={handleTweetInput}
         />
       </div>

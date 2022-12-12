@@ -10,12 +10,13 @@ function Comment(props) {
   const [isLoading, setIsLoading] = useState(true);
 
   const seach = async () => {
+    setIsLoading(true);
     await getComment(comment.comment.author, comment.comment.id);
     setIsLoading(false);
   };
   useEffect(() => {
     seach();
-  }, []);
+  }, [comment]);
 
   if (isLoading) {
     return <h1>Loading....</h1>;

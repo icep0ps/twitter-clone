@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Tweet from '../../../../common/components/Tweet';
 import useFetchTweets from '../../../../common/hooks/useFetchTweets';
 
 const Tweets = ({ id }) => {
-  const { tweets } = useFetchTweets(id);
-  const getTweets = tweets.filter((tweet) => tweet.type === 'tweet');
+  const { getTweets, tweets } = useFetchTweets();
+  const filterTweetsOnly = tweets.filter((tweet) => tweet.type === 'tweet');
 
-  return getTweets.map((tweet) => {
+  useEffect(() => {
+    getTweets(id);
+  });
+
+  return filterTweetsOnly.map((tweet) => {
     return (
       <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
         <Tweet

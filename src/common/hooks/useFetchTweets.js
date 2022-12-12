@@ -1,32 +1,46 @@
-import { db } from '../../firebase/firebase-config';
-import { collection, onSnapshot } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import useFetchComment from './useFetchComment';
+import useFetchUsername from './useFetchUsername';
+import { db } from '../../firebase/firebase-config';
+import useFetchRetweet from './useFetchRetweet';
+import { collection, onSnapshot } from 'firebase/firestore';
 
-const useFetchTweets = (id) => {
+const useFetchTweets = () => {
   const [tweets, setTweets] = useState([]);
+  const { getRetweet } = useFetchRetweet();
+  const { getUsername } = useFetchUsername();
   const [comment, getComment] = useFetchComment();
 
-  const usersTweetsRef = collection(db, 'users', `${id}`, 'tweets');
-  useEffect(() => {
+  function getTweets(userId) {
+    const usersTweetsRef = collection(db, 'users', `${userId}`, 'tweets');
+
     onSnapshot(usersTweetsRef, (doc) => {
       doc.forEach(async (tweet) => {
         switch (tweet.data().type) {
           case 'comment':
-            const comment = await getComment(id, tweet.data().id);
+            const comment = await getComment(userId, tweet.data().id);
             setTweets((prevState) => prevState.concat(comment));
             return comment;
+
           case 'tweet':
-            setTweets((prevState) => prevState.concat(tweet.data()));
+            const tweetData = tweet.data();
+            const usernameData = await getUsername(tweetData.author);
+            tweetData.username = usernameData;
+            setTweets((prevState) => prevState.concat(tweetData));
             return tweet.data();
+
+          case 'retweets':
+            const retweet = await getRetweet(userId, tweet.data().id);
+            setTweets((prevState) => prevState.concat(retweet));
+            break;
           default:
             return;
         }
       });
     });
-  }, []);
+  }
 
-  return { tweets };
+  return { tweets, getTweets };
 };
 
 export default useFetchTweets;

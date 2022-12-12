@@ -43,8 +43,8 @@ function Tweet(props) {
 
   return (
     <>
-      <div className="flex flex-col border-b border-gray-200 border-solid gap-3 px-3 pb-3 relative">
-        <div className="flex flex-col gap-3">
+      <div className="flex flex-col border-b border-gray-200 border-solid gap-3 px-5 pb-3 relative">
+        <div className="flex flex-col gap-3 ">
           <div className="flex gap-3">
             <div className="w-12 h-12  bg-black rounded-3xl"></div>
             {user.displayName !== author && (
@@ -53,10 +53,10 @@ function Tweet(props) {
               </button>
             )}
             <Link to={`/profile/${author}`}>
-              <p className="username flex items-center gap-1 font-semibold">
+              <p className="username flex items-center gap-1 font-medium">
                 {username}{' '}
               </p>
-              <p className=" text-sm text-gray-500">@{username}</p>
+              <p className=" text-sm text-gray-500">@{author}</p>
               {tweetInfomation.replyingTo && (
                 <p className="text-sm">
                   replying to{' '}
@@ -97,10 +97,10 @@ function Tweet(props) {
           <button className=" text-black">
             <CommentsIcon />
           </button>
-          <button className=" text-black flex gap-3" onClick={like}>
+          <button className=" text-black flex gap-3" onClick={() => like()}>
             <LikeIcon />
           </button>
-          <button className=" text-black flex gap-3" onClick={retweet}>
+          <button className=" text-black flex gap-3" onClick={() => retweet()}>
             <RetweetIcon />
           </button>
           <button className=" text-black flex gap-3">

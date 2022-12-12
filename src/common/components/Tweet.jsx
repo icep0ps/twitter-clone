@@ -70,10 +70,10 @@ function Tweet(props) {
         <div className="w-5/6">
           <div>
             <Link to={`/${author}/status/${tweetInfomation.id}`}>
-              <p className="username flex items-center gap-1 font-bold">
+              <p className="username flex items-center gap-1 font-medium">
                 {username}{' '}
                 <span className="text-sm text-gray-500 font-thin">
-                  @{username}
+                  @{author}
                 </span>
               </p>
               {tweetInfomation.replyingTo && (
@@ -95,13 +95,13 @@ function Tweet(props) {
                   <CommentsIcon />
                 </button>
               </Link>
-              <button className=" text-black flex gap-3" onClick={() => like}>
+              <button className=" text-black flex gap-3" onClick={() => like()}>
                 <LikeIcon />
                 {likes?.length}
               </button>
               <button
                 className=" text-black flex gap-3"
-                onClick={() => retweet}
+                onClick={() => retweet()}
               >
                 <RetweetIcon />
                 {retweets?.length}
