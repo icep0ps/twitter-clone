@@ -6,7 +6,7 @@ const UserContext = createContext();
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [retweets, setRetweets] = useState([]);
-  const [replyingTo, setReplyingTo] = useState({});
+  const [replyingTo, setReplyingTo] = useState(null);
   const [tweetsStorage, setTweetsStorage] = useState([]);
   const [currentTweetBiengViewed, setCurrentTweetBiengViewed] = useState({});
   return (

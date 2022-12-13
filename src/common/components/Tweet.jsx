@@ -57,7 +57,7 @@ function Tweet(props) {
       )}
 
       {tweetInfomation.retweeter && (
-        <p>{tweetInfomation.retweeter} retweeted</p>
+        <p>{tweetInfomation.retweeter} Retweeted</p>
       )}
 
       <div className="flex gap-5 ">
@@ -84,9 +84,9 @@ function Tweet(props) {
                   </span>
                 </p>
               )}
-              <p>{tweetInfomation.tweet || tweetor}</p>
+              <p>{tweetInfomation.tweet}</p>
             </Link>
-            <div className="flex gap-2 justify-between py-3">
+            <div className="flex gap-20  py-2">
               <Link to={'/compose/tweet'}>
                 <button
                   className=" text-black"
@@ -95,16 +95,16 @@ function Tweet(props) {
                   <CommentsIcon />
                 </button>
               </Link>
-              <button className=" text-black flex gap-3" onClick={() => like()}>
-                <LikeIcon />
-                {likes?.length}
-              </button>
               <button
                 className=" text-black flex gap-3"
                 onClick={() => retweet()}
               >
                 <RetweetIcon />
                 {retweets?.length}
+              </button>
+              <button className=" text-black flex gap-3" onClick={() => like()}>
+                <LikeIcon />
+                {likes?.length}
               </button>
               <button className=" text-black flex gap-3">
                 <ShareIcon />

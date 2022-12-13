@@ -53,3 +53,8 @@ html,
 .category:hover {
   background-color: rgba(15, 20, 25, 0.1);
 }
+
+svg {
+  font-weight: bolder;
+  stroke: rgb(107 114 128 / var(--tw-border-opacity));
+}

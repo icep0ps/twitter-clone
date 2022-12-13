@@ -57,8 +57,8 @@ function Reply({ username, author, id }) {
 
   return (
     <div className="flex flex-col relative px-5 pb ">
-      <div className="flex gap-5 items-center">
-        <div className="w-12 h-12  bg-black rounded-3xl"></div>
+      <div className="flex gap-5 items-start ">
+        <div className="min-w-[48px] min-h-[48px]  bg-black rounded-3xl"></div>
         <div className="w-full">
           <p className="text-sm">
             Replying to <span className="text-blue-500">@{username}</span>

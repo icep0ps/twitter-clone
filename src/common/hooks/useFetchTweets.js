@@ -29,9 +29,10 @@ const useFetchTweets = () => {
             setTweets((prevState) => prevState.concat(tweetData));
             return tweet.data();
 
-          case 'retweets':
+          case 'retweet':
             const retweet = await getRetweet(userId, tweet.data().id);
             setTweets((prevState) => prevState.concat(retweet));
+            console.log(retweet);
             break;
           default:
             return;

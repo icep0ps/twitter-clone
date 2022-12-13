@@ -18,6 +18,8 @@ function useFetchRetweet() {
     const response = await getDoc(userRetweetRef);
     const retweetData = response.data();
     const tweet = await getTweet(retweetData.author, retweetData.id);
+    tweet.retweeter = user_id;
+    tweet.type = 'retweet';
     setRetweet(tweet);
     return tweet;
   };

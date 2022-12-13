@@ -68,7 +68,7 @@ function Tweet(props) {
             </Link>
           </div>
           <div className="w-5/6">
-            <p className="text-xl">{tweet}</p>
+            <p className="text-xl ">{tweet}</p>
           </div>
         </div>
         <p className="text-gray-400 text-sm">

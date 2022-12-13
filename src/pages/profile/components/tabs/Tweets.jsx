@@ -8,7 +8,7 @@ const Tweets = ({ id }) => {
 
   useEffect(() => {
     getTweets(id);
-  });
+  }, []);
 
   return filterTweetsOnly.map((tweet) => {
     return (

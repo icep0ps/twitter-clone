@@ -10,7 +10,10 @@ const Home = () => {
   return (
     <div className="col-start-2 flex flex-col gap-5 border-x border-gray-200 border-solid">
       <h1 className="font-bold text-xl p-4">Home</h1>
-      <CreateTweet type={'tweet'} />
+      <div className="border-b border-gray-200 border-solid">
+        <CreateTweet type={'tweet'} />
+      </div>
+
       <Tweets />
       <p>Your are logged with {user.email}</p>
 

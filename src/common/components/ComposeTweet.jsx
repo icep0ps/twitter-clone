@@ -12,17 +12,17 @@ function ComposeTweet() {
   const { replyingTo: tweet } = useContext(UserContext);
 
   return (
-    <div className="fixed w-full h-full bg-black bg-opacity-10	right-0 left-0 flex justify-center pt-28 z-10	">
-      <div className="border-black border-solid border-2 h-fit w-fit rounded-xl p-4 bg-white">
+    <div className="fixed w-full h-full bg-black bg-opacity-40	right-0 left-0 flex justify-center pt-28 z-10	">
+      <div className=" h-fit w-4/12	 rounded-xl py-4 bg-white">
         <span
           onClick={(e) => {
             navigate(-1);
           }}
+          className="p-4"
         >
           Close
         </span>
-        //TODO: add createTweet as else if tweet is not a reply
-        {tweet && (
+        {tweet ? (
           <>
             <Tweet
               id={tweet.id}
@@ -42,6 +42,8 @@ function ComposeTweet() {
               id={tweet.id}
             ></Reply>
           </>
+        ) : (
+          <CreateTweet></CreateTweet>
         )}
       </div>
     </div>

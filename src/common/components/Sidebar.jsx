@@ -25,11 +25,12 @@ function Sidebar() {
           <li>Profile</li>
         </Link>
         <li>
-          <button className="" onClick={userSignOut}>
-            Logout
-          </button>
+          <button onClick={userSignOut}>Logout</button>
         </li>
-        <button className="p-2.5 bg-blue-500 text-white rounded-3xl w-full self-end text-lg font-semibold">
+        <button
+          className="p-2.5 bg-blue-500 text-white rounded-3xl w-full self-end text-lg font-semibold"
+          onClick={() => navigate('/compose/tweet')}
+        >
           Tweet
         </button>
       </ul>

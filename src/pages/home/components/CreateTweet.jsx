@@ -92,7 +92,7 @@ function CreateTweet(tweet = { type: 'tweet' }) {
   };
 
   return (
-    <div className="flex flex-col gap-3 relative px-5 pb-3 border-b border-gray-200 border-solid">
+    <div className="flex flex-col gap-3 relative px-5 pb-3 ">
       <div className="flex gap-5">
         <div className="w-12 h-12  bg-black rounded-3xl"></div>
         {tweet.type === 'comment' && <p>Replying to @{tweetInfo.username}</p>}
