@@ -1,17 +1,19 @@
 //TODO : Make it so that when you tweet it doesnt save your username and id because it might change
 
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
-import TweetCategories from './components/TweetCategories';
-import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
-import { useParams } from 'react-router-dom';
-import Infomation from './components/Infomation';
-import { UserContext } from '../../Context/UserContext';
 import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Infomation from './components/Infomation';
+import React, { useEffect, useState } from 'react';
+import { db } from '../../firebase/firebase-config';
 import useFollow from '../../common/hooks/useFollow';
+import { UserContext } from '../../Context/UserContext';
+import TweetCategories from './components/TweetCategories';
+import useFetchUserBanner from '../../common/hooks/useFetchUserBanner';
+import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
+import useFetchUserProfilePic from '../../common/hooks/useFetchUserProfilePic';
 
 function Profile() {
   const { id } = useParams();
@@ -21,7 +23,9 @@ function Profile() {
   const [following, setFollowing] = useState([]);
   const [followers, setFollowers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { bannerURL, getUserBanner } = useFetchUserBanner();
   const [userProfileData, setUserProfileData] = useState('');
+  const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
 
   const getFollowersAndFollowing = () => {
     const userFollowing = collection(db, 'users', `${id}`, 'following');
@@ -45,6 +49,8 @@ function Profile() {
       const userRef = doc(db, 'users', `${id}`);
       const user = await getDoc(userRef);
       setUserProfileData(user.data());
+      getProfilePic(id);
+      getUserBanner(id);
       setIsLoading(false);
     }
 
@@ -63,8 +69,18 @@ function Profile() {
 
   return (
     <div className="border-x border-gray-500 border-solid relative ">
-      <div className="bg-black h-64	relative">
-        <div className="w-36 h-36 bg-red-600 rounded-full absolute top-44 left-5"></div>
+      <div
+        className="bg-black h-64 relative bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url(${bannerURL})`,
+        }}
+      >
+        <div
+          className="w-36 h-36 bg-red-600 rounded-full absolute top-44 left-5 bg-cover bg-center bg-no-repeat border-white border-4"
+          style={{
+            backgroundImage: `url(${profilePicURL})`,
+          }}
+        ></div>
       </div>
       {user.displayName === userProfileData.id ? (
         <button

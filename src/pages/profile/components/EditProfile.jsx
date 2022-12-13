@@ -1,19 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import uniqid from 'uniqid';
 import { Outlet } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import useFetchUserData from '../../../common/hooks/useFetchUserData';
-import { db } from '../../../firebase/firebase-config';
+import React, { useState, useEffect } from 'react';
+import { ref, uploadBytes } from 'firebase/storage';
 import { updateDoc, doc } from 'firebase/firestore';
+import { db } from '../../../firebase/firebase-config';
+import { storage } from '../../../firebase/firebase-config';
+import useFetchUserData from '../../../common/hooks/useFetchUserData';
+import useFetchUserBanner from '../../../common/hooks/useFetchUserBanner';
+import useFetchUserProfilePic from '../../../common/hooks/useFetchUserProfilePic';
+
+//TODO : Update users profilePic URL
 
 function EditProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [bio, setBio] = useState();
+  const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
+  const { bannerURL, getUserBanner } = useFetchUserBanner();
   const [username, setUsername] = useState();
   const [location, setLocation] = useState();
+  const [inputBanner, setInputBanner] = useState(null);
+  const [inputProfilePic, setInputProfilePic] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const { getUserData } = useFetchUserData();
+
+  useEffect(() => {
+    getProfilePic(id);
+    getUserBanner(id);
+  }, []);
+
+  function uploadProfilePic() {
+    const profilePicRef = ref(
+      storage,
+      `${id}/profilePic/${inputProfilePic.name + uniqid.process()}`
+    );
+    uploadBytes(profilePicRef, inputProfilePic).then((res) => {
+      alert('Profile pic uploaded');
+    });
+  }
+
+  function uploadBanner() {
+    const newBannerRef = ref(
+      storage,
+      `${id}/banner/${inputBanner.name + uniqid.process()}`
+    );
+    uploadBytes(newBannerRef, inputBanner).then(() => {
+      alert('upload sucess');
+    });
+  }
 
   function handleUsername(event) {
     setUsername(event.target.value);
@@ -72,8 +108,33 @@ function EditProfile() {
           <h1>Edit Profile</h1>
           <button onClick={() => updateProfile()}>Save</button>
         </div>
-        <div className="bg-black h-64	relative">
-          <div className="w-28 h-28 bg-red-600 rounded-full absolute top-52 left-5"></div>
+        <div
+          className="bg-black h-64	relative bg-cover	bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url(${bannerURL})`,
+          }}
+        >
+          <input
+            type={'file'}
+            onChange={(event) => setInputBanner(event.target.files[0])}
+          ></input>
+          <button onClick={() => uploadBanner()} className="bg-white">
+            Upload
+          </button>
+          <div
+            className="w-28 h-28 bg-red-600 rounded-full absolute top-52 left-5 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url(${profilePicURL})`,
+            }}
+          >
+            <input
+              type={'file'}
+              onChange={(event) => setInputProfilePic(event.target.files[0])}
+            ></input>
+            <button onClick={() => uploadProfilePic()} className="bg-white">
+              Upload
+            </button>
+          </div>
         </div>
         <form className="flex flex-col mt-16 gap-6">
           <input
