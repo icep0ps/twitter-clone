@@ -30,7 +30,7 @@ html,
 }
 
 .line {
-  background-color: black;
+  background-color: rgb(107 114 128 / var(--tw-border-opacity));
   height: 100%;
   width: 2px;
 }
@@ -57,4 +57,8 @@ html,
 svg {
   font-weight: bolder;
   stroke: rgb(107 114 128 / var(--tw-border-opacity));
+}
+
+li {
+  font-weight: 100;
 }

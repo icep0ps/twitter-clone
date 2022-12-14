@@ -14,7 +14,7 @@ function TweetCategories({ id }) {
     tabToBeRendered = <Likes id={id}></Likes>;
   }
 
-  useEffect(() => {}, [category]);
+  useEffect(() => {}, [category, id]);
 
   return (
     <React.Fragment>

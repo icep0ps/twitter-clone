@@ -16,8 +16,8 @@ function Sidebar() {
   };
 
   return (
-    <div className="col-start-1 gap-5 pr-9 w-3/4">
-      <ul className="text-2xl mb-3 flex flex-col gap-3">
+    <div className="col-start-1 justify-self-end gap-5 pr-9 w-3/4">
+      <ul className="text-2xl mb-3 flex flex-col gap-3 font-thin">
         <Link to={'/'}>
           <li>Home</li>
         </Link>
@@ -28,7 +28,7 @@ function Sidebar() {
           <button onClick={userSignOut}>Logout</button>
         </li>
         <button
-          className="p-2.5 bg-blue-500 text-white rounded-3xl w-full self-end text-lg font-semibold"
+          className="p-3 bg-blue-500 text-white rounded-full w-11/12 self-start text-lg font-semibold"
           onClick={() => navigate('/compose/tweet')}
         >
           Tweet
