@@ -60,8 +60,6 @@ function TweetStatus() {
           tweetInfomation={tweet}
           location={location}
         ></Comments>
-        <p>Your are logged with {user.email}</p>
-        <button className="bg-black text-white">Logout</button>
       </div>
     );
   }

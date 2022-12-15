@@ -68,13 +68,13 @@ function Reply({ username, author, id }) {
             type="text"
             placeholder="Tweet Your Reply?"
             className="resize-none text-xl grow outline-none py-3"
-            onChange={handleTweetInput}
+            onChange={() => handleTweetInput()}
           />
         </div>
       </div>
       <button
         className="p-2.5 bg-blue-500 text-white rounded-3xl w-20 self-end"
-        onClick={tweet}
+        onClick={() => tweet()}
       >
         Tweet
       </button>

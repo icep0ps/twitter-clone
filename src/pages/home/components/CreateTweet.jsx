@@ -13,18 +13,22 @@ function CreateTweet(tweet = { type: 'tweet' }) {
   const { user } = useContext(UserContext);
   const { getUsername, username } = useFetchUsername();
   const [tweetInfo, setTweetInfo] = useState();
-  const [tweetInput, setTweetInput] = useState('');
+  const [tweetInput, setTweetInput] = useState();
 
   const [imagePreviewURL, setImagePreviewURL] = useState([]);
 
   function setImages(tweetId) {
     const imagesURL = [];
     const images = new Promise((resolve, reject) => {
+      if (imagePreviewURL.length === 0) {
+        return resolve(imagesURL);
+      }
+
       imagePreviewURL.forEach(async (image, index, array) => {
         const imageUrl = await uploadImage(tweetId, image.image);
         imagesURL.push(imageUrl);
+        console.log(index, array.length);
         if (index === array.length - 1) {
-          console.log(imagePreviewURL);
           resolve(imagesURL);
         }
       });
@@ -40,7 +44,6 @@ function CreateTweet(tweet = { type: 'tweet' }) {
     );
 
     await uploadBytes(imageRef, image);
-    alert('uploaded');
     const url = await getDownloadURL(imageRef);
     return url;
   }
@@ -52,10 +55,6 @@ function CreateTweet(tweet = { type: 'tweet' }) {
       { image: image, url: URL.createObjectURL(image) },
     ]);
   }
-
-  const handleTweetInput = (event) => {
-    setTweetInput(event.target.value);
-  };
 
   useEffect(() => {
     getUsername(user.displayName);
@@ -72,9 +71,9 @@ function CreateTweet(tweet = { type: 'tweet' }) {
           'tweets',
           `${TWEET_ID}`
         );
-        setImages(TWEET_ID).then(async (images) => {
-          console.log(images);
-          setDoc(usersTweetsRef, {
+        setImages(TWEET_ID).then(async (responseImages) => {
+          console.log(responseImages);
+          await setDoc(usersTweetsRef, {
             id: TWEET_ID,
             type: TWEET,
             author: user.displayName,
@@ -83,7 +82,7 @@ function CreateTweet(tweet = { type: 'tweet' }) {
             tweet: tweetInput,
             likes: [],
             retweets: [],
-            images: images,
+            images: responseImages,
             date: Timestamp.now(),
           });
         });
@@ -115,21 +114,24 @@ function CreateTweet(tweet = { type: 'tweet' }) {
           id: TWEET_ID,
           orignalPost: id,
         });
-
-        await setDoc(tweetCommentsRef, {
-          id: TWEET_ID,
-          replyingTo: author,
-          type: COMMENT,
-          profileURL: user.photoURL,
-          username: username,
-          author: user.displayName,
-          tweet: tweetInput,
-          likes: [],
-          retweets: [],
-          comments: [],
-          images: setImages(),
-          date: Timestamp.now(this.id),
+        setImages(TWEET_ID).then(async (images) => {
+          console.log(images);
+          await setDoc(tweetCommentsRef, {
+            id: TWEET_ID,
+            replyingTo: author,
+            type: COMMENT,
+            profileURL: user.photoURL,
+            username: username,
+            author: user.displayName,
+            tweet: tweetInput,
+            likes: [],
+            retweets: [],
+            comments: [],
+            images: images,
+            date: Timestamp.now(this.id),
+          });
         });
+
         break;
       default:
         return;
@@ -145,7 +147,7 @@ function CreateTweet(tweet = { type: 'tweet' }) {
           type="text"
           placeholder="What's happening?"
           className="resize-none text-xl grow outline-none py-3"
-          onChange={() => handleTweetInput}
+          onChange={(event) => setTweetInput(event.target.value)}
         />
       </div>
       <div className="">

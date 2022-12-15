@@ -16,6 +16,7 @@ const useFetchTweets = () => {
 
     onSnapshot(usersTweetsRef, (doc) => {
       doc.forEach(async (tweet) => {
+        console.log(tweet.data().type);
         switch (tweet.data().type) {
           case 'comment':
             const comment = await getComment(userId, tweet.data().id);

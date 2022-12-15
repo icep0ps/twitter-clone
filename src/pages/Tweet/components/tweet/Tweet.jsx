@@ -70,6 +70,17 @@ function Tweet(props) {
           <div className="w-5/6">
             <p className="text-xl ">{tweet}</p>
           </div>
+          <div>
+            {tweetInfomation.images.map((imageURL) => {
+              return (
+                <img
+                  alt=""
+                  src={`${imageURL}`}
+                  className="rounded-xl	my-4 border-gray-300 border"
+                />
+              );
+            })}
+          </div>
         </div>
         <p className="text-gray-400 text-sm">
           {tweetInfomation.date.toDate().toDateString()}

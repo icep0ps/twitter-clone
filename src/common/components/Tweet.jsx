@@ -18,6 +18,8 @@ function Tweet(props) {
   const { id, author, username, likes, retweets, tweetInfomation, tweetor } =
     props;
 
+  //TODO : make comments have an image array or it might crash
+
   const { like } = useLike(tweetRef, tweetInfomation);
   const { follow, isFollowing } = useFollow(author);
   const { retweet } = useRetweet(tweetRef, tweetInfomation);
@@ -84,7 +86,18 @@ function Tweet(props) {
                   </span>
                 </p>
               )}
-              <p>{tweetInfomation.tweet}</p>
+              <p className="my-1">{tweetInfomation.tweet}</p>
+              <div>
+                {tweetInfomation.images.map((imageURL) => {
+                  return (
+                    <img
+                      alt=""
+                      src={`${imageURL}`}
+                      className="rounded-xl	my-4 border-gray-300 border"
+                    />
+                  );
+                })}
+              </div>
             </Link>
             <div className="flex gap-20  py-2">
               <Link to={'/compose/tweet'}>
