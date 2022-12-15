@@ -30,7 +30,7 @@ html,
 }
 
 .line {
-  background-color: rgb(107 114 128 / var(--tw-border-opacity));
+  background-color: rgb(207, 208, 211);
   height: 100%;
   width: 2px;
 }
