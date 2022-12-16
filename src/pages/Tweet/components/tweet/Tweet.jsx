@@ -1,52 +1,62 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Reply from './Reply';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import LikeIcon from '../../../../assets/svgs/LikeIcon';
-import { db } from '../../../../firebase/firebase-config';
+import useLike from '../../../../common/hooks/useLike';
 import ShareIcon from '../../../../assets/svgs/ShareIcon';
 import { UserContext } from '../../../../Context/UserContext';
 import RetweetIcon from '../../../../assets/svgs/RetweetIcon';
 import CommentsIcon from '../../../../assets/svgs/CommentsIcon';
-import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore';
 import useFollow from '../../../../common/hooks/useFollow';
 import { Link, Outlet } from 'react-router-dom';
+import { doc } from 'firebase/firestore';
+import useRetweet from '../../../../common/hooks/useRetweet';
+import { db } from '../../../../firebase/firebase-config';
+import uniqid from 'uniqid';
+import useFetchUserProfilePic from '../../../../common/hooks/useFetchUserProfilePic';
 
 function Tweet(props) {
   const { user } = useContext(UserContext);
   const { id, author, username, tweet, tweetInfomation } = props;
+  const [tweetRef, setTweetRef] = useState('');
   const { follow, isFollowing } = useFollow(author);
+  const { like } = useLike(tweetRef, tweetInfomation);
+  const { retweet } = useRetweet(tweetRef, tweetInfomation);
+  const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
 
-  const like = async () => {
-    const tweetRef = doc(db, 'users', `${author}`, 'tweets', `${id}`);
-    await updateDoc(tweetRef, {
-      likes: arrayUnion({
-        id: user.displayName,
-      }),
-    });
-  };
-
-  const retweet = async () => {
-    const tweetRef = doc(db, 'users', `${author}`, 'tweets', `${id}`);
-    await updateDoc(tweetRef, {
-      retweets: arrayUnion({
-        id: user.displayName,
-      }),
-    });
-    const yourTweetsRef = doc(
-      db,
-      'users',
-      `${user.displayName}`,
-      'retweets',
-      `${id}`
-    );
-    await setDoc(yourTweetsRef, tweetInfomation);
-  };
+  useEffect(() => {
+    getProfilePic(author);
+    switch (tweetInfomation.type) {
+      case 'tweet':
+        setTweetRef(doc(db, 'users', `${author}`, 'tweets', `${id}`));
+        break;
+      case 'comment':
+        setTweetRef(
+          doc(
+            db,
+            'users',
+            `${tweetInfomation.replyingTo}`,
+            'tweets',
+            `${id}`,
+            'comments',
+            `${tweetInfomation.id}`
+          )
+        );
+        break;
+      default:
+        return;
+    }
+  }, [isFollowing]);
 
   return (
     <>
       <div className="flex flex-col border-b border-gray-200 border-solid gap-3 px-5 pb-3 relative">
         <div className="flex flex-col gap-3 ">
           <div className="flex gap-3">
-            <div className="w-12 h-12  bg-black rounded-3xl"></div>
+            <div
+              className="w-12 h-12 bg-black rounded-3xl bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: `url(${profilePicURL})` }}
+            ></div>
             {user.displayName !== author && (
               <button className="right-10 absolute" onClick={(e) => follow()}>
                 {isFollowing ? 'following' : 'follow'}
@@ -76,6 +86,7 @@ function Tweet(props) {
                 <img
                   alt=""
                   src={`${imageURL}`}
+                  key={uniqid()}
                   className="rounded-xl	my-4 border-gray-300 border"
                 />
               );

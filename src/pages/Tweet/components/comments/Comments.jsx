@@ -18,12 +18,11 @@ function Comments({ id, author, location }) {
     );
     onSnapshot(tweetRef, (comments) => {
       const commentsCollection = [];
-      comments.forEach((comment) =>
+      comments.forEach((comment) => {
         commentsCollection.push(
           Object.assign({ id: comment.id }, comment.data())
-        )
-      );
-
+        );
+      });
       setComments(commentsCollection);
     });
   };

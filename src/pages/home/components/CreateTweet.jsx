@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import uniqid from 'uniqid';
 import React, { useState, useContext, useEffect } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
@@ -8,12 +9,14 @@ import { TWEET } from '../../../common/helpers/types';
 import { COMMENT } from '../../../common/helpers/types';
 import useFetchUsername from '../../../common/hooks/useFetchUsername';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import useFetchUserProfilePic from './../../../common/hooks/useFetchUserProfilePic';
 
 function CreateTweet(tweet = { type: 'tweet' }) {
   const { user } = useContext(UserContext);
   const { getUsername, username } = useFetchUsername();
   const [tweetInfo, setTweetInfo] = useState();
   const [tweetInput, setTweetInput] = useState();
+  const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
 
   const [imagePreviewURL, setImagePreviewURL] = useState([]);
 
@@ -27,7 +30,6 @@ function CreateTweet(tweet = { type: 'tweet' }) {
       imagePreviewURL.forEach(async (image, index, array) => {
         const imageUrl = await uploadImage(tweetId, image.image);
         imagesURL.push(imageUrl);
-        console.log(index, array.length);
         if (index === array.length - 1) {
           resolve(imagesURL);
         }
@@ -58,6 +60,7 @@ function CreateTweet(tweet = { type: 'tweet' }) {
 
   useEffect(() => {
     getUsername(user.displayName);
+    getProfilePic(user.displayName);
   }, []);
 
   const sendTweet = async () => {
@@ -72,7 +75,6 @@ function CreateTweet(tweet = { type: 'tweet' }) {
           `${TWEET_ID}`
         );
         setImages(TWEET_ID).then(async (responseImages) => {
-          console.log(responseImages);
           await setDoc(usersTweetsRef, {
             id: TWEET_ID,
             type: TWEET,
@@ -115,7 +117,6 @@ function CreateTweet(tweet = { type: 'tweet' }) {
           orignalPost: id,
         });
         setImages(TWEET_ID).then(async (images) => {
-          console.log(images);
           await setDoc(tweetCommentsRef, {
             id: TWEET_ID,
             replyingTo: author,
@@ -141,7 +142,11 @@ function CreateTweet(tweet = { type: 'tweet' }) {
   return (
     <div className="flex flex-col gap-3 relative px-5 pb-3 ">
       <div className="flex gap-5">
-        <div className="w-12 h-12  bg-black rounded-3xl"></div>
+        <div
+          className="w-12 h-12 bg-black rounded-3xl bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${profilePicURL})` }}
+        ></div>
+
         {tweet.type === 'comment' && <p>Replying to @{tweetInfo.username}</p>}
         <TextareaAutosize
           type="text"
@@ -152,7 +157,7 @@ function CreateTweet(tweet = { type: 'tweet' }) {
       </div>
       <div className="">
         {imagePreviewURL.map((image) => {
-          return <img alt="" src={`${image.url}`} />;
+          return <img alt="" key={uniqid()} src={`${image.url}`} />;
         })}
       </div>
       <div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Tweets from './tabs/Tweets';
 import TweetsAndReplies from './tabs/TweetsAndReplies';
 import Likes from './tabs/Likes';
+import Media from './tabs/Media';
 
 function TweetCategories({ id }) {
   const [category, setCategory] = useState('tweets');
@@ -14,7 +15,11 @@ function TweetCategories({ id }) {
     tabToBeRendered = <Likes id={id}></Likes>;
   }
 
-  useEffect(() => {}, [category, id]);
+  if (category === 'media') {
+    tabToBeRendered = <Media id={id}></Media>;
+  }
+
+  useEffect(() => {}, [category]);
 
   return (
     <React.Fragment>
@@ -29,7 +34,9 @@ function TweetCategories({ id }) {
         >
           Tweets & Replies
         </button>
-        <button className="category">Media</button>
+        <button className="category" onClick={() => setCategory('media')}>
+          Media
+        </button>
 
         <button className="category" onClick={() => setCategory('likes')}>
           Likes

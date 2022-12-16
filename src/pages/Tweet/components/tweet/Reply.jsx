@@ -1,17 +1,22 @@
 import uniqid from 'uniqid';
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { db, storage } from '../../../../firebase/firebase-config';
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
 import { UserContext } from '../../../../Context/UserContext';
 import { COMMENT } from '../../../../common/helpers/types';
-
+import useFetchUserProfilePic from '../../../../common/hooks/useFetchUserProfilePic';
 import { uploadBytes, getDownloadURL, ref } from 'firebase/storage';
 
 function Reply({ username, author, id }) {
   const { user } = useContext(UserContext);
   const [tweetInput, setTweetInput] = useState('');
   const [imagePreviewURL, setImagePreviewURL] = useState([]);
+  const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
+
+  useEffect(() => {
+    getProfilePic(user.displayName);
+  }, []);
 
   function setImages(tweetId) {
     const imagesURL = [];
@@ -103,7 +108,10 @@ function Reply({ username, author, id }) {
       onSubmit={(event) => tweet(event)}
     >
       <div className="flex gap-5 items-start ">
-        <div className="min-w-[48px] min-h-[48px]  bg-black rounded-3xl"></div>
+        <div
+          className="min-w-[48px] min-h-[48px] bg-black rounded-3xl bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${profilePicURL})` }}
+        ></div>
         <div className="w-full">
           <p className="text-sm">
             Replying to <span className="text-blue-500">@{username}</span>
@@ -119,7 +127,7 @@ function Reply({ username, author, id }) {
       </div>
       <div className="">
         {imagePreviewURL.map((image) => {
-          return <img alt="" src={`${image.url}`} />;
+          return <img alt="" key={uniqid()} src={`${image.url}`} />;
         })}
       </div>
       <div>

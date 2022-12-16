@@ -1,7 +1,6 @@
 import { useParams, useLocation } from 'react-router-dom';
 import Tweet from './components/tweet/Tweet';
-import { UserContext } from '../../Context/UserContext';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Comments from './components/comments/Comments';
 import useFetchTweet from '../../common/hooks/useFetchTweet';
 import Comment from '../../common/components/Comment';
@@ -9,7 +8,6 @@ import Comment from '../../common/components/Comment';
 function TweetStatus() {
   let location = useLocation();
   const { author, id } = useParams();
-  const { user } = useContext(UserContext);
   const { tweet, getTweet } = useFetchTweet();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -27,8 +25,8 @@ function TweetStatus() {
     return <h1>Loading...</h1>;
   } else {
     return (
-      <div className="col-start-2 flex flex-col gap-5 border-x border-gray-200 border-solid">
-        <h1 className=" font-semibold text-xl p-4">Tweet</h1>
+      <div className="col-start-2 flex flex-col gap-5 border-x border-gray-200 border-solid ">
+        <h1 className=" font-semibold text-xl p-4 ">Tweet</h1>
         {tweet.type === 'comment' ? (
           <>
             <Comment comment={tweet} inTweetStatus={true}></Comment>

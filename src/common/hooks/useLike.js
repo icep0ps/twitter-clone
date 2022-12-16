@@ -4,6 +4,8 @@ import { updateDoc, arrayUnion, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 
 const useLike = (tweetRef, tweet) => {
+  //TODO : you cant like nested tweets yet
+
   const { user } = useContext(UserContext);
 
   const like = async () => {

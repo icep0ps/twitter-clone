@@ -5,19 +5,27 @@ import Comment from '../../../../common/components/Comment';
 import useFetchTweets from '../../../../common/hooks/useFetchTweets';
 import uniqid from 'uniqid';
 
-const TweetsAndReplies = ({ id }) => {
+const Media = ({ id }) => {
   const { tweets, getTweets } = useFetchTweets();
 
   useEffect(() => {
     getTweets(id);
-  }, [id]);
+  }, []);
 
   return tweets.map((tweet) => {
-    return (
-      <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
-        {tweet.type === 'comment' ? (
-          <Comment comment={tweet} key={uniqid()} />
-        ) : (
+    if (tweet.type === 'comment') {
+      if (tweet.comment.images.length > 0) {
+        return (
+          <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
+            <Comment comment={tweet} key={uniqid()} />
+          </div>
+        );
+      }
+      return '';
+    }
+    if (tweet.images.length > 0) {
+      return (
+        <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
           <Tweet
             id={tweet.id}
             key={tweet.id}
@@ -28,10 +36,11 @@ const TweetsAndReplies = ({ id }) => {
             retweets={tweet.retweets}
             tweetInfomation={tweet}
           />
-        )}
-      </div>
-    );
+        </div>
+      );
+    }
+    return '';
   });
 };
 
-export default TweetsAndReplies;
+export default Media;

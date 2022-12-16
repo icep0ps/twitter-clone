@@ -12,34 +12,35 @@ const useFetchTweets = () => {
   const [comment, getComment] = useFetchComment();
 
   function getTweets(userId) {
+    const tweetsCollection = [];
     const usersTweetsRef = collection(db, 'users', `${userId}`, 'tweets');
 
     onSnapshot(usersTweetsRef, (doc) => {
       doc.forEach(async (tweet) => {
-        console.log(tweet.data().type);
         switch (tweet.data().type) {
           case 'comment':
             const comment = await getComment(userId, tweet.data().id);
-            setTweets((prevState) => prevState.concat(comment));
-            return comment;
+            tweetsCollection.push(comment);
+            break;
 
           case 'tweet':
             const tweetData = tweet.data();
             const usernameData = await getUsername(tweetData.author);
             tweetData.username = usernameData;
-            setTweets((prevState) => prevState.concat(tweetData));
-            return tweet.data();
+            tweetsCollection.push(tweetData);
+            break;
 
           case 'retweet':
             const retweet = await getRetweet(userId, tweet.data().id);
-            setTweets((prevState) => prevState.concat(retweet));
-            console.log(retweet);
+            tweetsCollection.push(retweet);
             break;
           default:
             return;
         }
       });
+      setTweets(tweetsCollection);
     });
+    return tweets;
   }
 
   return { tweets, getTweets };

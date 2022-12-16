@@ -24,7 +24,6 @@ function useRetweet(tweetRef, tweetInfomation) {
     await setDoc(yourTweetsRef, {
       type: 'retweet',
       author: author,
-      retweetedBy: user.displayName,
       retweeter: user.displayName,
       id: id,
     });

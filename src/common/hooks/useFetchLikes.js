@@ -8,13 +8,12 @@ function useFetchLikes() {
   const [likedTweets, setLikedTweets] = useState([]);
 
   async function getLikes(userId) {
-    console.log('checking');
     const usersLikesRef = collection(db, 'users', `${userId}`, 'likes');
     const likes = await getDocs(usersLikesRef);
     likes.forEach(async (tweet) => {
       const likedTweet = tweet.data();
       const returnedTweet = await getTweet(likedTweet.author, likedTweet.id);
-      console.log(returnedTweet);
+
       setLikedTweets((prevState) => [...prevState, returnedTweet]);
     });
   }

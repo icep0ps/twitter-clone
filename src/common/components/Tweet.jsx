@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import uniqid from 'uniqid';
 import useLike from '../hooks/useLike';
 import { Link } from 'react-router-dom';
 import { doc } from 'firebase/firestore';
@@ -10,21 +12,21 @@ import { UserContext } from '../../Context/UserContext';
 import RetweetIcon from '../../assets/svgs/RetweetIcon';
 import CommentsIcon from '../../assets/svgs/CommentsIcon';
 import React, { useEffect, useState, useContext } from 'react';
+import useFetchUserProfilePic from '../hooks/useFetchUserProfilePic';
 
 function Tweet(props) {
   const [tweetRef, setTweetRef] = useState('');
   const { setCurrentTweetBiengViewed, setReplyingTo, user } =
     useContext(UserContext);
-  const { id, author, username, likes, retweets, tweetInfomation, tweetor } =
-    props;
-
-  //TODO : make comments have an image array or it might crash
+  const { id, author, username, likes, retweets, tweetInfomation } = props;
+  const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
 
   const { like } = useLike(tweetRef, tweetInfomation);
   const { follow, isFollowing } = useFollow(author);
   const { retweet } = useRetweet(tweetRef, tweetInfomation);
 
   useEffect(() => {
+    getProfilePic(author);
     switch (tweetInfomation.type) {
       case 'tweet':
         setTweetRef(doc(db, 'users', `${author}`, 'tweets', `${id}`));
@@ -36,7 +38,7 @@ function Tweet(props) {
             'users',
             `${tweetInfomation.replyingTo}`,
             'tweets',
-            `${id}`,
+            `${tweetInfomation.parentDocId}`,
             'comments',
             `${tweetInfomation.id}`
           )
@@ -65,12 +67,15 @@ function Tweet(props) {
       <div className="flex gap-5 ">
         <div className="flex gap-5 ">
           <div className="image">
-            <div className=" min-w-[48px] min-h-[48px]  bg-black rounded-3xl"></div>
+            <div
+              className="min-w-[48px] min-h-[48px] bg-black rounded-3xl bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: `url(${profilePicURL})` }}
+            ></div>
             {tweetInfomation.parentDocId !== id && <div className="line"></div>}
           </div>
         </div>
-        <div className="w-5/6">
-          <div>
+        <div>
+          <div className="w-5/6">
             <Link to={`/${author}/status/${tweetInfomation.id}`}>
               <p className="username flex items-center gap-1 font-medium">
                 {username}{' '}
@@ -94,6 +99,7 @@ function Tweet(props) {
                       alt=""
                       src={`${imageURL}`}
                       className="rounded-xl	my-4 border-gray-300 border"
+                      key={uniqid()}
                     />
                   );
                 })}

@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import Tweet from '../../../../common/components/Tweet';
 import Comment from '../../../../common/components/Comment';
 import useFetchLikes from '../../../../common/hooks/useFetchLikes';
 import { useEffect } from 'react';
+import uniqid from 'uniqid';
 
 const Likes = ({ id }) => {
   const { likedTweets, getLikes } = useFetchLikes();
@@ -19,7 +21,7 @@ const Likes = ({ id }) => {
     return (
       <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
         {tweet.type === 'comment' ? (
-          <Comment comment={tweet} />
+          <Comment comment={tweet} key={uniqid()} />
         ) : (
           <Tweet
             id={tweet.id}
