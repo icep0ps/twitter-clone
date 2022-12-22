@@ -70,13 +70,13 @@ function Profile() {
   return (
     <div className="border-x border-gray-500 border-solid relative ">
       <div
-        className="bg-black h-64 relative bg-cover bg-center bg-no-repeat"
+        className=" h-64 relative bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url(${bannerURL})`,
         }}
       >
         <div
-          className="w-36 h-36 bg-red-600 rounded-full absolute top-44 left-5 bg-cover bg-center bg-no-repeat border-white border-4"
+          className="w-36 h-36 rounded-full absolute top-44 left-5 bg-cover bg-center bg-no-repeat border-white border-4"
           style={{
             backgroundImage: `url(${profilePicURL})`,
           }}

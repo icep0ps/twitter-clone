@@ -122,6 +122,7 @@ function Reply({ username, author, id }) {
             placeholder="Tweet Your Reply?"
             className="resize-none text-xl grow outline-none py-3"
             onChange={(event) => setTweetInput(event.target.value)}
+            value={tweetInput}
           />
         </div>
       </div>

@@ -18,24 +18,27 @@ const Likes = ({ id }) => {
   }, [id]);
 
   return likedTweets.map((tweet) => {
-    return (
-      <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
-        {tweet.type === 'comment' ? (
-          <Comment comment={tweet} key={uniqid()} />
-        ) : (
-          <Tweet
-            id={tweet.id}
-            key={tweet.id}
-            author={tweet.author}
-            username={tweet.username}
-            tweet={tweet.tweet.tweet}
-            likes={tweet.likes}
-            retweets={tweet.retweets}
-            tweetInfomation={tweet}
-          />
-        )}
-      </div>
-    );
+    if (tweet) {
+      return (
+        <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
+          {tweet.type === 'comment' ? (
+            <Comment comment={tweet} key={uniqid()} />
+          ) : (
+            <Tweet
+              id={tweet.id}
+              key={tweet.id}
+              author={tweet.author}
+              username={tweet.username}
+              tweet={tweet.tweet.tweet}
+              likes={tweet.likes}
+              retweets={tweet.retweets}
+              tweetInfomation={tweet}
+            />
+          )}
+        </div>
+      );
+    }
+    return '';
   });
 };
 

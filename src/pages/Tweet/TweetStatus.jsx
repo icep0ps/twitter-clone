@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useParams, useLocation } from 'react-router-dom';
 import Tweet from './components/tweet/Tweet';
 import React, { useEffect, useState } from 'react';
@@ -19,7 +20,7 @@ function TweetStatus() {
   useEffect(() => {
     setIsLoading(true);
     fetchTweetAndComments();
-  }, [location]);
+  }, [id]);
 
   if (isLoading) {
     return <h1>Loading...</h1>;

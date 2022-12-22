@@ -65,6 +65,7 @@ function CreateTweet(tweet = { type: 'tweet' }) {
 
   const sendTweet = async () => {
     const TWEET_ID = uniqid();
+    console.log('done');
     switch (tweet.type) {
       case 'tweet':
         const usersTweetsRef = doc(
@@ -146,13 +147,13 @@ function CreateTweet(tweet = { type: 'tweet' }) {
           className="w-12 h-12 bg-black rounded-3xl bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${profilePicURL})` }}
         ></div>
-
         {tweet.type === 'comment' && <p>Replying to @{tweetInfo.username}</p>}
         <TextareaAutosize
           type="text"
           placeholder="What's happening?"
           className="resize-none text-xl grow outline-none py-3"
           onChange={(event) => setTweetInput(event.target.value)}
+          value={tweetInput}
         />
       </div>
       <div className="">

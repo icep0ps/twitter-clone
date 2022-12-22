@@ -11,11 +11,11 @@ const useFetchTweets = () => {
   const { getUsername } = useFetchUsername();
   const [comment, getComment] = useFetchComment();
 
-  function getTweets(userId) {
-    const tweetsCollection = [];
+  async function getTweets(userId) {
     const usersTweetsRef = collection(db, 'users', `${userId}`, 'tweets');
 
     onSnapshot(usersTweetsRef, (doc) => {
+      const tweetsCollection = [];
       doc.forEach(async (tweet) => {
         switch (tweet.data().type) {
           case 'comment':
@@ -38,6 +38,7 @@ const useFetchTweets = () => {
             return;
         }
       });
+      console.log(tweetsCollection);
       setTweets(tweetsCollection);
     });
     return tweets;

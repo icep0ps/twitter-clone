@@ -1,7 +1,9 @@
 import { db } from '../../firebase/firebase-config';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { useState } from 'react';
 
 const useFetchMainTweet = () => {
+  const [mainTweet, setMainTweet] = useState(null);
   const getMainTweet = async (user_id, tweet_id) => {
     const usersTweetsRef = doc(
       db,
@@ -10,10 +12,15 @@ const useFetchMainTweet = () => {
       'tweets',
       `${tweet_id}`
     );
-    return getDoc(usersTweetsRef);
+    return new Promise((resolve, reject) => {
+      onSnapshot(usersTweetsRef, (doc) => {
+        setMainTweet(doc);
+        resolve(doc);
+      });
+    });
   };
 
-  return { getMainTweet };
+  return { mainTweet, getMainTweet };
 };
 
 export default useFetchMainTweet;

@@ -1,11 +1,17 @@
 import { useContext } from 'react';
 import { UserContext } from '../../Context/UserContext';
-import { updateDoc, arrayUnion, doc, setDoc } from 'firebase/firestore';
+import {
+  updateDoc,
+  arrayUnion,
+  doc,
+  setDoc,
+  getDoc,
+  arrayRemove,
+  deleteDoc,
+} from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 
 const useLike = (tweetRef, tweet) => {
-  //TODO : you cant like nested tweets yet
-
   const { user } = useContext(UserContext);
 
   const like = async () => {
@@ -17,17 +23,35 @@ const useLike = (tweetRef, tweet) => {
       `${tweet.id}`
     );
 
-    await setDoc(usersLikesRef, {
-      id: tweet.id,
-      author: tweet.author,
-      type: tweet.type,
-    });
+    getDoc(usersLikesRef)
+      .then((doc) => {
+        if (doc.exists()) {
+          console.log('Document data:', doc.data());
+          deleteDoc(usersLikesRef);
 
-    await updateDoc(tweetRef, {
-      likes: arrayUnion({
-        id: user.displayName,
-      }),
-    });
+          updateDoc(tweetRef, {
+            likes: arrayRemove({
+              id: user.displayName,
+            }),
+          });
+        } else {
+          console.log('No such document!');
+          setDoc(usersLikesRef, {
+            id: tweet.id,
+            author: tweet.author,
+            type: tweet.type,
+          });
+
+          updateDoc(tweetRef, {
+            likes: arrayUnion({
+              id: user.displayName,
+            }),
+          });
+        }
+      })
+      .catch((error) => {
+        console.log('Error getting document:', error);
+      });
   };
   return { like };
 };

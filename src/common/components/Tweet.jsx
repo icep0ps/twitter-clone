@@ -13,6 +13,7 @@ import RetweetIcon from '../../assets/svgs/RetweetIcon';
 import CommentsIcon from '../../assets/svgs/CommentsIcon';
 import React, { useEffect, useState, useContext } from 'react';
 import useFetchUserProfilePic from '../hooks/useFetchUserProfilePic';
+import useDeleteTweet from '../hooks/useDeleteTweet';
 
 function Tweet(props) {
   const [tweetRef, setTweetRef] = useState('');
@@ -20,7 +21,7 @@ function Tweet(props) {
     useContext(UserContext);
   const { id, author, username, likes, retweets, tweetInfomation } = props;
   const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
-
+  const { deleteTweet } = useDeleteTweet();
   const { like } = useLike(tweetRef, tweetInfomation);
   const { follow, isFollowing } = useFollow(author);
   const { retweet } = useRetweet(tweetRef, tweetInfomation);
@@ -44,6 +45,11 @@ function Tweet(props) {
           )
         );
         break;
+      case 'retweet':
+        setTweetRef(
+          doc(db, 'users', `${tweetInfomation.retweeter}`, 'tweets', `${id}`)
+        );
+        break;
       default:
         return;
     }
@@ -54,10 +60,22 @@ function Tweet(props) {
       className="tweet flex flex-col gap-3 px-5 relative"
       onClick={() => setCurrentTweetBiengViewed(tweetInfomation)}
     >
-      {user.displayName !== author && (
-        <button className="right-10 absolute" onClick={(e) => follow()}>
-          {isFollowing ? 'following' : 'follow'}
+      {user.displayName === tweetInfomation?.retweeter ? (
+        <button
+          className="right-10 absolute"
+          onClick={(e) => deleteTweet(tweetRef)}
+        >
+          delete
         </button>
+      ) : (
+        user.displayName === author && (
+          <button
+            className="right-10 absolute"
+            onClick={(e) => deleteTweet(tweetRef)}
+          >
+            delete
+          </button>
+        )
       )}
 
       {tweetInfomation.retweeter && (

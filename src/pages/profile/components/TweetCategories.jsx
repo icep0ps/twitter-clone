@@ -29,7 +29,7 @@ function TweetCategories({ id }) {
         </button>
 
         <button
-          className="category"
+          className="category "
           onClick={() => setCategory('tweets & replies')}
         >
           Tweets & Replies

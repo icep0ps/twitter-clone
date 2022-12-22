@@ -1,11 +1,17 @@
 import { db } from '../../firebase/firebase-config';
-import { doc, getDoc } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  onSnapshot,
+} from 'firebase/firestore';
 import useFetchComment from './useFetchComment';
 import { useState } from 'react';
 import useFetchUsername from './useFetchUsername';
 
 const useFetchTweet = () => {
-  const [tweet, setTweet] = useState({});
+  const [tweet, setTweet] = useState(null);
   const [comment, getComment] = useFetchComment();
   const { getUsername } = useFetchUsername();
 
@@ -17,21 +23,39 @@ const useFetchTweet = () => {
       'tweets',
       `${tweetID}`
     );
-    const response = await getDoc(usersTweetsRef);
-    const tweetData = response.data();
-    switch (tweetData.type) {
-      case 'comment':
-        const comment = await getComment(userID, tweetID);
-        setTweet(comment);
-        return comment;
-      case 'tweet':
-        const username = await getUsername(userID);
-        tweetData.username = username;
-        setTweet(tweetData);
-        return tweetData;
-      default:
-        return;
-    }
+    const commentsLengthRef = collection(
+      db,
+      'users',
+      `${userID}`,
+      'tweets',
+      `${tweetID}`,
+      'comments'
+    );
+    // const length = await getDocs(commentsLengthRef);
+    return new Promise((resolve, reject) => {
+      onSnapshot(usersTweetsRef, async (response) => {
+        if (response.exists()) {
+          const tweetData = response.data();
+          switch (tweetData.type) {
+            case 'comment':
+              getComment(userID, tweetID).then((comment) => {
+                setTweet(comment);
+                resolve(comment);
+              });
+              break;
+            case 'tweet':
+              getUsername(userID).then((username) => {
+                tweetData.username = username;
+                setTweet(tweetData);
+                resolve(tweetData);
+              });
+              break;
+            default:
+              reject(null);
+          }
+        }
+      });
+    });
   };
 
   return { tweet, getTweet };

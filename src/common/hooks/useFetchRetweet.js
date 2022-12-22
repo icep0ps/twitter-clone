@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { db } from '../../firebase/firebase-config';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import useFetchTweet from './useFetchTweet';
 
 function useFetchRetweet() {
-  const { getTweet } = useFetchTweet();
+  const { getTweet } = useFetchTweet(null);
   const [retweet, setRetweet] = useState([]);
 
-  const getRetweet = async (user_id, retweet_id) => {
+  const getRetweet = (user_id, retweet_id) => {
     const userRetweetRef = doc(
       db,
       'users',
@@ -15,13 +15,19 @@ function useFetchRetweet() {
       'tweets',
       `${retweet_id}`
     );
-    const response = await getDoc(userRetweetRef);
-    const retweetData = response.data();
-    const tweet = await getTweet(retweetData.author, retweetData.id);
-    tweet.retweeter = user_id;
-    tweet.type = 'retweet';
-    setRetweet(tweet);
-    return tweet;
+
+    return new Promise((resolve, reject) => {
+      onSnapshot(userRetweetRef, async (doc) => {
+        const retweetData = doc.data();
+        console.log(retweetData);
+        const res = await getTweet(retweetData.author, retweetData.id);
+        if (res === null) return null;
+        res.retweeter = user_id;
+        res.type = 'retweet';
+        console.log(res);
+        resolve(res);
+      });
+    });
   };
   return { getRetweet, retweet };
 }
