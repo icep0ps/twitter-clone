@@ -9,13 +9,10 @@ function Comment(props) {
   const [tweet, getComment] = useFetchComment();
   const [isLoading, setIsLoading] = useState(true);
 
-  const seach = async () => {
-    setIsLoading(true);
-    await getComment(comment.comment.author, comment.comment.id);
-    setIsLoading(false);
-  };
   useEffect(() => {
-    seach();
+    getComment(comment.comment.author, comment.comment.id).then(() => {
+      setIsLoading(false);
+    });
   }, [comment]);
 
   if (isLoading) {

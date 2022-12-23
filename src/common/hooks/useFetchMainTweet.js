@@ -3,7 +3,8 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { useState } from 'react';
 
 const useFetchMainTweet = () => {
-  const [mainTweet, setMainTweet] = useState(null);
+  const [mainTweet, setMainTweet] = useState({});
+
   const getMainTweet = async (user_id, tweet_id) => {
     const usersTweetsRef = doc(
       db,
@@ -12,11 +13,30 @@ const useFetchMainTweet = () => {
       'tweets',
       `${tweet_id}`
     );
-    return new Promise((resolve, reject) => {
-      onSnapshot(usersTweetsRef, (doc) => {
-        setMainTweet(doc);
-        resolve(doc);
+    const Tweet = new Promise((resolve, reject) => {
+      onSnapshot(usersTweetsRef, async (tweet) => {
+        while (tweet.data()?.orignalPost) {
+          const tmpRef = doc(
+            db,
+            'users',
+            `${tweet.data().author}`,
+            'tweets',
+            `${tweet.data().orignalPost}`,
+            'comments',
+            `${tweet.data().id}`
+          );
+          tweet = await new Promise((resolve, reject) => {
+            onSnapshot(tmpRef, (doc) => {
+              resolve(doc);
+            });
+          });
+        }
+        setMainTweet(tweet.data());
+        resolve(tweet);
       });
+    });
+    return Tweet.then((tweet) => {
+      return tweet;
     });
   };
 

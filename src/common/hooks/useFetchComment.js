@@ -1,16 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { COMMENT } from '../helpers/types';
-import { doc, getDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
+import { doc, deleteDoc, onSnapshot, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import useFetchMainTweet from './useFetchMainTweet';
 import useFetchUsername from './useFetchUsername';
 
-//TODO : find a way to re render this component
-
 const useFetchComment = () => {
+  let commentRef;
   const { getUsername } = useFetchUsername();
-  const [comment, setComment] = useState({});
-  const { mainTweet, getMainTweet } = useFetchMainTweet();
+  const { getMainTweet } = useFetchMainTweet();
+  const [tweetStructure, setTweetStructure] = useState({
+    type: COMMENT,
+    tweet: null,
+    comment: null,
+  });
 
   const getComment = async (userID, commentID) => {
     const userCommentRef = doc(
@@ -20,63 +23,62 @@ const useFetchComment = () => {
       'tweets',
       `${commentID}`
     );
-
-    const userComment = await new Promise((resolve, reject) => {
-      onSnapshot(userCommentRef, (doc) => {
-        resolve(doc);
-      });
-    });
-    const { author, orignalPost, id } = userComment.data();
-    let tweet = await getMainTweet(author, orignalPost);
-
-    while (tweet.data()?.orignalPost) {
-      const tmpRef = doc(
-        db,
-        'users',
-        `${tweet.data().author}`,
-        'tweets',
-        `${tweet.data().orignalPost}`,
-        'comments',
-        `${tweet.data().id}`
-      );
-      tweet = await new Promise((resolve, reject) => {
-        onSnapshot(tmpRef, (doc) => {
-          resolve(doc);
-        });
-      });
-    }
-    const commentRef = doc(
+    const mianTweetRef = await getDoc(userCommentRef);
+    const { author, orignalPost, id } = mianTweetRef.data();
+    const usersTweetsRef = doc(
       db,
       'users',
       `${author}`,
       'tweets',
-      `${orignalPost}`,
-      'comments',
-      `${id}`
+      `${orignalPost}`
     );
 
-    return await new Promise((resolve, reject) => {
+    const Tweet = await new Promise((resolve, reject) => {
+      onSnapshot(usersTweetsRef, async (userComment) => {
+        const mainTweet = await getMainTweet(author, orignalPost);
+        commentRef = doc(
+          db,
+          'users',
+          `${author}`,
+          'tweets',
+          `${orignalPost}`,
+          'comments',
+          `${id}`
+        );
+        setTweetStructure((prevState) => {
+          return { ...prevState, tweet: mainTweet.data() };
+        });
+        resolve(userComment);
+      });
+    });
+
+    const Comment = await new Promise((resolve, reject) => {
       onSnapshot(commentRef, async (response) => {
         if (response.exists()) {
           const replyingComment = response.data();
           const username = await getUsername(replyingComment.author);
           replyingComment.username = username;
-          const mainTweetStructure = {
-            type: COMMENT,
-            tweet: tweet.data(),
-            comment: replyingComment,
-          };
-          setComment(mainTweetStructure);
-          resolve(mainTweetStructure);
+          setTweetStructure((prevState) => {
+            return { ...prevState, comment: replyingComment };
+          });
+          resolve(replyingComment);
+        } else {
+          deleteDoc(Tweet);
+          resolve(null);
         }
-
-        deleteDoc(userComment);
-        resolve(null);
       });
+    });
+
+    return Promise.all([Tweet, Comment]).then((res) => {
+      return {
+        type: COMMENT,
+        tweet: res[0],
+        comment: res[1],
+      };
     });
   };
 
-  return [comment, getComment];
+  return [tweetStructure, getComment];
 };
 
 export default useFetchComment;

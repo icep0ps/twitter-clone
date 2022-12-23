@@ -19,12 +19,10 @@ function useFetchRetweet() {
     return new Promise((resolve, reject) => {
       onSnapshot(userRetweetRef, async (doc) => {
         const retweetData = doc.data();
-        console.log(retweetData);
         const res = await getTweet(retweetData.author, retweetData.id);
         if (res === null) return null;
         res.retweeter = user_id;
         res.type = 'retweet';
-        console.log(res);
         resolve(res);
       });
     });

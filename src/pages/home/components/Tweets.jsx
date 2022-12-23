@@ -41,7 +41,6 @@ const Tweets = () => {
       onSnapshot(usersTweetsRef, (doc) => {
         const tweetsCollection = [];
         doc.forEach(async (tweet) => {
-          console.log(tweet);
           const tweetData = tweet.data();
           tweetsCollection.push(tweetData);
         });
