@@ -1,50 +1,60 @@
 import { useState } from 'react';
 import useFetchComment from './useFetchComment';
-import useFetchUsername from './useFetchUsername';
 import { db } from '../../firebase/firebase-config';
 import useFetchRetweet from './useFetchRetweet';
-import { collection, onSnapshot } from 'firebase/firestore';
+import {
+  collection,
+  onSnapshot,
+  query,
+  where,
+  getDocs,
+} from 'firebase/firestore';
 
 const useFetchTweets = () => {
   const [tweets, setTweets] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [retweets, setRetweets] = useState([]);
   const { getRetweet } = useFetchRetweet();
-  const { getUsername } = useFetchUsername();
-  const [comment, getComment] = useFetchComment();
+  const [, getCommentAndTweet] = useFetchComment();
 
   async function getTweets(userId) {
     const usersTweetsRef = collection(db, 'users', `${userId}`, 'tweets');
+    const tweetsQuery = query(usersTweetsRef, where('type', '==', 'tweet'));
+    const retweetsQuery = query(usersTweetsRef, where('type', '==', 'retweet'));
+    const commentsQuery = query(usersTweetsRef, where('type', '==', 'comment'));
 
-    onSnapshot(usersTweetsRef, (doc) => {
+    onSnapshot(tweetsQuery, (docs) => {
       const tweetsCollection = [];
-      doc.forEach(async (tweet) => {
-        switch (tweet.data().type) {
-          case 'comment':
-            const comment = await getComment(userId, tweet.data().id);
-            tweetsCollection.push(comment);
-            break;
-
-          case 'tweet':
-            const tweetData = tweet.data();
-            const usernameData = await getUsername(tweetData.author);
-            tweetData.username = usernameData;
-            tweetsCollection.push(tweetData);
-            break;
-
-          case 'retweet':
-            const retweet = await getRetweet(userId, tweet.data().id);
-            tweetsCollection.push(retweet);
-            break;
-          default:
-            return;
-        }
+      docs.forEach((tweet) => {
+        const tweetData = tweet.data();
+        tweetsCollection.push(tweetData);
       });
-      console.log(tweetsCollection);
       setTweets(tweetsCollection);
     });
+
+    const userComments = await getDocs(commentsQuery);
+    const commentsCollection = [];
+    userComments.forEach(async (comment) => {
+      const commentAndTweet = await getCommentAndTweet(
+        userId,
+        comment.data().id
+      );
+      commentsCollection.push(commentAndTweet);
+    });
+    setComments(commentsCollection);
+
+    const retweets = await getDocs(retweetsQuery);
+    const retweetsCollection = [];
+    retweets.forEach(async (retweet) => {
+      const retweetReturned = await getRetweet(userId, retweet.data().id);
+      retweetsCollection.push(retweetReturned);
+    });
+    setRetweets(retweetsCollection);
+
     return tweets;
   }
 
-  return { tweets, getTweets };
+  return { tweets, comments, retweets, getTweets };
 };
 
 export default useFetchTweets;

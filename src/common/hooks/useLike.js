@@ -26,7 +26,7 @@ const useLike = (tweetRef, tweet) => {
     getDoc(usersLikesRef)
       .then((doc) => {
         if (doc.exists()) {
-          console.log('Document data:', doc.data());
+          // console.log('Document data:', doc.data());
           deleteDoc(usersLikesRef);
 
           updateDoc(tweetRef, {
@@ -35,7 +35,7 @@ const useLike = (tweetRef, tweet) => {
             }),
           });
         } else {
-          console.log('No such document!');
+          // console.log('No such document!');
           setDoc(usersLikesRef, {
             id: tweet.id,
             author: tweet.author,

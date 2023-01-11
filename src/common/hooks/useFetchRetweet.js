@@ -7,7 +7,7 @@ function useFetchRetweet() {
   const { getTweet } = useFetchTweet(null);
   const [retweet, setRetweet] = useState([]);
 
-  const getRetweet = (user_id, retweet_id) => {
+  const getRetweet = async (user_id, retweet_id) => {
     const userRetweetRef = doc(
       db,
       'users',
@@ -16,15 +16,31 @@ function useFetchRetweet() {
       `${retweet_id}`
     );
 
-    return new Promise((resolve, reject) => {
-      onSnapshot(userRetweetRef, async (doc) => {
+    const tweet = await getDoc(userRetweetRef);
+
+    const usersTweetsRef = doc(
+      db,
+      'users',
+      `${tweet.data().author}`,
+      'tweets',
+      `${tweet.data().id}`
+    );
+
+    const Retweet = await new Promise((resolve, reject) => {
+      onSnapshot(usersTweetsRef, async (doc) => {
         const retweetData = doc.data();
-        const res = await getTweet(retweetData.author, retweetData.id);
-        if (res === null) return null;
-        res.retweeter = user_id;
-        res.type = 'retweet';
-        resolve(res);
+        // const res = await getTweet(retweetData.author, retweetData.id);
+        if (retweetData === null) return null;
+        retweetData.retweeter = user_id;
+        retweetData.type = 'retweet';
+        setRetweet(retweetData);
+        resolve(retweetData);
       });
+    });
+
+    return Promise.all([Retweet]).then((response) => {
+      console.log('res', response[0]);
+      return response[0];
     });
   };
   return { getRetweet, retweet };

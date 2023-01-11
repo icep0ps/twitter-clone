@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Tweet from './Tweet';
 import { COMMENT } from '../helpers/types';
 import React, { useEffect, useState } from 'react';
@@ -6,11 +7,11 @@ import { default as TweetInTweetStatus } from './../../pages/Tweet/components/tw
 
 function Comment(props) {
   const { comment, inTweetStatus } = props;
-  const [tweet, getComment] = useFetchComment();
+  const [tweet, getCommentAndTweet] = useFetchComment();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getComment(comment.comment.author, comment.comment.id).then(() => {
+    getCommentAndTweet(comment.author, comment.commentID).then(() => {
       setIsLoading(false);
     });
   }, [comment]);

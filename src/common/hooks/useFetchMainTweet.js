@@ -5,36 +5,36 @@ import { useState } from 'react';
 const useFetchMainTweet = () => {
   const [mainTweet, setMainTweet] = useState({});
 
-  const getMainTweet = async (user_id, tweet_id) => {
-    const usersTweetsRef = doc(
-      db,
-      'users',
-      `${user_id}`,
-      'tweets',
-      `${tweet_id}`
-    );
+  const getMainTweet = async (author, orignalPost) => {
+    const tweetRef = doc(db, 'users', `${author}`, 'tweets', `${orignalPost}`);
+
     const Tweet = new Promise((resolve, reject) => {
-      onSnapshot(usersTweetsRef, async (tweet) => {
-        while (tweet.data()?.orignalPost) {
+      onSnapshot(tweetRef, async (tweetSnapshot) => {
+        let tweet = tweetSnapshot.data();
+        const { orignalPost, author, id } = tweet;
+
+        while (tweet?.orignalPost) {
           const tmpRef = doc(
             db,
             'users',
-            `${tweet.data().author}`,
+            `${author}`,
             'tweets',
-            `${tweet.data().orignalPost}`,
+            `${orignalPost}`,
             'comments',
-            `${tweet.data().id}`
+            `${id}`
           );
           tweet = await new Promise((resolve, reject) => {
             onSnapshot(tmpRef, (doc) => {
+              console.log('this might be the problem', doc.data());
               resolve(doc);
             });
           });
         }
-        setMainTweet(tweet.data());
+        setMainTweet(tweet);
         resolve(tweet);
       });
     });
+
     return Tweet.then((tweet) => {
       return tweet;
     });

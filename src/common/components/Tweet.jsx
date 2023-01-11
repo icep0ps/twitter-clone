@@ -14,23 +14,35 @@ import CommentsIcon from '../../assets/svgs/CommentsIcon';
 import React, { useEffect, useState, useContext } from 'react';
 import useFetchUserProfilePic from '../hooks/useFetchUserProfilePic';
 import useDeleteTweet from '../hooks/useDeleteTweet';
+import useFetchRetweet from '../hooks/useFetchRetweet';
 
 function Tweet(props) {
   const [tweetRef, setTweetRef] = useState('');
   const { setCurrentTweetBiengViewed, setReplyingTo, user } =
     useContext(UserContext);
-  const { id, author, username, likes, retweets, tweetInfomation } = props;
+  const {
+    id,
+    author,
+    username,
+    likes,
+    retweets,
+    tweetInfomation: data,
+  } = props;
+  const [tweetInfomation, settweetInfomation] = useState(data);
   const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
   const { deleteTweet } = useDeleteTweet();
   const { like } = useLike(tweetRef, tweetInfomation);
-  const { follow, isFollowing } = useFollow(author);
+  const { isFollowing } = useFollow(author);
   const { retweet } = useRetweet(tweetRef, tweetInfomation);
+  const { getRetweet, retweet: retweetData } = useFetchRetweet();
+  const [isLoading, setIsloading] = useState(true);
 
   useEffect(() => {
     getProfilePic(author);
     switch (tweetInfomation.type) {
       case 'tweet':
         setTweetRef(doc(db, 'users', `${author}`, 'tweets', `${id}`));
+        setIsloading(false);
         break;
       case 'comment':
         setTweetRef(
@@ -44,16 +56,30 @@ function Tweet(props) {
             `${tweetInfomation.id}`
           )
         );
+        setIsloading(false);
         break;
       case 'retweet':
+        console.log('yo', tweetInfomation);
+        getRetweet(tweetInfomation.retweeter, tweetInfomation.id).then(
+          (res) => {
+            console.log('this is res', res);
+            settweetInfomation(res);
+
+            setIsloading(false);
+          }
+        );
         setTweetRef(
-          doc(db, 'users', `${tweetInfomation.retweeter}`, 'tweets', `${id}`)
+          doc(db, 'users', `${tweetInfomation.author}`, 'tweets', `${id}`)
         );
         break;
       default:
         return;
     }
   }, [isFollowing]);
+
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  }
 
   return (
     <div
@@ -141,7 +167,10 @@ function Tweet(props) {
               </button>
               <button className=" text-black flex gap-3" onClick={() => like()}>
                 <LikeIcon />
-                {likes?.length}
+                {/* TODO: find a better way to handle likes if its a retweet so that you dont have to put this conditianal rendering */}
+                {tweetInfomation.type === 'retweet'
+                  ? retweetData.likes?.length
+                  : likes?.length}
               </button>
               <button className=" text-black flex gap-3">
                 <ShareIcon />

@@ -1,28 +1,19 @@
-import React, { useEffect, useState, useContext } from 'react';
-import Tweet from '../../../common/components/Tweet';
-import { db } from '../../../firebase/firebase-config';
-import Comment from '../../../common/components/Comment';
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   collection,
   getDocs,
   onSnapshot,
-  orderBy,
   query,
   where,
 } from 'firebase/firestore';
+import React, { useEffect, useState, useContext } from 'react';
+import Tweet from '../../../common/components/Tweet';
+import { db } from '../../../firebase/firebase-config';
+import Comment from '../../../common/components/Comment';
 import { UserContext } from '../../../Context/UserContext';
-import useFetchTweets from './../../../common/hooks/useFetchTweets';
-import useFetchComment from '../../../common/hooks/useFetchComment';
-import useFetchRetweet from '../../../common/hooks/useFetchRetweet';
-import useFetchUsername from '../../../common/hooks/useFetchUsername';
-
-//TODO :Try querying the data by type
 
 const Tweets = () => {
   const { user } = useContext(UserContext);
-  const [comment, getComment] = useFetchComment();
-  const { getRetweet } = useFetchRetweet();
-  const { getUsername } = useFetchUsername();
   const [isLoading, setIsLoading] = useState(true);
   const [tweets, setTweets] = useState([]);
   const [comments, setComments] = useState([]);
@@ -33,6 +24,7 @@ const Tweets = () => {
     const usersFollowing = await getDocs(userFollowingRef);
     usersFollowing.forEach(async (person) => {
       const { id } = person;
+
       const usersTweetsRef = query(
         collection(db, 'users', `${id}`, 'tweets'),
         where('type', '==', 'tweet')
@@ -46,6 +38,7 @@ const Tweets = () => {
         });
         setTweets(tweetsCollection);
       });
+
       const usersCommentsRef = query(
         collection(db, 'users', `${id}`, 'tweets'),
         where('type', '==', 'comment')
@@ -54,7 +47,7 @@ const Tweets = () => {
       const comments = await getDocs(usersCommentsRef);
       const commentsCollection = [];
       comments.forEach(async (doc) => {
-        const comment = await getComment(id, doc.data().id);
+        const comment = { author: id, commentID: doc.data().id };
         commentsCollection.push(comment);
       });
       setComments(commentsCollection);
@@ -67,8 +60,7 @@ const Tweets = () => {
       const retweets = await getDocs(usersRetweetsRef);
       const retweetsCollection = [];
       retweets.forEach(async (doc) => {
-        const retweet = await getRetweet(id, doc.data().id);
-        retweetsCollection.push(retweet);
+        retweetsCollection.push(doc.data());
       });
       setRetweets(retweetsCollection);
     });
@@ -86,8 +78,9 @@ const Tweets = () => {
   return (
     <div className="flex flex-col gap-3 relative ">
       {comments.map((comment) => {
-        return <Comment comment={comment} key={comment.comment.id} />;
+        return <Comment comment={comment} key={comment.id} />;
       })}
+
       {[...tweets, ...retweets].map((tweet) => {
         return (
           <div
@@ -99,7 +92,6 @@ const Tweets = () => {
               key={tweet.id}
               author={tweet.author}
               username={tweet.username}
-              tweet={tweet.tweet.tweet}
               likes={tweet.likes}
               retweets={tweet.retweets}
               tweetInfomation={tweet}

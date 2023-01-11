@@ -5,14 +5,17 @@ import Comment from '../../../../common/components/Comment';
 import useFetchTweets from '../../../../common/hooks/useFetchTweets';
 import uniqid from 'uniqid';
 
+//TODO : no live updates
+
 const TweetsAndReplies = ({ id }) => {
-  const { tweets, getTweets } = useFetchTweets();
+  const { comments, getTweets } = useFetchTweets();
 
   useEffect(() => {
     getTweets(id);
+    console.log(comments);
   }, [id]);
 
-  return tweets.map((tweet) => {
+  return comments.map((tweet) => {
     if (tweet) {
       return (
         <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
@@ -33,6 +36,7 @@ const TweetsAndReplies = ({ id }) => {
         </div>
       );
     }
+    return '';
   });
 };
 
