@@ -11,6 +11,7 @@ function Comment(props) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log(comment);
     getCommentAndTweet(comment.author, comment.commentID).then(() => {
       setIsLoading(false);
     });

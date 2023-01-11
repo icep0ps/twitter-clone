@@ -23,6 +23,8 @@ const useFetchComment = () => {
       'tweets',
       `${commentID}`
     );
+
+    console.log(tweetAuthor, commentID);
     const tweetSnapshot = await getDoc(tweetInfomationRef);
     const { author, orignalPost, id } = tweetSnapshot.data();
     const tweetRef = doc(db, 'users', `${author}`, 'tweets', `${orignalPost}`);
@@ -34,7 +36,7 @@ const useFetchComment = () => {
           setTweetStructure((prevState) => {
             return { ...prevState, tweet: mainTweet };
           });
-          resolve(tweet);
+          resolve(tweet.data());
         } else {
           reject(new Error('Tweet no longer exists'));
         }
