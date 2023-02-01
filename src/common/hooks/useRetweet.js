@@ -41,9 +41,7 @@ function useRetweet(tweetRef, tweetInfomation) {
           console.log('No such document!');
           setDoc(yourTweetsRef, {
             type: 'retweet',
-            author: author,
-            retweeter: user.displayName,
-            id: id,
+            ref: tweetRef,
           });
 
           updateDoc(tweetRef, {

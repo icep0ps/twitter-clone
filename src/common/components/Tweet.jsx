@@ -2,84 +2,27 @@
 import uniqid from 'uniqid';
 import useLike from '../hooks/useLike';
 import { Link } from 'react-router-dom';
-import { doc } from 'firebase/firestore';
 import useFollow from '../hooks/useFollow';
 import useRetweet from '../hooks/useRetweet';
 import LikeIcon from '../../assets/svgs/LikeIcon';
 import ShareIcon from '../../assets/svgs/ShareIcon';
-import { db } from '../../firebase/firebase-config';
 import { UserContext } from '../../Context/UserContext';
 import RetweetIcon from '../../assets/svgs/RetweetIcon';
 import CommentsIcon from '../../assets/svgs/CommentsIcon';
-import React, { useEffect, useState, useContext } from 'react';
-import useFetchUserProfilePic from '../hooks/useFetchUserProfilePic';
+import React, { useEffect, useContext } from 'react';
+
 import useDeleteTweet from '../hooks/useDeleteTweet';
-import useFetchRetweet from '../hooks/useFetchRetweet';
 
 function Tweet(props) {
-  const [tweetRef, setTweetRef] = useState('');
   const { setCurrentTweetBiengViewed, setReplyingTo, user } =
     useContext(UserContext);
-  const {
-    id,
-    author,
-    username,
-    likes,
-    retweets,
-    tweetInfomation: data,
-  } = props;
-  const [tweetInfomation, settweetInfomation] = useState(data);
-  const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
+  const { id, author, username, likes, retweets, tweetInfomation } = props;
   const { deleteTweet } = useDeleteTweet();
-  const { like } = useLike(tweetRef, tweetInfomation);
   const { isFollowing } = useFollow(author);
-  const { retweet } = useRetweet(tweetRef, tweetInfomation);
-  const { getRetweet, retweet: retweetData } = useFetchRetweet();
-  const [isLoading, setIsloading] = useState(true);
+  const { like } = useLike(tweetInfomation.ref, tweetInfomation);
+  const { retweet } = useRetweet(tweetInfomation.ref, tweetInfomation);
 
-  useEffect(() => {
-    getProfilePic(author);
-    switch (tweetInfomation.type) {
-      case 'tweet':
-        setTweetRef(doc(db, 'users', `${author}`, 'tweets', `${id}`));
-        setIsloading(false);
-        break;
-      case 'comment':
-        setTweetRef(
-          doc(
-            db,
-            'users',
-            `${tweetInfomation.replyingTo}`,
-            'tweets',
-            `${tweetInfomation.parentDocId}`,
-            'comments',
-            `${tweetInfomation.id}`
-          )
-        );
-        setIsloading(false);
-        break;
-      case 'retweet':
-        console.log('yo', tweetInfomation);
-        getRetweet(tweetInfomation.retweeter, tweetInfomation.id).then(
-          (res) => {
-            console.log('this is res', res);
-            settweetInfomation(res);
-
-            setIsloading(false);
-          }
-        );
-        setTweetRef(
-          doc(db, 'users', `${tweetInfomation.author}`, 'tweets', `${id}`)
-        );
-        break;
-      default:
-        return;
-    }
-  }, [isFollowing]);
-
-  if (isLoading) {
-    return <h1>Loading...</h1>;
-  }
+  useEffect(() => {}, [isFollowing]);
 
   return (
     <div
@@ -89,7 +32,7 @@ function Tweet(props) {
       {user.displayName === tweetInfomation?.retweeter ? (
         <button
           className="right-10 absolute"
-          onClick={(e) => deleteTweet(tweetRef)}
+          onClick={(e) => deleteTweet(tweetInfomation.ref)}
         >
           delete
         </button>
@@ -97,7 +40,7 @@ function Tweet(props) {
         user.displayName === author && (
           <button
             className="right-10 absolute"
-            onClick={(e) => deleteTweet(tweetRef)}
+            onClick={(e) => deleteTweet(tweetInfomation.ref)}
           >
             delete
           </button>
@@ -113,7 +56,7 @@ function Tweet(props) {
           <div className="image">
             <div
               className="min-w-[48px] min-h-[48px] bg-black rounded-3xl bg-cover bg-center bg-no-repeat"
-              style={{ backgroundImage: `url(${profilePicURL})` }}
+              // style={{ backgroundImage: `url(${})` }}
             ></div>
             {tweetInfomation.parentDocId !== id && <div className="line"></div>}
           </div>
@@ -167,10 +110,7 @@ function Tweet(props) {
               </button>
               <button className=" text-black flex gap-3" onClick={() => like()}>
                 <LikeIcon />
-                {/* TODO: find a better way to handle likes if its a retweet so that you dont have to put this conditianal rendering */}
-                {tweetInfomation.type === 'retweet'
-                  ? retweetData.likes?.length
-                  : likes?.length}
+                {likes?.length}
               </button>
               <button className=" text-black flex gap-3">
                 <ShareIcon />

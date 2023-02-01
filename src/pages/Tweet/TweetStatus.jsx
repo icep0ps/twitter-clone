@@ -34,7 +34,7 @@ function TweetStatus() {
             <Comments
               id={id}
               key={'comments'}
-              author={tweet.comment.author}
+              author={tweet.author}
               tweetInfomation={tweet}
               location={location}
             ></Comments>

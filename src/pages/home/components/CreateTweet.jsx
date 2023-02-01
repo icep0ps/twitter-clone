@@ -65,7 +65,6 @@ function CreateTweet(tweet = { type: 'tweet' }) {
 
   const sendTweet = async () => {
     const TWEET_ID = uniqid();
-    console.log('done');
     switch (tweet.type) {
       case 'tweet':
         const usersTweetsRef = doc(
@@ -113,9 +112,7 @@ function CreateTweet(tweet = { type: 'tweet' }) {
 
         await setDoc(replyRef, {
           type: COMMENT,
-          author: author,
-          id: TWEET_ID,
-          orignalPost: id,
+          ref: tweetCommentsRef,
         });
         setImages(TWEET_ID).then(async (images) => {
           await setDoc(tweetCommentsRef, {

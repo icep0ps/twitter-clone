@@ -37,7 +37,7 @@ function Tweet(props) {
             'users',
             `${tweetInfomation.replyingTo}`,
             'tweets',
-            `${id}`,
+            `${tweetInfomation.parentDocId}`,
             'comments',
             `${tweetInfomation.id}`
           )

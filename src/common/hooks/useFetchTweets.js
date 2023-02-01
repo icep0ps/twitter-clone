@@ -7,11 +7,15 @@ import {
   where,
   getDocs,
 } from 'firebase/firestore';
+import useFetchComment from './useFetchComment';
 
 const useFetchTweets = () => {
-  const [tweets, setTweets] = useState([]);
-  const [comments, setComments] = useState([]);
+  let isInitialFetch = true;
+  const [tweets, setTweets] = useState(new Map());
+  const [comments, setComments] = useState(new Map());
   const [retweets, setRetweets] = useState([]);
+
+  const [getCommentAndTweet] = useFetchComment();
 
   async function getTweets(userId) {
     const usersTweetsRef = collection(db, 'users', `${userId}`, 'tweets');
@@ -20,24 +24,31 @@ const useFetchTweets = () => {
     const commentsQuery = query(usersTweetsRef, where('type', '==', 'comment'));
 
     onSnapshot(tweetsQuery, (docs) => {
-      const tweetsCollection = [];
       docs.forEach((tweet) => {
         const tweetData = tweet.data();
-        tweetsCollection.push(tweetData);
+        setTweets(new Map(tweets.set(tweetData.id, tweetData)));
       });
-      setTweets(tweetsCollection);
     });
 
     const userComments = await getDocs(commentsQuery);
-    const commentsCollection = [];
     userComments.forEach(async (comment) => {
-      const getCommentAndTweetInfo = {
-        author: userId,
-        commentID: comment.data().id,
-      };
-      commentsCollection.push(getCommentAndTweetInfo);
+      const commentRef = comment.data().commentRef;
+      const tweetRef = comment.data().parentTweetRef;
+
+      onSnapshot(commentRef, async () => {
+        const tweetAndComment = await getCommentAndTweet(tweetRef, commentRef);
+        setComments(new Map(comments.set(tweetAndComment.id, tweetAndComment)));
+      });
+
+      onSnapshot(tweetRef, async () => {
+        if (isInitialFetch) {
+          isInitialFetch = false;
+          return;
+        }
+        const tweetAndComment = await getCommentAndTweet(tweetRef, commentRef);
+        setComments(new Map(comments.set(tweetAndComment.id, tweetAndComment)));
+      });
     });
-    setComments(commentsCollection);
 
     const retweets = await getDocs(retweetsQuery);
     const retweetsCollection = [];
@@ -45,7 +56,7 @@ const useFetchTweets = () => {
       const retweetReturned = retweet.data();
       retweetsCollection.push(retweetReturned);
     });
-    setRetweets(retweetsCollection);
+    setRetweets((prevState) => prevState.concat(retweetsCollection));
 
     return tweets;
   }

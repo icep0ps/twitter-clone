@@ -24,10 +24,13 @@ const useFetchTweet = () => {
           const tweet = tweetSnapshot.data();
 
           if (tweet.type === 'comment') {
-            getCommentAndTweet(author, tweetID).then((comment) => {
-              setTweet(comment);
-              resolve(comment);
-            });
+            const getCommentAndTweetInfo = {
+              author: author,
+              commentID: tweetID,
+              type: 'comment',
+            };
+            setTweet(getCommentAndTweetInfo);
+            resolve(getCommentAndTweetInfo);
             return tweet;
           }
 
@@ -52,3 +55,8 @@ const useFetchTweet = () => {
 };
 
 export default useFetchTweet;
+
+// getCommentAndTweet(author, tweetID).then((comment) => {
+//   setTweet(comment);
+//   resolve(comment);
+// });

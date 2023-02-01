@@ -65,6 +65,7 @@ function Reply({ username, author, id }) {
       'tweets',
       `${TWEET_ID}`
     );
+    const parentTweetRef = doc(db, 'users', `${author}`, 'tweets', `${id}`);
     const tweetCommentsRef = doc(
       db,
       'users',
@@ -77,9 +78,8 @@ function Reply({ username, author, id }) {
 
     await setDoc(replyRef, {
       type: COMMENT,
-      author: author,
-      id: TWEET_ID,
-      orignalPost: id,
+      commentRef: tweetCommentsRef,
+      parentTweetRef: parentTweetRef,
     });
 
     setImages(TWEET_ID).then(async (responseImages) => {
@@ -96,6 +96,7 @@ function Reply({ username, author, id }) {
         retweets: [],
         images: responseImages,
         date: Timestamp.now(),
+        ref: tweetCommentsRef,
       });
     });
     setTweetInput('');

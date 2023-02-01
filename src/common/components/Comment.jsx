@@ -1,25 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Tweet from './Tweet';
 import { COMMENT } from '../helpers/types';
-import React, { useEffect, useState } from 'react';
-import useFetchComment from '../hooks/useFetchComment';
+import React, { useEffect } from 'react';
+
 import { default as TweetInTweetStatus } from './../../pages/Tweet/components/tweet/Tweet';
 
 function Comment(props) {
-  const { comment, inTweetStatus } = props;
-  const [tweet, getCommentAndTweet] = useFetchComment();
-  const [isLoading, setIsLoading] = useState(true);
+  const { tweet, inTweetStatus } = props;
 
-  useEffect(() => {
-    console.log(comment);
-    getCommentAndTweet(comment.author, comment.commentID).then(() => {
-      setIsLoading(false);
-    });
-  }, [comment]);
+  useEffect(() => {}, [tweet]);
 
-  if (isLoading) {
-    return <h1>Loading....</h1>;
-  }
   return (
     <div className=" flex flex-col  border-gray-500 border-solid pb-3 relative">
       <Tweet
