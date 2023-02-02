@@ -1,49 +1,46 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Tweet from './Tweet';
+import React from 'react';
 import { COMMENT } from '../helpers/types';
-import React, { useEffect } from 'react';
-
 import { default as TweetInTweetStatus } from './../../pages/Tweet/components/tweet/Tweet';
 
 function Comment(props) {
-  const { tweet, inTweetStatus } = props;
-
-  useEffect(() => {}, [tweet]);
-
+  const { tweet, comment, inTweetStatus } = props;
+  console.log(tweet, comment);
   return (
     <div className=" flex flex-col  border-gray-500 border-solid pb-3 relative">
       <Tweet
-        id={tweet.tweet.id}
-        key={tweet.tweet.id}
+        id={tweet.id}
+        key={tweet.id}
         type={COMMENT}
-        author={tweet.tweet.author}
-        username={tweet.tweet.username}
-        tweet={tweet.tweet.tweet}
-        likes={tweet.tweet.likes}
-        retweets={tweet.tweet.retweets}
-        tweetInfomation={tweet.tweet}
+        author={tweet.author}
+        username={tweet.username}
+        tweet={tweet.tweet}
+        likes={tweet.likes}
+        retweets={tweet.retweets}
+        tweetInfomation={tweet}
       />
       {inTweetStatus ? (
         <TweetInTweetStatus
-          id={tweet.comment.id}
-          key={tweet.comment.id}
-          author={tweet.comment.author}
-          username={tweet.comment.username}
-          tweet={tweet.comment.tweet}
-          likes={tweet.comment.likes}
-          retweets={tweet.comment.retweets}
-          tweetInfomation={tweet.comment}
+          id={comment.id}
+          key={comment.id}
+          author={comment.author}
+          username={comment.username}
+          tweet={comment.tweet}
+          likes={comment.likes}
+          retweets={comment.retweets}
+          tweetInfomation={comment}
         />
       ) : (
         <Tweet
-          id={tweet.comment.id}
-          key={tweet.comment.id}
-          author={tweet.comment.author}
-          username={tweet.comment.username}
-          tweet={tweet.comment.tweet}
-          likes={tweet.comment.likes}
-          retweets={tweet.comment.retweets}
-          tweetInfomation={tweet.comment}
+          id={comment.id}
+          key={comment.id}
+          author={comment.author}
+          username={comment.username}
+          tweet={comment.tweet}
+          likes={comment.likes}
+          retweets={comment.retweets}
+          tweetInfomation={comment}
         />
       )}
     </div>

@@ -9,11 +9,8 @@ import RetweetIcon from '../../../../assets/svgs/RetweetIcon';
 import CommentsIcon from '../../../../assets/svgs/CommentsIcon';
 import useFollow from '../../../../common/hooks/useFollow';
 import { Link, Outlet } from 'react-router-dom';
-import { doc } from 'firebase/firestore';
 import useRetweet from '../../../../common/hooks/useRetweet';
-import { db } from '../../../../firebase/firebase-config';
 import uniqid from 'uniqid';
-import useFetchUserProfilePic from '../../../../common/hooks/useFetchUserProfilePic';
 
 function Tweet(props) {
   const { user } = useContext(UserContext);
@@ -22,31 +19,8 @@ function Tweet(props) {
   const { follow, isFollowing } = useFollow(author);
   const { like } = useLike(tweetRef, tweetInfomation);
   const { retweet } = useRetweet(tweetRef, tweetInfomation);
-  const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
 
-  useEffect(() => {
-    getProfilePic(author);
-    switch (tweetInfomation.type) {
-      case 'tweet':
-        setTweetRef(doc(db, 'users', `${author}`, 'tweets', `${id}`));
-        break;
-      case 'comment':
-        setTweetRef(
-          doc(
-            db,
-            'users',
-            `${tweetInfomation.replyingTo}`,
-            'tweets',
-            `${tweetInfomation.parentDocId}`,
-            'comments',
-            `${tweetInfomation.id}`
-          )
-        );
-        break;
-      default:
-        return;
-    }
-  }, [isFollowing]);
+  useEffect(() => {}, [isFollowing]);
 
   return (
     <>
@@ -55,7 +29,7 @@ function Tweet(props) {
           <div className="flex gap-3">
             <div
               className="w-12 h-12 bg-black rounded-3xl bg-cover bg-center bg-no-repeat"
-              style={{ backgroundImage: `url(${profilePicURL})` }}
+              // style={{ backgroundImage: `url(${profilePicURL})` }}
             ></div>
             {user.displayName !== author && (
               <button className="right-10 absolute" onClick={(e) => follow()}>
@@ -78,10 +52,10 @@ function Tweet(props) {
             </Link>
           </div>
           <div className="w-5/6">
-            <p className="text-xl ">{tweet}</p>
+            <p className="text-xl ">{tweet.tweet}</p>
           </div>
           <div>
-            {tweetInfomation.images.map((imageURL) => {
+            {/* {tweetInfomation.images.map((imageURL) => {
               return (
                 <img
                   alt=""
@@ -90,11 +64,11 @@ function Tweet(props) {
                   className="rounded-xl	my-4 border-gray-300 border"
                 />
               );
-            })}
+            })} */}
           </div>
         </div>
         <p className="text-gray-400 text-sm">
-          {tweetInfomation.date.toDate().toDateString()}
+          {/* {tweetInfomation.date.toDate().toDateString()} */}
         </p>
         <div className="flex gap-5"></div>
         <div className="flex justify-start gap-3 border-y border-y-gray-200 py-4">

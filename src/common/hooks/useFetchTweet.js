@@ -1,62 +1,70 @@
 import { db } from '../../firebase/firebase-config';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, getDoc } from 'firebase/firestore';
 import useFetchComment from './useFetchComment';
 import { useState } from 'react';
-import useFetchUsername from './useFetchUsername';
 
 const useFetchTweet = () => {
-  const [tweet, setTweet] = useState(null);
-  const [, getCommentAndTweet] = useFetchComment();
-  const { getUsername } = useFetchUsername();
+  let isInitialFetch = true;
+  const [tweet, setTweet] = useState();
+  const [getCommentAndTweet] = useFetchComment();
 
-  const getTweet = async (author, tweetID) => {
+  const getTweet = async (author, tweetId) => {
     const usersTweetsRef = doc(
       db,
       'users',
       `${author}`,
       'tweets',
-      `${tweetID}`
+      `${tweetId}`
     );
+    const getUsersTweetsRef = await getDoc(usersTweetsRef);
 
-    return new Promise((resolve, reject) => {
-      onSnapshot(usersTweetsRef, async (tweetSnapshot) => {
-        if (tweetSnapshot.exists()) {
-          const tweet = tweetSnapshot.data();
+    if (getUsersTweetsRef.data().type === 'comment') {
+      const commentRef = getUsersTweetsRef.data().commentRef;
+      const tweetRef = getUsersTweetsRef.data().parentTweetRef;
 
-          if (tweet.type === 'comment') {
-            const getCommentAndTweetInfo = {
-              author: author,
-              commentID: tweetID,
-              type: 'comment',
-            };
-            setTweet(getCommentAndTweetInfo);
-            resolve(getCommentAndTweetInfo);
-            return tweet;
+      const listenToComment = await new Promise((resolve, reject) => {
+        onSnapshot(commentRef, async () => {
+          const tweetAndComment = await getCommentAndTweet(
+            tweetRef,
+            commentRef
+          );
+          resolve(tweetAndComment);
+          setTweet(tweetAndComment);
+        });
+      });
+      const listenToTweet = await new Promise((resolve, reject) => {
+        onSnapshot(tweetRef, async () => {
+          if (isInitialFetch) {
+            isInitialFetch = false;
+            resolve(tweet);
+            return;
           }
+          const tweetAndComment = await getCommentAndTweet(
+            tweetRef,
+            commentRef
+          );
+          resolve(tweetAndComment);
+          setTweet(tweetAndComment);
+        });
+      });
 
-          if (tweet.type === 'tweet') {
-            getUsername(author).then((username) => {
-              tweet.username = username;
-              setTweet(tweet);
-              resolve(tweet);
-            });
-            return tweet;
-          }
+      return await Promise.all([listenToComment, listenToTweet]).then(
+        () => tweet
+      );
+    }
 
-          return tweet;
-        } else {
-          reject(new Error('Tweet might no longer exisit'));
-        }
+    const listenToTweet = await new Promise((resolve, reject) => {
+      onSnapshot(usersTweetsRef, (tweetSnapshot) => {
+        const tweetData = tweetSnapshot.data();
+        resolve(tweetData);
+        setTweet(tweetData);
       });
     });
+
+    return listenToTweet;
   };
 
   return { tweet, getTweet };
 };
 
 export default useFetchTweet;
-
-// getCommentAndTweet(author, tweetID).then((comment) => {
-//   setTweet(comment);
-//   resolve(comment);
-// });

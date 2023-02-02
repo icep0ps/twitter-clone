@@ -18,7 +18,6 @@ function TweetStatus() {
   };
 
   useEffect(() => {
-    setIsLoading(true);
     fetchTweetAndComments();
   }, [id]);
 
@@ -30,7 +29,12 @@ function TweetStatus() {
         <h1 className=" font-semibold text-xl p-4 ">Tweet</h1>
         {tweet.type === 'comment' ? (
           <>
-            <Comment comment={tweet} inTweetStatus={true}></Comment>
+            <Comment
+              key={tweet.id}
+              comment={tweet.comment}
+              tweet={tweet.tweet}
+              inTweetStatus={true}
+            ></Comment>
             <Comments
               id={id}
               key={'comments'}

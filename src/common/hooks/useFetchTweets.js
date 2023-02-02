@@ -11,11 +11,10 @@ import useFetchComment from './useFetchComment';
 
 const useFetchTweets = () => {
   let isInitialFetch = true;
+  const [getCommentAndTweet] = useFetchComment();
   const [tweets, setTweets] = useState(new Map());
   const [comments, setComments] = useState(new Map());
   const [retweets, setRetweets] = useState([]);
-
-  const [getCommentAndTweet] = useFetchComment();
 
   async function getTweets(userId) {
     const usersTweetsRef = collection(db, 'users', `${userId}`, 'tweets');

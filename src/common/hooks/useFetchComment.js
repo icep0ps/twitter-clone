@@ -19,6 +19,7 @@ const useFetchComment = () => {
       id: results[1].parentDocId,
       tweet: results[0],
       comment: results[1],
+      type: 'comment',
     };
   };
 

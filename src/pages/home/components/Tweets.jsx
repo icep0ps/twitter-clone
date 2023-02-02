@@ -23,8 +23,14 @@ const Tweets = () => {
   return (
     <div className="flex flex-col gap-3 relative ">
       {[...comments].map((mapObject) => {
-        const comment = mapObject[1];
-        return <Comment tweet={comment} key={comment.id} />;
+        const commentAndTweet = mapObject[1];
+        return (
+          <Comment
+            comment={commentAndTweet.comment}
+            tweet={commentAndTweet.tweet}
+            key={commentAndTweet.id}
+          />
+        );
       })}
 
       {[...tweets, ...retweets].map((mapObject) => {
