@@ -18,8 +18,8 @@ import useFetchUserProfilePic from '../../common/hooks/useFetchUserProfilePic';
 function Profile() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { follow, isFollowing } = useFollow(id);
   const { user } = useContext(UserContext);
+  const { follow, isFollowing } = useFollow(id);
   const [following, setFollowing] = useState([]);
   const [followers, setFollowers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

@@ -6,7 +6,7 @@ import { default as TweetInTweetStatus } from './../../pages/Tweet/components/tw
 
 function Comment(props) {
   const { tweet, comment, inTweetStatus } = props;
-  console.log(tweet, comment);
+
   return (
     <div className=" flex flex-col  border-gray-500 border-solid pb-3 relative">
       <Tweet

@@ -9,7 +9,9 @@ const Tweets = ({ id }) => {
     getTweets(id);
   }, []);
 
-  return tweets.map((tweet) => {
+  return [...tweets].map((mapObject) => {
+    const tweet = mapObject[1];
+
     return (
       <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
         <Tweet

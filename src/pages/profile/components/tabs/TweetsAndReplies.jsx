@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import uniqid from 'uniqid';
+import React, { useEffect, useState } from 'react';
 import Tweet from '../../../../common/components/Tweet';
 import Comment from '../../../../common/components/Comment';
 import useFetchTweets from '../../../../common/hooks/useFetchTweets';
 import useFetchComments from '../../../../common/hooks/useFetchComments';
-import uniqid from 'uniqid';
-import { useState } from 'react';
 
 const TweetsAndReplies = ({ id }) => {
   const { getComments, comments } = useFetchComments();
@@ -21,12 +20,17 @@ const TweetsAndReplies = ({ id }) => {
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
-  return [...tweets, ...comments].map((tweet) => {
+  return [...tweets, ...comments].map((mapObject) => {
+    const tweet = mapObject[1];
     if (tweet) {
       return (
         <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
           {tweet.type === 'comment' ? (
-            <Comment comment={tweet} key={uniqid()} />
+            <Comment
+              comment={tweet.comment}
+              tweet={tweet.tweet}
+              key={uniqid()}
+            />
           ) : (
             <Tweet
               id={tweet.id}

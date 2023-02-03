@@ -54,10 +54,7 @@ function Tweet(props) {
       <div className="flex gap-5 ">
         <div className="flex gap-5 ">
           <div className="image">
-            <div
-              className="min-w-[48px] min-h-[48px] bg-black rounded-3xl bg-cover bg-center bg-no-repeat"
-              // style={{ backgroundImage: `url(${})` }}
-            ></div>
+            <div className="min-w-[48px] min-h-[48px] bg-black rounded-3xl bg-cover bg-center bg-no-repeat"></div>
             {tweetInfomation.parentDocId !== id && <div className="line"></div>}
           </div>
         </div>
@@ -80,7 +77,7 @@ function Tweet(props) {
               )}
               <p className="my-1">{tweetInfomation.tweet}</p>
               <div>
-                {tweetInfomation.images.map((imageURL) => {
+                {/* {tweetInfomation.images.map((imageURL) => {
                   return (
                     <img
                       alt=""
@@ -89,7 +86,7 @@ function Tweet(props) {
                       key={uniqid()}
                     />
                   );
-                })}
+                })} */}
               </div>
             </Link>
             <div className="flex gap-20  py-2">

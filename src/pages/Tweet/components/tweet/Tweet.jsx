@@ -93,10 +93,10 @@ function Tweet(props) {
           <button className=" text-black">
             <CommentsIcon />
           </button>
-          <button className=" text-black flex gap-3" onClick={() => like()}>
+          <button className=" text-black flex gap-3" onClick={like}>
             <LikeIcon />
           </button>
-          <button className=" text-black flex gap-3" onClick={() => retweet()}>
+          <button className=" text-black flex gap-3" onClick={retweet}>
             <RetweetIcon />
           </button>
           <button className=" text-black flex gap-3">

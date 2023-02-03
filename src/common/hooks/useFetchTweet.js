@@ -8,7 +8,7 @@ const useFetchTweet = () => {
   const [tweet, setTweet] = useState();
   const [getCommentAndTweet] = useFetchComment();
 
-  const getTweet = async (author, tweetId) => {
+  const getTweet = async function (author, tweetId) {
     const usersTweetsRef = doc(
       db,
       'users',
@@ -16,11 +16,11 @@ const useFetchTweet = () => {
       'tweets',
       `${tweetId}`
     );
-    const getUsersTweetsRef = await getDoc(usersTweetsRef);
+    const getUsersTweet = await getDoc(usersTweetsRef);
 
-    if (getUsersTweetsRef.data().type === 'comment') {
-      const commentRef = getUsersTweetsRef.data().commentRef;
-      const tweetRef = getUsersTweetsRef.data().parentTweetRef;
+    if (getUsersTweet.data().type === 'comment') {
+      const commentRef = getUsersTweet.data().commentRef;
+      const tweetRef = getUsersTweet.data().parentTweetRef;
 
       const listenToComment = await new Promise((resolve, reject) => {
         onSnapshot(commentRef, async () => {

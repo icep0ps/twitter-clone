@@ -13,7 +13,7 @@ import { db } from '../../firebase/firebase-config';
 
 const useLike = (tweetRef, tweet) => {
   const { user } = useContext(UserContext);
-
+  console.log(tweetRef, tweet);
   const like = async () => {
     const usersLikesRef = doc(
       db,
@@ -34,10 +34,8 @@ const useLike = (tweetRef, tweet) => {
             }),
           });
         } else {
-
           setDoc(usersLikesRef, {
-            id: tweet.id,
-            author: tweet.author,
+            ref: tweetRef,
             type: tweet.type,
           });
 

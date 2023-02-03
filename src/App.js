@@ -26,7 +26,7 @@ function App() {
 
   return (
     <div className="grid grid-cols-[1.3fr_2fr_1.3fr] self-center w-full h-full ">
-      {user != null ? <Sidebar /> : ''}
+      {user != null && <Sidebar />}
 
       <Routes>
         <Route
@@ -57,7 +57,7 @@ function App() {
           }
         ></Route>
       </Routes>
-      {user != null ? <WhoToFollow /> : ''}
+      {user != null && <WhoToFollow />}
     </div>
   );
 }
