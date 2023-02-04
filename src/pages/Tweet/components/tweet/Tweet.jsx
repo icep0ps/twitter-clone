@@ -1,20 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Reply from './Reply';
-import React, { useContext, useEffect, useState } from 'react';
+import { Link, Outlet } from 'react-router-dom';
 import LikeIcon from '../../../../assets/svgs/LikeIcon';
-import useLike from '../../../../common/hooks/useLike';
 import ShareIcon from '../../../../assets/svgs/ShareIcon';
+import useLike from '../../../../common/hooks/common/useLike';
 import { UserContext } from '../../../../Context/UserContext';
 import RetweetIcon from '../../../../assets/svgs/RetweetIcon';
+import React, { useContext, useEffect, useState } from 'react';
 import CommentsIcon from '../../../../assets/svgs/CommentsIcon';
-import useFollow from '../../../../common/hooks/useFollow';
-import { Link, Outlet } from 'react-router-dom';
-import useRetweet from '../../../../common/hooks/useRetweet';
-import uniqid from 'uniqid';
+import useFollow from '../../../../common/hooks/common/useFollow';
+import useRetweet from '../../../../common/hooks/retweets/useRetweet';
 
 function Tweet(props) {
   const { user } = useContext(UserContext);
-  const { id, author, username, tweet, tweetInfomation } = props;
+  const { id, author, username, tweet, tweetInfomation, ref } = props;
   const [tweetRef, setTweetRef] = useState('');
   const { follow, isFollowing } = useFollow(author);
   const { like } = useLike(tweetRef, tweetInfomation);
@@ -103,7 +102,12 @@ function Tweet(props) {
             <ShareIcon />
           </button>
         </div>
-        <Reply username={username} author={author} id={id}></Reply>
+        <Reply
+          id={id}
+          author={author}
+          username={username}
+          parentTweetRef={tweetInfomation.ref}
+        ></Reply>
       </div>
       <Outlet />
     </>

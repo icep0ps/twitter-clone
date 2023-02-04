@@ -10,12 +10,12 @@ import { auth } from './firebase/firebase-config';
 import { onAuthStateChanged } from 'firebase/auth';
 import { UserContext } from './Context/UserContext';
 import TweetStatus from './pages/Tweet/TweetStatus';
-import Likes from './pages/Tweet/components/tweet/likes/Likes';
-import Retweets from './pages/Tweet/components/tweet/likes/Retweets';
-import ComposeTweet from './common/components/ComposeTweet';
-import WhoToFollow from './common/components/WhoToFollow';
+import Likes from './pages/Tweet/components/tweet/Likes';
+import Retweets from './pages/Tweet/components/tweet/Retweets';
+import ComposeTweet from './common/components/Compose-tweet';
 import FollowersAndFollowing from './pages/profile/components/followersAndFollowing/FollowersAndFollowing';
 import EditProfile from './pages/profile/components/EditProfile';
+import WhoToFollow from './common/components/Who-to-follow';
 
 function App() {
   const { user, setUser } = useContext(UserContext);

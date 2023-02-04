@@ -1,10 +1,10 @@
 import React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import useFollow from '../hooks/useFollow';
+import useFollow from '../hooks/common/useFollow';
 import { UserContext } from '../../Context/UserContext';
-import useFetchUserProfilePic from '../hooks/useFetchUserProfilePic';
-import useFetchUserData from './../hooks/useFetchUserData';
+import useFetchUserProfilePic from '../hooks/userdata/useFetchUserProfilePic';
+import useFetchUserData from '../hooks/userdata/useFetchUserData';
 
 function User({ id, showBio }) {
   const { user } = useContext(UserContext);

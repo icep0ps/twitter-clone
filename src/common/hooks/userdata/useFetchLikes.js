@@ -1,8 +1,8 @@
 import { collection, getDocs } from 'firebase/firestore';
 import { useState } from 'react';
-import { db } from '../../firebase/firebase-config';
-import useFetchTweet from './useFetchTweet';
-import useDeleteTweet from './useDeleteTweet';
+import { db } from '../../../firebase/firebase-config';
+import useFetchTweet from '../tweets/useFetchTweet';
+import useDeleteTweet from '../tweets/useDeleteTweet';
 
 function useFetchLikes() {
   const { getTweet } = useFetchTweet();

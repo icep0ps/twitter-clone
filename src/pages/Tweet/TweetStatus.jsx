@@ -3,8 +3,8 @@ import { useParams, useLocation } from 'react-router-dom';
 import Tweet from './components/tweet/Tweet';
 import React, { useEffect, useState } from 'react';
 import Comments from './components/comments/Comments';
-import useFetchTweet from '../../common/hooks/useFetchTweet';
 import Comment from '../../common/components/Comment';
+import useFetchTweet from './../../common/hooks/tweets/useFetchTweet';
 
 function TweetStatus() {
   let location = useLocation();
@@ -12,13 +12,8 @@ function TweetStatus() {
   const { tweet, getTweet } = useFetchTweet();
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchTweetAndComments = async () => {
-    await getTweet(author, id);
-    setIsLoading(false);
-  };
-
   useEffect(() => {
-    fetchTweetAndComments();
+    getTweet(author, id).then(() => setIsLoading(false));
   }, [id]);
 
   if (isLoading) {

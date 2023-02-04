@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import Tweet from '../../../common/components/Tweet';
 import Comment from '../../../common/components/Comment';
 import { UserContext } from '../../../Context/UserContext';
-import useFetchFollowingTweets from './../../../common/hooks/useFetchFollowingTweets';
+import useFetchFollowingTweets from './../../../common/hooks/userdata/useFetchFollowingTweets';
 
 const Tweets = () => {
   const { user } = useContext(UserContext);

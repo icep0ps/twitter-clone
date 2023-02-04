@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
+import uniqid from 'uniqid';
+import { useEffect } from 'react';
 import Tweet from '../../../../common/components/Tweet';
 import Comment from '../../../../common/components/Comment';
-import useFetchLikes from '../../../../common/hooks/useFetchLikes';
-import { useEffect } from 'react';
-import uniqid from 'uniqid';
+import useFetchLikes from './../../../../common/hooks/userdata/useFetchLikes';
 
 const Likes = ({ id }) => {
   const { likedTweets, getLikes } = useFetchLikes();

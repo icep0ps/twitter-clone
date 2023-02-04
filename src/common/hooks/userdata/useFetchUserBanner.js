@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { storage } from '../../firebase/firebase-config';
+import { storage } from '../../../firebase/firebase-config';
 import { getDownloadURL, ref, list } from 'firebase/storage';
 
 function useFetchUserBanner() {

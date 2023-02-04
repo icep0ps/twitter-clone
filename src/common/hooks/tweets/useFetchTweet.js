@@ -1,7 +1,7 @@
-import { db } from '../../firebase/firebase-config';
+import { db } from '../../../firebase/firebase-config';
 import { doc, onSnapshot, getDoc } from 'firebase/firestore';
-import useFetchComment from './useFetchComment';
 import { useState } from 'react';
+import useFetchComment from '../comments/useFetchComment';
 
 const useFetchTweet = () => {
   let isInitialFetch = true;

@@ -8,12 +8,12 @@ import { useNavigate } from 'react-router-dom';
 import Infomation from './components/Infomation';
 import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase/firebase-config';
-import useFollow from '../../common/hooks/useFollow';
+import useFollow from '../../common/hooks/common/useFollow';
 import { UserContext } from '../../Context/UserContext';
 import TweetCategories from './components/TweetCategories';
-import useFetchUserBanner from '../../common/hooks/useFetchUserBanner';
 import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
-import useFetchUserProfilePic from '../../common/hooks/useFetchUserProfilePic';
+import useFetchUserProfilePic from '../../common/hooks/userdata/useFetchUserProfilePic';
+import useFetchUserBanner from './../../common/hooks/userdata/useFetchUserBanner';
 
 function Profile() {
   const { id } = useParams();

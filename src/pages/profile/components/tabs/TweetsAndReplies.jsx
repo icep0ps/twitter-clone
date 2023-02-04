@@ -3,8 +3,8 @@ import uniqid from 'uniqid';
 import React, { useEffect, useState } from 'react';
 import Tweet from '../../../../common/components/Tweet';
 import Comment from '../../../../common/components/Comment';
-import useFetchTweets from '../../../../common/hooks/useFetchTweets';
-import useFetchComments from '../../../../common/hooks/useFetchComments';
+import useFetchTweets from '../../../../common/hooks/tweets/useFetchTweets';
+import useFetchComments from './../../../../common/hooks/comments/useFetchComments';
 
 const TweetsAndReplies = ({ id }) => {
   const { getComments, comments } = useFetchComments();

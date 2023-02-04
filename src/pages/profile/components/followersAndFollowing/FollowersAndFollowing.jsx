@@ -6,7 +6,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import User from '../../../../common/components/User';
-import useFetchFollowersOrFollowing from '../../../../common/hooks/useFetchFollowers';
+import useFetchFollowersOrFollowing from './../../../../common/hooks/userdata/useFetchFollowers';
 
 function FollowersAndFollowing({ view = 'followers' }) {
   const { id } = useParams();

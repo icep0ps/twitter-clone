@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Tweet from '../../../../common/components/Tweet';
-import useFetchTweets from '../../../../common/hooks/useFetchTweets';
+import useFetchTweets from '../../../../common/hooks/tweets/useFetchTweets';
 
 const Tweets = ({ id }) => {
   const { getTweets, tweets } = useFetchTweets();

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
-import useFetchUsers from '../hooks/useFetchUsers';
-import User from './../components/User';
+import useFetchUsers from '../hooks/userdata/useFetchUsers';
+import User from './User';
 
 function WhoToFollow() {
   const { getUsers, users } = useFetchUsers();

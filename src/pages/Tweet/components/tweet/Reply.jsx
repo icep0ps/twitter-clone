@@ -1,112 +1,35 @@
 import uniqid from 'uniqid';
-import React, { useState, useContext, useEffect } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { db, storage } from '../../../../firebase/firebase-config';
-import { doc, setDoc, Timestamp } from 'firebase/firestore';
+import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../../../../Context/UserContext';
-import { COMMENT } from '../../../../common/helpers/types';
-import useFetchUserProfilePic from '../../../../common/hooks/useFetchUserProfilePic';
-import { uploadBytes, getDownloadURL, ref } from 'firebase/storage';
+import useSetImages from '../../../../common/hooks/common/useSetImages';
+import useCreateAndSendComment from '../../../../common/hooks/comments/useCreateComment';
+import useFetchUserProfilePic from '../../../../common/hooks/userdata/useFetchUserProfilePic';
 
-function Reply({ username, author, id }) {
+function Reply({ id, username, author, parentTweetRef }) {
   const { user } = useContext(UserContext);
   const [tweetInput, setTweetInput] = useState('');
-  const [imagePreviewURL, setImagePreviewURL] = useState([]);
+  const { imagePreviewURL, previewImage, setImages } = useSetImages();
   const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
+  const { createAndSendComment } = useCreateAndSendComment(id);
 
   useEffect(() => {
     getProfilePic(user.displayName);
   }, []);
 
-  function setImages(tweetId) {
-    const imagesURL = [];
-    const images = new Promise((resolve, reject) => {
-      if (imagePreviewURL.length === 0) {
-        return resolve(imagesURL);
-      }
-
-      imagePreviewURL.forEach(async (image, index, array) => {
-        const imageUrl = await uploadImage(tweetId, image.image);
-        imagesURL.push(imageUrl);
-        if (index === array.length - 1) {
-          resolve(imagesURL);
-        }
-      });
-    });
-
-    return images;
-  }
-
-  async function uploadImage(tweetId, image) {
-    const imageRef = ref(
-      storage,
-      `${user.displayName}/tweets/${tweetId}/images/${image.name + uniqid()}`
-    );
-
-    await uploadBytes(imageRef, image);
-    const url = await getDownloadURL(imageRef);
-    return url;
-  }
-
-  function previewImage(event) {
-    const image = event.target.files[0];
-    setImagePreviewURL((prevState) => [
-      ...prevState,
-      { image: image, url: URL.createObjectURL(image) },
-    ]);
-  }
-  const tweet = async (event) => {
-    event.preventDefault();
-    const TWEET_ID = uniqid();
-    const replyRef = doc(
-      db,
-      'users',
-      `${user.displayName}`,
-      'tweets',
-      `${TWEET_ID}`
-    );
-    const parentTweetRef = doc(db, 'users', `${author}`, 'tweets', `${id}`);
-    const tweetCommentsRef = doc(
-      db,
-      'users',
-      `${author}`,
-      'tweets',
-      `${id}`,
-      'comments',
-      `${TWEET_ID}`
-    );
-
-    await setDoc(replyRef, {
-      type: COMMENT,
-      commentRef: tweetCommentsRef,
-      parentTweetRef: parentTweetRef,
-    });
-
-    setImages(TWEET_ID).then(async (responseImages) => {
-      await setDoc(tweetCommentsRef, {
-        id: TWEET_ID,
-        replyingTo: author,
-        type: COMMENT,
-        profileURL: user.photoURL,
-        username: user.displayName,
-        author: user.displayName,
-        tweet: tweetInput,
-        parentDocId: id,
-        likes: [],
-        retweets: [],
-        images: responseImages,
-        date: Timestamp.now(),
-        ref: tweetCommentsRef,
-      });
-    });
-    setTweetInput('');
-    setImagePreviewURL([]);
-  };
-
   return (
     <form
       className="flex flex-col relative px-5 pb "
-      onSubmit={(event) => tweet(event)}
+      onSubmit={(event) => {
+        event.preventDefault();
+        createAndSendComment(
+          username,
+          tweetInput,
+          setImages,
+          author,
+          parentTweetRef
+        );
+      }}
     >
       <div className="flex gap-5 items-start ">
         <div

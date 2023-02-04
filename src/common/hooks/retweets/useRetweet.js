@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import { db } from '../../firebase/firebase-config';
-import { UserContext } from '../../Context/UserContext';
+import { db } from '../../../firebase/firebase-config';
+import { UserContext } from '../../../Context/UserContext';
 import {
   doc,
   updateDoc,

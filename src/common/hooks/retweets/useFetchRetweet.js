@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { db } from '../../firebase/firebase-config';
+import { db } from '../../../firebase/firebase-config';
 import { doc, getDoc, onSnapshot } from 'firebase/firestore';
-import useFetchTweet from './useFetchTweet';
+import useFetchTweet from '../tweets/useFetchTweet';
 
 function useFetchRetweet() {
   const { getTweet } = useFetchTweet(null);

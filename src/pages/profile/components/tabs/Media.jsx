@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import Tweet from '../../../../common/components/Tweet';
 import Comment from '../../../../common/components/Comment';
-import useFetchTweets from '../../../../common/hooks/useFetchTweets';
+import useFetchTweets from '../../../../common/hooks/tweets/useFetchTweets';
 import uniqid from 'uniqid';
 
 const Media = ({ id }) => {

@@ -7,7 +7,7 @@ import {
 } from 'firebase/firestore';
 import { useState } from 'react';
 import useFetchComment from './useFetchComment';
-import { db } from '../../firebase/firebase-config';
+import { db } from '../../../firebase/firebase-config';
 
 function useFetchComments() {
   let isInitialFetch = true;

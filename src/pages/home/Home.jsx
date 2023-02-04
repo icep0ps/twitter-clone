@@ -1,7 +1,7 @@
 import Tweets from './components/Tweets';
 import React, { useContext } from 'react';
 import { Outlet } from 'react-router-dom';
-import CreateTweet from './components/CreateTweet';
+import CreateTweet from './components/Create-tweet';
 import { UserContext } from '../../Context/UserContext';
 
 const Home = () => {

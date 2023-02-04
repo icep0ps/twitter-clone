@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { db } from '../../firebase/firebase-config';
+import { db } from '../../../firebase/firebase-config';
 import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
 
 function useFetchRetweets() {

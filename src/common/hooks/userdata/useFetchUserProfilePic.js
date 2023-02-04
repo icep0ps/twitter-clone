@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { storage } from '../../firebase/firebase-config';
+import { storage } from '../../../firebase/firebase-config';
 import { ref, getDownloadURL, list } from 'firebase/storage';
 
 function useFetchUserProfilePic() {

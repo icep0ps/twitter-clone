@@ -7,9 +7,9 @@ import { ref, uploadBytes } from 'firebase/storage';
 import { updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase-config';
 import { storage } from '../../../firebase/firebase-config';
-import useFetchUserData from '../../../common/hooks/useFetchUserData';
-import useFetchUserBanner from '../../../common/hooks/useFetchUserBanner';
-import useFetchUserProfilePic from '../../../common/hooks/useFetchUserProfilePic';
+import useFetchUserData from '../../../common/hooks/userdata/useFetchUserData';
+import useFetchUserBanner from '../../../common/hooks/userdata/useFetchUserBanner';
+import useFetchUserProfilePic from '../../../common/hooks/userdata/useFetchUserProfilePic';
 
 //TODO : Update users profilePic URL
 

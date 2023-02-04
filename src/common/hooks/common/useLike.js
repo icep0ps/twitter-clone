@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { UserContext } from '../../Context/UserContext';
+import { UserContext } from '../../../Context/UserContext';
 import {
   updateDoc,
   arrayUnion,
@@ -9,7 +9,7 @@ import {
   arrayRemove,
   deleteDoc,
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '../../../firebase/firebase-config';
 
 const useLike = (tweetRef, tweet) => {
   const { user } = useContext(UserContext);

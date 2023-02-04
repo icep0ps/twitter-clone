@@ -1,5 +1,5 @@
-import useFetchTweets from './useFetchTweets';
-import { db } from '../../firebase/firebase-config';
+import useFetchTweets from '../tweets/useFetchTweets';
+import { db } from '../../../firebase/firebase-config';
 import { collection, getDocs } from 'firebase/firestore';
 
 const useFetchFollowingTweets = () => {

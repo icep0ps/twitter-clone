@@ -5,7 +5,7 @@ import { COMMENT } from '../helpers/types';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../Context/UserContext';
 import Reply from '../../pages/Tweet/components/tweet/Reply';
-import CreateTweet from '../../pages/home/components/CreateTweet';
+import CreateTweet from '../../pages/home/components/Create-tweet';
 
 function ComposeTweet() {
   const navigate = useNavigate();

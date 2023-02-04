@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import uniqid from 'uniqid';
-import useLike from '../hooks/useLike';
+import useLike from '../hooks/common/useLike';
 import { Link } from 'react-router-dom';
-import useFollow from '../hooks/useFollow';
-import useRetweet from '../hooks/useRetweet';
+import useFollow from '../hooks/common/useFollow';
+import useRetweet from '../hooks/retweets/useRetweet';
 import LikeIcon from '../../assets/svgs/LikeIcon';
 import ShareIcon from '../../assets/svgs/ShareIcon';
 import { UserContext } from '../../Context/UserContext';
@@ -11,7 +11,7 @@ import RetweetIcon from '../../assets/svgs/RetweetIcon';
 import CommentsIcon from '../../assets/svgs/CommentsIcon';
 import React, { useEffect, useContext } from 'react';
 
-import useDeleteTweet from '../hooks/useDeleteTweet';
+import useDeleteTweet from '../hooks/tweets/useDeleteTweet';
 
 function Tweet(props) {
   const { setCurrentTweetBiengViewed, setReplyingTo, user } =

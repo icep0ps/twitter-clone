@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
-import { db } from '../../firebase/firebase-config';
-import { UserContext } from '../../Context/UserContext';
+import { db } from '../../../firebase/firebase-config';
+import { UserContext } from '../../../Context/UserContext';
 import { getDoc, doc, deleteDoc, setDoc } from 'firebase/firestore';
 
 const useFollow = (author) => {
