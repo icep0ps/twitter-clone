@@ -19,18 +19,12 @@ const useCreateAndSendComment = (parentTweetId) => {
   ) {
     const TWEET_ID = uniqid();
 
-    const replyRef = doc(
-      db,
-      'users',
-      `${user.displayName}`,
-      'comments',
-      `${TWEET_ID}`
-    );
+    const replyRef = doc(db, 'users', `${user.displayName}`, 'comments', `${TWEET_ID}`);
 
     const commentRef = doc(
       db,
       'users',
-      `${parentTweetAuthor}`,
+      `${parentTweetAuthor.id}`,
       'tweets',
       `${parentTweetId}`,
       'comments',

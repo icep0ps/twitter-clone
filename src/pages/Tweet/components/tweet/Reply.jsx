@@ -22,13 +22,7 @@ function Reply({ id, username, author, parentTweetRef }) {
       className="flex flex-col relative px-5 pb "
       onSubmit={(event) => {
         event.preventDefault();
-        createAndSendComment(
-          username,
-          tweetInput,
-          setImages,
-          author,
-          parentTweetRef
-        );
+        createAndSendComment(username, tweetInput, setImages, author, parentTweetRef);
       }}
     >
       <div className="flex gap-5 items-start ">

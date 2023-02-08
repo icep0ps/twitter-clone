@@ -1,13 +1,9 @@
 import { useState } from 'react';
 import { db } from '../../../firebase/firebase-config';
-import {
-  collection,
-  onSnapshot,
-  query,
-  where,
-  getDocs,
-} from 'firebase/firestore';
+import { collection, onSnapshot, query, where, getDocs } from 'firebase/firestore';
 import useFetchComment from './../comments/useFetchComment';
+import Tweet from './../../classes/Tweet';
+import Author from '../../classes/Author';
 
 const useFetchTweets = () => {
   let isInitialFetch = true;
@@ -20,12 +16,17 @@ const useFetchTweets = () => {
     const usersTweetsRef = collection(db, 'users', `${userId}`, 'tweets');
     const tweetsQuery = query(usersTweetsRef, where('type', '==', 'tweet'));
     const retweetsQuery = query(usersTweetsRef, where('type', '==', 'retweet'));
-    const commentsQuery = query(usersTweetsRef, where('type', '==', 'comment'));
+    const commentsQuery = collection(db, 'users', `${userId}`, 'comments');
 
     onSnapshot(tweetsQuery, (docs) => {
-      docs.forEach((tweet) => {
-        const tweetData = tweet.data();
-        setTweets(new Map(tweets.set(tweetData.id, tweetData)));
+      docs.forEach((tweetSnpshot) => {
+        const tweetDoc = tweetSnpshot.data();
+        const { id, author, tweet, date, images, ref } = tweetDoc;
+        const { id: AuthorId, username } = author;
+        const constructAuthor = new Author(AuthorId, username);
+        const constructedTweet = new Tweet(id, tweet, constructAuthor, date, ref, images);
+        const map = new Map(tweets.set(id, constructedTweet));
+        setTweets(map);
       });
     });
 

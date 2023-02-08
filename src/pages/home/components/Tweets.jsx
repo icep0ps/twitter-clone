@@ -8,8 +8,7 @@ import useFetchFollowingTweets from './../../../common/hooks/userdata/useFetchFo
 const Tweets = () => {
   const { user } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
-  const { tweets, comments, retweets, getFollowingTweets } =
-    useFetchFollowingTweets();
+  const { tweets, comments, retweets, getFollowingTweets } = useFetchFollowingTweets();
 
   useEffect(() => {
     getFollowingTweets(user.displayName);
@@ -22,32 +21,25 @@ const Tweets = () => {
 
   return (
     <div className="flex flex-col gap-3 relative ">
-      {[...comments].map((mapObject) => {
-        const commentAndTweet = mapObject[1];
-        return (
-          <Comment
-            comment={commentAndTweet.comment}
-            tweet={commentAndTweet.tweet}
-            key={commentAndTweet.id}
-          />
-        );
+      {[...comments.values()].map((commentAndTweet) => {
+        const { tweet, comment, id } = commentAndTweet;
+        return <Comment comment={comment} tweet={tweet} key={id} />;
       })}
 
-      {[...tweets, ...retweets].map((mapObject) => {
-        const tweet = mapObject[1];
+      {[...tweets.values(), ...retweets].map((tweet) => {
+        const { id, author, ref, retweeter } = tweet;
         return (
           <div
             className=" flex flex-col border-b border-gray-200 border-solid pb-3 relative"
-            key={tweet.id}
+            key={id}
           >
             <Tweet
-              id={tweet.id}
-              key={tweet.id}
-              author={tweet.author}
-              username={tweet.username}
-              likes={tweet.likes}
-              retweets={tweet.retweets}
-              tweetInfomation={tweet}
+              id={id}
+              key={id}
+              author={author}
+              tweetRef={ref}
+              tweetData={tweet}
+              retweeter={retweeter}
             />
           </div>
         );

@@ -13,15 +13,8 @@ import { db } from '../../../firebase/firebase-config';
 
 const useLike = (tweetRef, tweet) => {
   const { user } = useContext(UserContext);
-  console.log(tweetRef, tweet);
   const like = async () => {
-    const usersLikesRef = doc(
-      db,
-      'users',
-      `${user.displayName}`,
-      'likes',
-      `${tweet.id}`
-    );
+    const usersLikesRef = doc(db, 'users', `${user.displayName}`, 'likes', `${tweet.id}`);
 
     getDoc(usersLikesRef)
       .then((doc) => {

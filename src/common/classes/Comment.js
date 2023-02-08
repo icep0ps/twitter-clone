@@ -12,12 +12,14 @@ class Comment extends Tweet {
   async send(replyRef, parentTweetRef) {
     const { ...comment } = this;
     try {
-      const setCommentsRefInUsersComments = await setDoc(replyRef, {
+      //setCommentsRefInUsersComments
+      await setDoc(replyRef, {
         commentRef: this.ref,
         parentTweetRef: parentTweetRef,
       });
 
-      const sendTweetToCommentsSection = await setDoc(this.ref, comment);
+      //sendTweetToCommentsSection
+      await setDoc(this.ref, comment);
     } catch (err) {
       console.log(`ERRO SENDING: ${err} `);
     }
