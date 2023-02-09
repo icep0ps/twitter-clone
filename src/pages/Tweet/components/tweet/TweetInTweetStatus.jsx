@@ -1,22 +1,26 @@
-import { TweetContents } from './TweetContents';
-import { Stats } from './Stats';
 /* eslint-disable react-hooks/exhaustive-deps */
 import Reply from './Reply';
+import { Stats } from './Stats';
 import { Outlet } from 'react-router-dom';
-import { UserContext } from '../../../../Context/UserContext';
+import { TweetContents } from './TweetContents';
 import React, { useContext, useEffect } from 'react';
+import { UserContext } from '../../../../Context/UserContext';
 import useFollow from '../../../../common/hooks/common/useFollow';
-import { InteractionIcons } from '../../../../common/components/tweet/InteractionIcons';
 import { Author } from '../../../../common/components/tweet/Author';
+import { InteractionIcons } from '../../../../common/components/tweet/InteractionIcons';
 import { ProfilePicture } from '../../../../common/components/tweet/ProfilePicture';
+import useFetchTweetLikes from '../../../../common/hooks/tweets/useFetchTweetLikes';
 
 function TweetInTweetStatus({ id, author, tweetData }) {
+  const { likes, getLikes } = useFetchTweetLikes();
   const { ref, date } = tweetData;
-  const { user } = useContext(UserContext);
+  const { user, setReplyingTo } = useContext(UserContext);
   const { displayName } = user;
   const { follow, isFollowing } = useFollow(author);
 
-  useEffect(() => {}, [isFollowing]);
+  useEffect(() => {
+    getLikes(ref);
+  }, [isFollowing]);
 
   return (
     <>
@@ -35,9 +39,12 @@ function TweetInTweetStatus({ id, author, tweetData }) {
         </div>
         <p className="text-gray-400 text-sm">{date.toDate().toDateString()}</p>
         <div className="flex gap-5"></div>
-        <Stats id={id} author={author} />
+        <Stats id={id} author={author} likes={likes.length} />
         <div className="flex gap-2 justify-evenly border-b border-b-gray-200 py-3">
-          <InteractionIcons></InteractionIcons>
+          <InteractionIcons
+            setReplyingTo={setReplyingTo}
+            tweet={tweetData}
+          ></InteractionIcons>
         </div>
         <Reply
           id={id}

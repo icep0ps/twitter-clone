@@ -14,6 +14,7 @@ function Comment(props) {
         key={tweet.id}
         type={COMMENT}
         author={tweet.author}
+        tweetRef={tweet.ref}
         tweetData={tweet}
       />
       {inStatus ? (
@@ -22,12 +23,14 @@ function Comment(props) {
           key={comment.id}
           author={comment.author}
           tweetData={comment}
+          tweetRef={tweet.ref}
           parentTweet={comment.parentTweet}
         />
       ) : (
         <Tweet
           id={comment.id}
           key={comment.id}
+          tweetRef={comment.ref}
           author={comment.author}
           tweetData={comment}
         />

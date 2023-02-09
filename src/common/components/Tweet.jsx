@@ -7,12 +7,16 @@ import { TweetContents } from './tweet/TweetContents';
 import { ProfilePicture } from './tweet/ProfilePicture';
 import { UserContext } from '../../Context/UserContext';
 import { InteractionIcons } from './tweet/InteractionIcons';
+import useFetchTweetLikes from '../hooks/tweets/useFetchTweetLikes';
 
 function Tweet({ id, author, tweetRef, retweeter, tweetData }) {
   const { isFollowing } = useFollow(author.id);
+  const { likes, getLikes } = useFetchTweetLikes(tweetRef);
   const { setCurrentTweetBiengViewed, setReplyingTo, user } = useContext(UserContext);
 
-  useEffect(() => {}, [isFollowing]);
+  useEffect(() => {
+    getLikes(tweetRef);
+  }, [isFollowing]);
 
   return (
     <div
@@ -29,7 +33,11 @@ function Tweet({ id, author, tweetRef, retweeter, tweetData }) {
         <div className="w-5/6">
           <Author author={author} tweetId={id} />
           <TweetContents tweetData={tweetData} />
-          <InteractionIcons setReplyingTo={setReplyingTo} tweetData={tweetData} />
+          <InteractionIcons
+            setReplyingTo={setReplyingTo}
+            tweet={tweetData}
+            likes={likes.length}
+          />
         </div>
       </div>
     </div>

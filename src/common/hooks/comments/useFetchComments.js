@@ -1,10 +1,4 @@
-import {
-  collection,
-  getDocs,
-  where,
-  query,
-  onSnapshot,
-} from 'firebase/firestore';
+import { collection, getDocs, onSnapshot } from 'firebase/firestore';
 import { useState } from 'react';
 import useFetchComment from './useFetchComment';
 import { db } from '../../../firebase/firebase-config';
@@ -15,18 +9,14 @@ function useFetchComments() {
   const [getCommentAndTweet] = useFetchComment();
 
   const getComments = async (user_id) => {
-    const tweetRefs = collection(db, 'users', `${user_id}`, 'tweets');
-    const commentsQuery = query(tweetRefs, where('type', '==', 'comment'));
+    const commentsRefs = collection(db, 'users', `${user_id}`, 'comments');
 
-    const commentsQueried = await getDocs(commentsQuery);
+    const commentsQueried = await getDocs(commentsRefs);
     commentsQueried.forEach(async (comment) => {
       const { parentTweetRef, commentRef } = comment.data();
 
       onSnapshot(commentRef, async () => {
-        const tweetAndComment = await getCommentAndTweet(
-          parentTweetRef,
-          commentRef
-        );
+        const tweetAndComment = await getCommentAndTweet(parentTweetRef, commentRef);
         setComments(new Map(comments.set(tweetAndComment.id, tweetAndComment)));
       });
 
@@ -35,10 +25,7 @@ function useFetchComments() {
           isInitialFetch = false;
           return;
         }
-        const tweetAndComment = await getCommentAndTweet(
-          parentTweetRef,
-          commentRef
-        );
+        const tweetAndComment = await getCommentAndTweet(parentTweetRef, commentRef);
         setComments(new Map(comments.set(tweetAndComment.id, tweetAndComment)));
       });
     });
