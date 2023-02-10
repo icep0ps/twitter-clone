@@ -46,8 +46,6 @@ function TweetStatus() {
             key={tweet.id}
             author={tweet.author}
             tweetRef={tweet.ref}
-            tweet={tweet.tweet}
-            images={tweet.images}
             date={tweet.date}
             tweetData={tweet}
           ></TweetInTweetStatus>

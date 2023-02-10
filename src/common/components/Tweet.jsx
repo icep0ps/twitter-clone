@@ -7,11 +7,11 @@ import { TweetContents } from './tweet/TweetContents';
 import { ProfilePicture } from './tweet/ProfilePicture';
 import { UserContext } from '../../Context/UserContext';
 import { InteractionIcons } from './tweet/InteractionIcons';
-import useFetchTweetLikes from '../hooks/tweets/useFetchTweetLikes';
+import useFetchStats from '../hooks/tweets/useFetchStats';
 
 function Tweet({ id, author, tweetRef, retweeter, tweetData }) {
   const { isFollowing } = useFollow(author.id);
-  const { likes, getLikes } = useFetchTweetLikes(tweetRef);
+  const { likes, comments, retweets, getLikes } = useFetchStats(tweetRef);
   const { setCurrentTweetBiengViewed, setReplyingTo, user } = useContext(UserContext);
 
   useEffect(() => {
@@ -25,7 +25,6 @@ function Tweet({ id, author, tweetRef, retweeter, tweetData }) {
     >
       {user.displayName === retweeter ||
         (user.displayName === author.id && <DeleteButton tweetRef={tweetRef} />)}
-
       {retweeter && <p>{retweeter} Retweeted</p>}
 
       <div className="flex gap-5 ">
@@ -37,6 +36,8 @@ function Tweet({ id, author, tweetRef, retweeter, tweetData }) {
             setReplyingTo={setReplyingTo}
             tweet={tweetData}
             likes={likes.length}
+            comments={comments.length}
+            retweets={retweets.length}
           />
         </div>
       </div>

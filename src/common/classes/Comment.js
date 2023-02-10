@@ -1,5 +1,6 @@
 import Tweet from './Tweet';
-import { setDoc } from 'firebase/firestore';
+import { setDoc, doc } from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
 
 class Comment extends Tweet {
   type = 'comment';
@@ -10,6 +11,7 @@ class Comment extends Tweet {
   }
 
   async send(replyRef, parentTweetRef) {
+    console.log(this);
     const { ...comment } = this;
     try {
       const setCommentsRefInUsersComments = await setDoc(replyRef, {
@@ -17,7 +19,8 @@ class Comment extends Tweet {
         parentTweetRef: parentTweetRef,
       });
 
-      const sendTweetToCommentsSection = await setDoc(this.ref, comment);
+      const ref = doc(db, parentTweetRef.path + `/comments/${this.id}`);
+      const sendTweetToCommentsSection = await setDoc(ref, comment);
     } catch (err) {
       console.log(`ERRO SENDING: ${err} `);
     }

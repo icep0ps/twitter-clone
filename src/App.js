@@ -26,17 +26,17 @@ function App() {
 
   return (
     <div className="grid grid-cols-[1.3fr_2fr_1.3fr] self-center w-full h-full ">
-      {user != null && <Sidebar />}
+      {user !== null ? <Sidebar /> : ''}
 
       <Routes>
-        <Route
-          path="/"
-          element={user != null ? <Home /> : <Navigate to="/sign-in" />}
-        >
+        <Route path="/" element={user !== null ? <Home /> : <Navigate to="/sign-in" />}>
           <Route path="/compose/tweet" element={<ComposeTweet />}></Route>
         </Route>
         <Route path="/sign-up" element={<Signup />}></Route>
-        <Route path="/sign-in" element={<SignIn />}></Route>
+        <Route
+          path="/sign-in"
+          element={user === null ? <SignIn /> : <Navigate to="/" />}
+        ></Route>
         <Route path="/:author/status/:id" element={<TweetStatus />}>
           <Route path="likes" element={<Likes />}></Route>
           <Route path="retweets" element={<Retweets />}></Route>
@@ -46,15 +46,11 @@ function App() {
         </Route>
         <Route
           path="profile/:id/followers"
-          element={
-            <FollowersAndFollowing view={'followers'}></FollowersAndFollowing>
-          }
+          element={<FollowersAndFollowing view={'followers'}></FollowersAndFollowing>}
         ></Route>
         <Route
           path="profile/:id/following"
-          element={
-            <FollowersAndFollowing view={'following'}></FollowersAndFollowing>
-          }
+          element={<FollowersAndFollowing view={'following'}></FollowersAndFollowing>}
         ></Route>
       </Routes>
       {user != null && <WhoToFollow />}

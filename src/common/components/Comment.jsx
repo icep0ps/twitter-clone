@@ -6,9 +6,8 @@ import TweetInTweetStatus from './../../pages/Tweet/components/tweet/TweetInTwee
 
 function Comment(props) {
   const { tweet, comment, inStatus } = props;
-
   return (
-    <div className=" flex flex-col  border-gray-500 border-solid pb-3 relative">
+    <div className=" flex flex-col  pb-3 relative border-b border-gray-200 border-solid">
       <Tweet
         id={tweet.id}
         key={tweet.id}
@@ -16,6 +15,7 @@ function Comment(props) {
         author={tweet.author}
         tweetRef={tweet.ref}
         tweetData={tweet}
+        retweeter={tweet.retweeter}
       />
       {inStatus ? (
         <TweetInTweetStatus
@@ -33,10 +33,10 @@ function Comment(props) {
           tweetRef={comment.ref}
           author={comment.author}
           tweetData={comment}
+          retweeter={comment.retweeter}
         />
       )}
     </div>
   );
 }
-
 export default Comment;

@@ -1,67 +1,87 @@
 import { useState } from 'react';
-import { db } from '../../../firebase/firebase-config';
-import { collection, onSnapshot, query, where, getDocs } from 'firebase/firestore';
-import useFetchComment from './../comments/useFetchComment';
 import Tweet from './../../classes/Tweet';
 import Author from '../../classes/Author';
+import Retweet from '../../classes/Retweet';
+import { COMMENT } from '../../helpers/types';
+import { db } from '../../../firebase/firebase-config';
+import useFetchComment from './../comments/useFetchComment';
+import { collection, getDocs, getDoc } from 'firebase/firestore';
 
 const useFetchTweets = () => {
-  let isInitialFetch = true;
   const [getCommentAndTweet] = useFetchComment();
-  const [tweets, setTweets] = useState(new Map());
-  const [comments, setComments] = useState(new Map());
-  const [retweets, setRetweets] = useState([]);
+  const [tweets, setTweets] = useState([]);
+  const [comments, setComments] = useState([]);
 
   async function getTweets(userId) {
-    const usersTweetsRef = collection(db, 'users', `${userId}`, 'tweets');
-    const tweetsQuery = query(usersTweetsRef, where('type', '==', 'tweet'));
-    const retweetsQuery = query(usersTweetsRef, where('type', '==', 'retweet'));
+    const tweetsQuery = collection(db, 'users', `${userId}`, 'tweets');
+    const retweetsQuery = collection(db, 'users', `${userId}`, 'retweets');
     const commentsQuery = collection(db, 'users', `${userId}`, 'comments');
 
-    onSnapshot(tweetsQuery, (docs) => {
-      docs.forEach((tweetSnpshot) => {
-        const tweetDoc = tweetSnpshot.data();
-        const { id, author, tweet, date, images, ref } = tweetDoc;
-        const { id: AuthorId, username } = author;
-        const constructAuthor = new Author(AuthorId, username);
-        const constructedTweet = new Tweet(id, tweet, constructAuthor, date, ref, images);
-        const map = new Map(tweets.set(id, constructedTweet));
-        setTweets(map);
-      });
+    const tweets = await getDocs(tweetsQuery);
+    const tweetsCollection = [];
+    tweets.forEach((tweetSnpshot) => {
+      const tweetDoc = tweetSnpshot.data();
+      const { id, author, tweet, date, images, ref } = tweetDoc;
+      const { id: AuthorId, username } = author;
+      const constructAuthor = new Author(AuthorId, username);
+      const constructedTweet = new Tweet(id, tweet, constructAuthor, date, ref, images);
+      tweetsCollection.push(constructedTweet);
     });
+    setTweets(tweetsCollection);
 
     const userComments = await getDocs(commentsQuery);
     userComments.forEach(async (comment) => {
       const commentRef = comment.data().commentRef;
       const tweetRef = comment.data().parentTweetRef;
-
-      onSnapshot(commentRef, async () => {
-        const tweetAndComment = await getCommentAndTweet(tweetRef, commentRef);
-        setComments(new Map(comments.set(tweetAndComment.id, tweetAndComment)));
-      });
-
-      onSnapshot(tweetRef, async () => {
-        if (isInitialFetch) {
-          isInitialFetch = false;
-          return;
-        }
-        const tweetAndComment = await getCommentAndTweet(tweetRef, commentRef);
-        setComments(new Map(comments.set(tweetAndComment.id, tweetAndComment)));
-      });
+      const tweetAndComment = await getCommentAndTweet(tweetRef, commentRef);
+      setComments((prevState) => [...prevState, tweetAndComment]);
     });
 
     const retweets = await getDocs(retweetsQuery);
-    const retweetsCollection = [];
     retweets.forEach(async (retweet) => {
-      const retweetReturned = retweet.data();
-      retweetsCollection.push(retweetReturned);
+      const { ref: originalTweetRef, type } = retweet.data();
+      const tweetData = await getDoc(originalTweetRef);
+
+      if (type === COMMENT) {
+        const { id, author, tweet, date, images, ref, parentTweet, replyingTo } =
+          tweetData.data();
+        const { id: AuthorId, username } = author;
+        const constructAuthor = new Author(AuthorId, username);
+        const constructedTweet = new Retweet(
+          id,
+          tweet,
+          constructAuthor,
+          date,
+          ref,
+          images,
+          parentTweet,
+          replyingTo,
+          userId
+        );
+        setTweets((prevState) => prevState.concat(constructedTweet));
+      } else {
+        const { id, author, tweet, date, images, ref } = tweetData.data();
+        const { id: AuthorId, username } = author;
+        const constructAuthor = new Author(AuthorId, username);
+        const constructedTweet = new Retweet(
+          id,
+          tweet,
+          constructAuthor,
+          date,
+          ref,
+          images,
+          undefined,
+          undefined,
+          userId
+        );
+        setTweets((prevState) => prevState.concat(constructedTweet));
+      }
     });
-    setRetweets((prevState) => prevState.concat(retweetsCollection));
 
     return tweets;
   }
 
-  return { tweets, comments, retweets, getTweets };
+  return { tweets, comments, getTweets };
 };
 
 export default useFetchTweets;

@@ -1,18 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useContext } from 'react';
 import Tweet from '../../../common/components/Tweet';
 import Comment from '../../../common/components/Comment';
 import { UserContext } from '../../../Context/UserContext';
+import React, { useEffect, useState, useContext } from 'react';
 import useFetchFollowingTweets from './../../../common/hooks/userdata/useFetchFollowingTweets';
 
 const Tweets = () => {
   const { user } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
-  const { tweets, comments, retweets, getFollowingTweets } = useFetchFollowingTweets();
+  const { tweets, comments, getFollowingTweets } = useFetchFollowingTweets();
 
   useEffect(() => {
-    getFollowingTweets(user.displayName);
-    setIsLoading(false);
+    getFollowingTweets(user.displayName).then(() => {
+      setIsLoading(false);
+    });
   }, [user]);
 
   if (isLoading) {
@@ -21,13 +22,13 @@ const Tweets = () => {
 
   return (
     <div className="flex flex-col gap-3 relative ">
-      {[...comments.values()].map((commentAndTweet) => {
+      {comments.map((commentAndTweet) => {
         const { tweet, comment, id } = commentAndTweet;
         return <Comment comment={comment} tweet={tweet} key={id} />;
       })}
 
-      {[...tweets.values(), ...retweets].map((tweet) => {
-        const { id, author, ref, retweeter } = tweet;
+      {tweets.map((tweet) => {
+        const { id, author, ref, retweetedBy } = tweet;
         return (
           <div
             className=" flex flex-col border-b border-gray-200 border-solid pb-3 relative"
@@ -39,7 +40,7 @@ const Tweets = () => {
               author={author}
               tweetRef={ref}
               tweetData={tweet}
-              retweeter={retweeter}
+              retweeter={retweetedBy}
             />
           </div>
         );

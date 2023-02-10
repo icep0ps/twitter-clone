@@ -21,15 +21,7 @@ const useCreateAndSendComment = (parentTweetId) => {
 
     const replyRef = doc(db, 'users', `${user.displayName}`, 'comments', `${TWEET_ID}`);
 
-    const commentRef = doc(
-      db,
-      'users',
-      `${parentTweetAuthor.id}`,
-      'tweets',
-      `${parentTweetId}`,
-      'comments',
-      `${TWEET_ID}`
-    );
+    const commentRef = doc(db, parentTweetRef.path + `/comments/${TWEET_ID}`);
 
     const author = new Author(displayName, username);
     const images = await setImages(TWEET_ID);
@@ -43,6 +35,7 @@ const useCreateAndSendComment = (parentTweetId) => {
       parentTweetId,
       parentTweetAuthor
     );
+
     await comment.send(replyRef, parentTweetRef);
   }
 

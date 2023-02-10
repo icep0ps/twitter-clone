@@ -9,10 +9,10 @@ import useFollow from '../../../../common/hooks/common/useFollow';
 import { Author } from '../../../../common/components/tweet/Author';
 import { InteractionIcons } from '../../../../common/components/tweet/InteractionIcons';
 import { ProfilePicture } from '../../../../common/components/tweet/ProfilePicture';
-import useFetchTweetLikes from '../../../../common/hooks/tweets/useFetchTweetLikes';
+import useFetchStats from '../../../../common/hooks/tweets/useFetchStats';
 
 function TweetInTweetStatus({ id, author, tweetData }) {
-  const { likes, getLikes } = useFetchTweetLikes();
+  const { likes, retweets, getLikes } = useFetchStats();
   const { ref, date } = tweetData;
   const { user, setReplyingTo } = useContext(UserContext);
   const { displayName } = user;
@@ -39,7 +39,7 @@ function TweetInTweetStatus({ id, author, tweetData }) {
         </div>
         <p className="text-gray-400 text-sm">{date.toDate().toDateString()}</p>
         <div className="flex gap-5"></div>
-        <Stats id={id} author={author} likes={likes.length} />
+        <Stats id={id} author={author} likes={likes.length} retweets={retweets.length} />
         <div className="flex gap-2 justify-evenly border-b border-b-gray-200 py-3">
           <InteractionIcons
             setReplyingTo={setReplyingTo}

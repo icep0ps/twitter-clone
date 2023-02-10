@@ -49,7 +49,43 @@ class Tweet {
       });
   }
 
-  retweet() {}
+  retweet() {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (user.displayName === this.author.id) return;
+
+    const yourTweetsRef = doc(
+      db,
+      'users',
+      `${user.displayName}`,
+      'retweets',
+      `${this.id}`
+    );
+
+    const ref = doc(db, this.ref.path + `/retweets/${user.displayName}`);
+    console.log(ref, yourTweetsRef);
+
+    getDoc(yourTweetsRef)
+      .then((doc) => {
+        if (doc.exists()) {
+          deleteDoc(yourTweetsRef);
+          deleteDoc(ref);
+        } else {
+          setDoc(yourTweetsRef, {
+            type: this.type,
+            ref: this.ref,
+          });
+
+          setDoc(ref, {
+            id: user.displayName,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log('Error getting document:', error);
+      });
+  }
 
   delete() {}
 }
