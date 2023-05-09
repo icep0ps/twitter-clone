@@ -12,41 +12,33 @@ const TweetsAndReplies = ({ id }) => {
   const [isLoading, setIsloading] = useState(true);
 
   useEffect(() => {
-    Promise.all([getTweets(id), getComments(id)]).then(() =>
-      setIsloading(false)
-    );
+    Promise.all([getTweets(id), getComments(id)]).then(() => setIsloading(false));
   }, [id]);
 
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
-  return [...tweets, ...comments].map((mapObject) => {
-    const tweet = mapObject[1];
-    if (tweet) {
-      return (
-        <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
-          {tweet.type === 'comment' ? (
-            <Comment
-              comment={tweet.comment}
-              tweet={tweet.tweet}
-              key={uniqid()}
-            />
-          ) : (
-            <Tweet
-              id={tweet.id}
-              key={tweet.id}
-              author={tweet.author}
-              username={tweet.username}
-              likes={tweet.likes}
-              retweets={tweet.retweets}
-              tweetInfomation={tweet}
-            />
-          )}
-        </div>
-      );
-    }
-    return '';
-  });
+
+  return (
+    <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
+      {comments.map((comment) => {
+        return <Comment comment={comment.comment} tweet={comment.tweet} key={uniqid()} />;
+      })}
+
+      {tweets.map((tweet) => {
+        return (
+          <Tweet
+            id={tweet.id}
+            key={tweet.id}
+            tweetData={tweet}
+            tweetRef={tweet.ref}
+            author={tweet.author}
+            retweeter={tweet.retweeter}
+          />
+        );
+      })}
+    </div>
+  );
 };
 
 export default TweetsAndReplies;

@@ -13,6 +13,7 @@ const Media = ({ id }) => {
   }, []);
 
   return tweets.map((tweet) => {
+    console.log(tweet);
     if (tweet.type === 'comment') {
       if (tweet.comment.images.length > 0) {
         return (
@@ -21,7 +22,6 @@ const Media = ({ id }) => {
           </div>
         );
       }
-      return '';
     }
     if (tweet.images.length > 0) {
       return (
@@ -29,17 +29,14 @@ const Media = ({ id }) => {
           <Tweet
             id={tweet.id}
             key={tweet.id}
+            tweetData={tweet}
+            tweetRef={tweet.ref}
             author={tweet.author}
-            username={tweet.username}
-            tweet={tweet.tweet.tweet}
-            likes={tweet.likes}
-            retweets={tweet.retweets}
-            tweetInfomation={tweet}
+            retweeter={tweet.retweeter}
           />
         </div>
       );
     }
-    return '';
   });
 };
 

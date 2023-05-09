@@ -7,7 +7,7 @@ import Comment from '../../../../common/components/Comment';
 import useFetchLikes from './../../../../common/hooks/userdata/useFetchLikes';
 
 const Likes = ({ id }) => {
-  const { likedTweets, getLikes } = useFetchLikes();
+  const { tweets, comments, getLikes } = useFetchLikes();
 
   async function getLikedTweets() {
     await getLikes(id);
@@ -17,29 +17,26 @@ const Likes = ({ id }) => {
     getLikedTweets();
   }, [id]);
 
-  return likedTweets.map((tweet) => {
-    if (tweet) {
-      return (
-        <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
-          {tweet.type === 'comment' ? (
-            <Comment comment={tweet} key={uniqid()} />
-          ) : (
-            <Tweet
-              id={tweet.id}
-              key={tweet.id}
-              author={tweet.author}
-              username={tweet.username}
-              tweet={tweet.tweet.tweet}
-              likes={tweet.likes}
-              retweets={tweet.retweets}
-              tweetInfomation={tweet}
-            />
-          )}
-        </div>
-      );
-    }
-    return '';
-  });
-};
+  return (
+    <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
+     
 
+      {comments.map((comment) => {
+        return <Comment comment={comment.comment} tweet={comment.tweet} key={uniqid()} />;
+      })}
+
+      {tweets.map((tweet) => {
+        return (
+          <Tweet
+            id={tweet.id}
+            key={tweet.id}
+            author={tweet.author}
+            retweeter={tweet.retweeter}
+            tweetData={tweet}
+          />
+        );
+      })}
+    </div>
+  );
+};
 export default Likes;

@@ -1,16 +1,18 @@
 import { useContext, useState, useEffect } from 'react';
-import { db } from '../../../firebase/firebase-config';
+import { db, auth } from '../../../firebase/firebase-config';
 import { UserContext } from '../../../Context/UserContext';
 import { getDoc, doc, deleteDoc, setDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const useFollow = (author) => {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
+  console.log(user);
   const [isFollowing, setIsFollowing] = useState(false);
   const usersProfileDataRef = doc(db, 'users', `${author}`);
 
   useEffect(() => {
     checkIfUserIfFollowing();
-  }, []);
+  }, [user]);
 
   const usersFollowers = doc(
     db,

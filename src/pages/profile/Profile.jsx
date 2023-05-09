@@ -14,11 +14,13 @@ import TweetCategories from './components/TweetCategories';
 import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import useFetchUserProfilePic from '../../common/hooks/userdata/useFetchUserProfilePic';
 import useFetchUserBanner from './../../common/hooks/userdata/useFetchUserBanner';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../firebase/firebase-config';
 
 function Profile() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const { follow, isFollowing } = useFollow(id);
   const [following, setFollowing] = useState([]);
   const [followers, setFollowers] = useState([]);
@@ -45,6 +47,12 @@ function Profile() {
   };
 
   useEffect(() => {
+    console.log(user);
+    !user &&
+      onAuthStateChanged(auth, (currentUser) => {
+        setUser(currentUser);
+      });
+
     async function getUserProfile() {
       const userRef = doc(db, 'users', `${id}`);
       const user = await getDoc(userRef);

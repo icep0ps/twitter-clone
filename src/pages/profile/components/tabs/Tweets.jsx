@@ -9,11 +9,19 @@ const Tweets = ({ id }) => {
     getTweets(id);
   }, []);
 
-  return [...tweets.values()].map((tweet) => {
-    console.log(tweet);
+  return tweets.map((tweedData) => {
+    const { id, author, ref, retweetedBy } = tweedData;
+
     return (
       <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
-        <Tweet id={tweet.id} key={tweet.id} author={tweet.author} tweetData={tweet} />
+        <Tweet
+          id={id}
+          key={id}
+          author={author}
+          tweetRef={ref}
+          tweetData={tweedData}
+          retweeter={retweetedBy}
+        />
       </div>
     );
   });
