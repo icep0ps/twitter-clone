@@ -10,7 +10,7 @@ const Media = ({ id }) => {
 
   useEffect(() => {
     getTweets(id);
-  }, []);
+  }, [id]);
 
   return tweets.map((tweet) => {
     console.log(tweet);

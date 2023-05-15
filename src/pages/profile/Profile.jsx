@@ -47,7 +47,6 @@ function Profile() {
   };
 
   useEffect(() => {
-    console.log(user);
     !user &&
       onAuthStateChanged(auth, (currentUser) => {
         setUser(currentUser);
@@ -56,6 +55,7 @@ function Profile() {
     async function getUserProfile() {
       const userRef = doc(db, 'users', `${id}`);
       const user = await getDoc(userRef);
+      console.log(user.data())
       setUserProfileData(user.data());
       getProfilePic(id);
       getUserBanner(id);

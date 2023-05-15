@@ -7,16 +7,18 @@ const Tweets = ({ id }) => {
 
   useEffect(() => {
     getTweets(id);
-  }, []);
+  }, [id]);
 
   return tweets.map((tweedData) => {
     const { id, author, ref, retweetedBy } = tweedData;
 
     return (
-      <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
+      <div
+        className=" flex flex-col border-b border-gray-500 border-solid p-3 relative"
+        key={id}
+      >
         <Tweet
           id={id}
-          key={id}
           author={author}
           tweetRef={ref}
           tweetData={tweedData}
