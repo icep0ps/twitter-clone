@@ -8,13 +8,7 @@ function useFetchRetweet() {
   const [retweet, setRetweet] = useState([]);
 
   const getRetweet = async (user_id, retweet_id) => {
-    const userRetweetRef = doc(
-      db,
-      'users',
-      `${user_id}`,
-      'tweets',
-      `${retweet_id}`
-    );
+    const userRetweetRef = doc(db, 'users', `${user_id}`, 'tweets', `${retweet_id}`);
 
     const tweet = await getDoc(userRetweetRef);
 
@@ -39,7 +33,6 @@ function useFetchRetweet() {
     });
 
     return Promise.all([Retweet]).then((response) => {
-      console.log('res', response[0]);
       return response[0];
     });
   };

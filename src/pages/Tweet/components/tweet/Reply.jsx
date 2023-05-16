@@ -5,11 +5,14 @@ import { UserContext } from '../../../../Context/UserContext';
 import useSetImages from '../../../../common/hooks/common/useSetImages';
 import useCreateAndSendComment from '../../../../common/hooks/comments/useCreateComment';
 import useFetchUserProfilePic from '../../../../common/hooks/userdata/useFetchUserProfilePic';
+import { useRef } from 'react';
 
 function Reply({ id, username, author, parentTweetRef }) {
+  console.log(parentTweetRef);
+  const imagesInput = useRef();
   const { user } = useContext(UserContext);
   const [tweetInput, setTweetInput] = useState('');
-  const { imagePreviewURL, previewImage, setImages } = useSetImages();
+  const { imagePreviewURL, previewImage, setImages, setImagePreviewURL } = useSetImages();
   const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
   const { createAndSendComment } = useCreateAndSendComment(id);
 
@@ -23,6 +26,9 @@ function Reply({ id, username, author, parentTweetRef }) {
       onSubmit={(event) => {
         event.preventDefault();
         createAndSendComment(username, tweetInput, setImages, author, parentTweetRef);
+        setTweetInput('');
+        setImagePreviewURL([]);
+        imagesInput.current.value = '';
       }}
     >
       <div className="flex gap-5 items-start ">
@@ -44,7 +50,7 @@ function Reply({ id, username, author, parentTweetRef }) {
           />
         </div>
       </div>
-      <div className="">
+      <div className="" ref={imagesInput}>
         {imagePreviewURL.map((image) => {
           return <img alt="" key={uniqid()} src={`${image.url}`} />;
         })}

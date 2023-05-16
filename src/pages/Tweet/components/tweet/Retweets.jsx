@@ -15,7 +15,6 @@ const Retweets = () => {
 
   useEffect(() => {
     getTweet(author, id).then((res) => {
-      console.log(res);
       setIsLoading(false);
     });
   }, []);

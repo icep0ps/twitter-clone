@@ -1,8 +1,8 @@
-import React from 'react';
-import { uniqid } from 'uniqid';
+import React, { useId } from 'react';
 
 export function TweetContents({ tweetData }) {
   const { tweet, images } = tweetData;
+  const id = useId();
   return (
     <>
       <div className="w-5/6">
@@ -14,7 +14,7 @@ export function TweetContents({ tweetData }) {
             <img
               alt=""
               src={`${imageURL}`}
-              key={uniqid()}
+              key={id}
               className="rounded-xl	my-4 border-gray-300 border"
             />
           );

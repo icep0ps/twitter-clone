@@ -64,7 +64,6 @@ class Tweet {
     );
 
     const ref = doc(db, this.ref.path + `/retweets/${user.displayName}`);
-    console.log(ref, yourTweetsRef);
 
     getDoc(yourTweetsRef)
       .then((doc) => {

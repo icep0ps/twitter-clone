@@ -5,7 +5,6 @@ import { COMMENT } from '../helpers/types';
 import TweetInTweetStatus from './../../pages/Tweet/components/tweet/TweetInTweetStatus';
 
 function Comment({ tweet, comment, inStatus }) {
-  console.log(tweet, comment, inStatus);
   return (
     <div className=" flex flex-col  pb-3 relative border-b border-gray-200 border-solid">
       <Tweet

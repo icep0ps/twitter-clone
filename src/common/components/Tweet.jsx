@@ -28,7 +28,7 @@ function Tweet({ id, author, tweetRef, retweeter, tweetData }) {
       {retweeter && <p>{retweeter} Retweeted</p>}
 
       <div className="flex gap-5 ">
-        <ProfilePicture id={id} parentTweet={tweetData.parentTweet} />
+        <ProfilePicture id={id} parentTweet={tweetData?.parentTweet} />
         <div className="w-5/6">
           <Author author={author} tweetId={id} />
           <TweetContents tweetData={tweetData} />

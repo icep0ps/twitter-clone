@@ -1,9 +1,9 @@
-import React from 'react';
-import { uniqid } from 'uniqid';
+import React, { useId } from 'react';
 import { Link } from 'react-router-dom';
 
 export function TweetContents({ tweetData }) {
   const { replyingTo, tweet, images, author, id } = tweetData;
+  const uniqid = useId();
   return (
     <Link to={`/${author.id}/status/${id}`}>
       {replyingTo && (
@@ -16,10 +16,10 @@ export function TweetContents({ tweetData }) {
         {images.map((imageURL) => {
           return (
             <img
-              alt=""
+              alt="tweet"
               src={`${imageURL}`}
               className="rounded-xl	my-4 border-gray-300 border"
-              key={uniqid()}
+              key={uniqid}
             />
           );
         })}

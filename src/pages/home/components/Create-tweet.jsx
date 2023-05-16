@@ -7,6 +7,7 @@ import useFetchUsername from '../../../common/hooks/userdata/useFetchUsername';
 import useSetImages from '../../../common/hooks/common/useSetImages';
 import useFetchUserProfilePic from '../../../common/hooks/userdata/useFetchUserProfilePic';
 import useCreateAndSendTweet from '../../../common/hooks/tweets/useCreateTweet';
+import { useRef } from 'react';
 
 function CreateTweet() {
   const { user } = useContext(UserContext);
@@ -14,8 +15,9 @@ function CreateTweet() {
   const [tweetInput, setTweetInput] = useState();
   const { getUsername, username } = useFetchUsername();
   const { createAndSendTweet } = useCreateAndSendTweet();
+  const imgaesInput = useRef();
   const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
-  const { imagePreviewURL, setImages, previewImage } = useSetImages();
+  const { imagePreviewURL, setImages, previewImage, setImagePreviewURL } = useSetImages();
 
   useEffect(() => {
     getUsername(displayName);
@@ -44,12 +46,19 @@ function CreateTweet() {
         })}
       </div>
       <div>
-        <input type={'file'} onChange={(event) => previewImage(event)}></input>
+        <input
+          type={'file'}
+          onChange={(event) => previewImage(event)}
+          ref={imgaesInput}
+        ></input>
       </div>
       <button
         className="p-2.5 bg-blue-500 text-white rounded-3xl w-20 self-end"
         onClick={() => {
           createAndSendTweet(username, tweetInput, setImages);
+          setTweetInput('');
+          imgaesInput.current.value = '';
+          setImagePreviewURL([]);
         }}
       >
         Tweet

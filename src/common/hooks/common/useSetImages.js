@@ -46,7 +46,7 @@ const useSetImages = () => {
     ]);
   }
 
-  return { imagePreviewURL, setImages, previewImage };
+  return { imagePreviewURL, setImages, previewImage, setImagePreviewURL };
 };
 
 export default useSetImages;

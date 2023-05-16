@@ -18,18 +18,11 @@ function useRetweet(tweetRef, tweetInfomation) {
   const retweet = async () => {
     if (user.displayName === author) return;
 
-    const yourTweetsRef = doc(
-      db,
-      'users',
-      `${user.displayName}`,
-      'tweets',
-      `${id}`
-    );
+    const yourTweetsRef = doc(db, 'users', `${user.displayName}`, 'tweets', `${id}`);
 
     getDoc(yourTweetsRef)
       .then((doc) => {
         if (doc.exists()) {
-          console.log('Document data:', doc.data());
           deleteDoc(yourTweetsRef);
 
           updateDoc(tweetRef, {
@@ -38,7 +31,6 @@ function useRetweet(tweetRef, tweetInfomation) {
             }),
           });
         } else {
-          console.log('No such document!');
           setDoc(yourTweetsRef, {
             type: 'retweet',
             ref: tweetRef,

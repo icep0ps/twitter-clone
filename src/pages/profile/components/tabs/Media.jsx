@@ -13,9 +13,8 @@ const Media = ({ id }) => {
   }, [id]);
 
   return tweets.map((tweet) => {
-    console.log(tweet);
     if (tweet.type === 'comment') {
-      if (tweet.comment.images.length > 0) {
+      if (tweet?.comment?.images.length > 0) {
         return (
           <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
             <Comment comment={tweet} key={uniqid()} />
@@ -23,7 +22,7 @@ const Media = ({ id }) => {
         );
       }
     }
-    if (tweet.images.length > 0) {
+    if (tweet?.images.length > 0) {
       return (
         <div className=" flex flex-col border-b border-gray-500 border-solid p-3 relative">
           <Tweet

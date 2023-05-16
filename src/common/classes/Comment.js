@@ -11,7 +11,6 @@ class Comment extends Tweet {
   }
 
   async send(replyRef, parentTweetRef) {
-    console.log(this);
     const { ...comment } = this;
     try {
       const setCommentsRefInUsersComments = await setDoc(replyRef, {

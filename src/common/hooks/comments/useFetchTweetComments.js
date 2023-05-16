@@ -9,7 +9,6 @@ function useFetchTweetComments(setIsLoading) {
 
   async function getComments(tweetRef) {
     const commentsRef = collection(db, tweetRef.path + '/comments');
-    console.log(commentsRef);
     onSnapshot(commentsRef, (comments) => {
       const commentsCollection = [];
       comments.forEach((comment) => {

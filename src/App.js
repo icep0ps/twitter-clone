@@ -21,7 +21,6 @@ function App() {
   const { user, setUser } = useContext(UserContext);
 
   onAuthStateChanged(auth, (currentUser) => {
-    console.log('running');
     setUser(currentUser);
   });
 
