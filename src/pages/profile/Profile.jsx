@@ -1,5 +1,3 @@
-//TODO : Make it so that when you tweet it doesnt save your username and id because it might change
-
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext } from 'react';
 import { Outlet } from 'react-router-dom';
@@ -22,8 +20,8 @@ function Profile() {
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
   const { follow, isFollowing } = useFollow(id);
-  const [following, setFollowing] = useState([]);
-  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState(0);
+  const [followers, setFollowers] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const { bannerURL, getUserBanner } = useFetchUserBanner();
   const [userProfileData, setUserProfileData] = useState('');
@@ -34,15 +32,13 @@ function Profile() {
     const userFollowers = collection(db, 'users', `${id}`, 'followers');
 
     onSnapshot(userFollowing, (querySnapshot) => {
-      querySnapshot.forEach((user) => {
-        setFollowing((prevState) => [...prevState, user]);
-      });
+      const { docs } = querySnapshot;
+      setFollowing(docs.length);
     });
 
     onSnapshot(userFollowers, (querySnapshot) => {
-      querySnapshot.forEach((follower) => {
-        setFollowers((prevState) => [...prevState, follower]);
-      });
+      const { docs } = querySnapshot;
+      setFollowers(docs.length);
     });
   };
 
@@ -55,7 +51,7 @@ function Profile() {
     async function getUserProfile() {
       const userRef = doc(db, 'users', `${id}`);
       const user = await getDoc(userRef);
-      console.log(user.data())
+      console.log(user.data());
       setUserProfileData(user.data());
       getProfilePic(id);
       getUserBanner(id);

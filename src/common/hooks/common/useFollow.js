@@ -15,11 +15,11 @@ const useFollow = (author) => {
       usersRefs.usersFollowers = ref;
     };
 
+    const getRefs = (ref) => usersRefs[ref];
+
     const setUserFollowingRef = (ref) => {
       usersRefs.userFollowingRef = ref;
     };
-
-    const getRefs = (ref) => usersRefs[ref];
 
     return {
       getRefs,
@@ -48,24 +48,37 @@ const useFollow = (author) => {
   }, [user]);
 
   const follow = async () => {
-    console.log(getRefs('usersFollowers'), getRefs('userFollowingRef'));
+    const UsersFollowers = doc(
+      db,
+      'users',
+      `${author}`,
+      'followers',
+      `${user.displayName}`
+    );
+    const UserFollowingRef = doc(
+      db,
+      'users',
+      `${user.displayName}`,
+      'following',
+      `${author}`
+    );
     const usersDataRef = doc(db, 'users', `${user.displayName}`);
     const usersData = await getDoc(usersDataRef);
     const usersProfileData = await getDoc(usersProfileDataRef);
-    const following = await getDoc(getRefs('userFollowingRef'));
-    const followers = await getDoc(getRefs('usersFollowers'));
+    const following = await getDoc(UserFollowingRef);
+    const followers = await getDoc(UsersFollowers);
 
     if (followers.exists()) {
-      await deleteDoc(getRefs('userFollowingRef'));
+      await deleteDoc(UserFollowingRef);
     } else {
-      await setDoc(getRefs('userFollowingRef'), usersData.data());
+      await setDoc(UserFollowingRef, usersData.data());
     }
 
     if (following.exists()) {
-      await deleteDoc(getRefs('userFollowingRef'));
+      await deleteDoc(UserFollowingRef);
       setIsFollowing(false);
     } else {
-      await setDoc(getRefs('userFollowingRef'), usersProfileData.data());
+      await setDoc(UserFollowingRef, usersProfileData.data());
       setIsFollowing(true);
     }
   };

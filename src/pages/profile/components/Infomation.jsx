@@ -14,19 +14,17 @@ function Infomation({ user, following, followers }) {
       <div className=" flex flex-col gap-3 ">
         <p className="mt-3">{user.bio}</p>
 
-        <p className="text-gray-500">
-          Joined {user.joined.toDate().toDateString()}
-        </p>
+        <p className="text-gray-500">Joined {user.joined.toDate().toDateString()}</p>
         <div className="flex gap-5">
           <Link to={`/profile/${user.id}/following`}>
             <p className="text-gray-500 text-sm">
-              <span className="font-bold text-black">{following.length} </span>
+              <span className="font-bold text-black">{following} </span>
               Following
             </p>
           </Link>
           <Link to={`/profile/${user.id}/followers`}>
             <p className="text-gray-500 text-sm">
-              <span className="font-bold text-black">{followers.length} </span>
+              <span className="font-bold text-black">{followers} </span>
               Followers
             </p>
           </Link>
