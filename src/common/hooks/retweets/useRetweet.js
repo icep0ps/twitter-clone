@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { db } from '../../../firebase/firebase-config';
-import { UserContext } from '../../../Context/UserContext';
+import AppContext from '../../../Context/AppContext';
 import {
   doc,
   updateDoc,
@@ -13,7 +13,7 @@ import {
 
 function useRetweet(tweetRef, tweetInfomation) {
   const { id, author } = tweetInfomation;
-  const { user } = useContext(UserContext);
+  const { user } = useContext(AppContext);
 
   const retweet = async () => {
     if (user.displayName === author) return;

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { db } from '../../../firebase/firebase-config';
 import { useContext, useState, useEffect } from 'react';
-import { UserContext } from '../../../Context/UserContext';
+import AppContext from '../../../Context/AppContext';
 import { getDoc, doc, deleteDoc, setDoc } from 'firebase/firestore';
 
 const useFollow = (author) => {
@@ -30,7 +30,7 @@ const useFollow = (author) => {
 
   const { getRefs, setUserFollowingRef, setUsersFollowers } = refs;
 
-  const { user } = useContext(UserContext);
+  const { user } = useContext(AppContext);
   const [isFollowing, setIsFollowing] = useState(false);
   const usersProfileDataRef = doc(db, 'users', `${author}`);
 

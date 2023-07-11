@@ -1,22 +1,26 @@
-import { db } from '../../../firebase/firebase-config';
-import { doc, getDoc } from 'firebase/firestore';
 import { useState } from 'react';
-import useFetchComment from '../comments/useFetchComment';
-import Tweet from '../../classes/Tweet';
+import { doc, getDoc } from 'firebase/firestore';
+
 import Author from '../../classes/Author';
+import Tweet from '../../classes/Tweet';
+import useFetchComment from '../comments/useFetchComment';
+import { db } from '../../../firebase/firebase-config';
 
 const useFetchTweet = () => {
   const [tweet, setTweet] = useState();
-  const [comment, setComment] = useState();
   const [getCommentAndTweet] = useFetchComment();
 
   const getTweet = async function (author, tweetId) {
     let usersTweetsRef = doc(db, 'users', `${author}`, 'tweets', `${tweetId}`);
     let isValidDocumentRef = await getDoc(usersTweetsRef);
 
-    while (isValidDocumentRef.exists() === false) {
+    if (!isValidDocumentRef.exists()) {
       usersTweetsRef = doc(db, 'users', `${author}`, 'comments', `${tweetId}`);
       isValidDocumentRef = await getDoc(usersTweetsRef);
+
+      if (!isValidDocumentRef.exists()) {
+        throw new Error('Tweet does not exist');
+      }
     }
 
     const getUsersTweet = await getDoc(usersTweetsRef);
@@ -27,8 +31,7 @@ const useFetchTweet = () => {
 
       const comment = (async () => {
         const tweetAndComment = await getCommentAndTweet(tweetRef, commentRef);
-        setComment(tweetAndComment);
-        setTweet(null);
+        setTweet(tweetAndComment);
       })();
 
       return comment;
@@ -42,15 +45,13 @@ const useFetchTweet = () => {
       const constructAuthor = new Author(AuthorId, username);
       const constructTweet = new Tweet(id, tweet, constructAuthor, date, ref, images);
       setTweet(constructTweet);
-      setComment(null);
-
       return constructTweet;
     })();
 
     return tweet;
   };
 
-  return { tweet, comment, getTweet };
+  return { tweet, getTweet };
 };
 
 export default useFetchTweet;

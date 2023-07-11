@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
-import React, { useContext } from 'react';
 import { signOut } from 'firebase/auth';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../../firebase/firebase-config';
-import { UserContext } from '../../Context/UserContext';
 
-function Sidebar() {
-  const { user } = useContext(UserContext);
+import { auth } from '../../firebase/firebase-config';
+import AppContext from '../../Context/AppContext';
+
+function Sidebar({ children }) {
+  const { user, setComposeComponentIsToggled } = useContext(AppContext);
 
   const navigate = useNavigate();
 
@@ -28,8 +29,8 @@ function Sidebar() {
           <button onClick={userSignOut}>Logout</button>
         </li>
         <button
-          className="p-3 bg-blue-500 text-white rounded-full w-11/12 self-start text-lg font-semibold"
-          onClick={() => navigate('/compose/tweet')}
+          className="p-3 bg-blue-500 text-white rounded-full w-11/12 self-start text-lg font-semibold cursor-pointer"
+          onClick={() => setComposeComponentIsToggled((state) => !state)}
         >
           Tweet
         </button>

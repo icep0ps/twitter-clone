@@ -1,57 +1,37 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
 import Comments from './components/comments/Comments';
 import Comment from '../../common/components/Comment';
-import { useParams, useLocation } from 'react-router-dom';
 import useFetchTweet from './../../common/hooks/tweets/useFetchTweet';
 import TweetInTweetStatus from './components/tweet/TweetInTweetStatus';
 
 function TweetStatus() {
-  let location = useLocation();
-  const { author, id } = useParams();
-  const { tweet, comment, getTweet } = useFetchTweet();
+  const { author, id: queryId } = useParams();
+  const { tweet, getTweet } = useFetchTweet();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getTweet(author, id).then(() => setIsLoading(false));
-  }, [id]);
+    console.log(queryId);
+    getTweet(author, queryId).then(() => setIsLoading(false));
+  }, [queryId]);
 
-  if (isLoading) {
-    return <h1>Loading...</h1>;
-  }
+  if (isLoading) return <h1>Loading...</h1>;
+
+  const { id, type } = tweet;
+  const isTweet = type === 'tweet';
 
   return (
     <div className="col-start-2 flex flex-col gap-5 border-x border-gray-200 border-solid ">
       <h1 className=" font-semibold text-xl p-4 ">Tweet</h1>
-      {comment && (
-        <React.Fragment>
-          <Comment
-            key={comment.id}
-            comment={comment.comment}
-            tweet={comment.tweet}
-            inStatus
-          ></Comment>
-          <Comments
-            key={'comments'}
-            location={location}
-            tweetRef={comment.comment.ref}
-          ></Comments>
-        </React.Fragment>
-      )}
 
-      {tweet && (
-        <React.Fragment>
-          <TweetInTweetStatus
-            id={tweet.id}
-            key={tweet.id}
-            author={tweet.author}
-            tweetRef={tweet.ref}
-            date={tweet.date}
-            tweetData={tweet}
-          ></TweetInTweetStatus>
-          <Comments key={'comments'} location={location} tweetRef={tweet.ref}></Comments>
-        </React.Fragment>
+      {isTweet ? (
+        <TweetInTweetStatus key={id} tweetRef={tweet.ref} tweetData={tweet} />
+      ) : (
+        <Comment key={id} comment={tweet.comment} tweet={tweet.tweet} inStatus />
       )}
+      <Comments tweetRef={isTweet ? tweet.ref : tweet.comment.ref} />
     </div>
   );
 }

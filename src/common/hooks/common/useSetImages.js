@@ -1,11 +1,12 @@
 import uniqid from 'uniqid';
 import { useState, useContext } from 'react';
-import { storage } from '../../../firebase/firebase-config';
-import { UserContext } from '../../../Context/UserContext';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
+import AppContext from '../../../Context/AppContext';
+import { storage } from '../../../firebase/firebase-config';
+
 const useSetImages = () => {
-  const { user } = useContext(UserContext);
+  const { user } = useContext(AppContext);
   const [imagePreviewURL, setImagePreviewURL] = useState([]);
 
   function setImages(tweetId) {

@@ -1,38 +1,37 @@
 import uniqid from 'uniqid';
-import { doc, Timestamp } from 'firebase/firestore';
-import { UserContext } from '../../../Context/UserContext';
 import { useContext } from 'react';
-import { db } from '../../../firebase/firebase-config';
+import { doc, Timestamp } from 'firebase/firestore';
+
 import Author from '../../classes/Author';
 import Comment from '../../classes/Comment';
+import { db } from '../../../firebase/firebase-config';
+import AppContext from '../../../Context/AppContext';
 
-const useCreateAndSendComment = (parentTweetId) => {
-  const { user } = useContext(UserContext);
-  const { displayName } = user;
+const useCreateAndSendComment = () => {
+  const { user } = useContext(AppContext);
+  const { displayName, username } = user;
 
   async function createAndSendComment(
-    username,
     usersTweet,
     setImages,
     parentTweetAuthor,
     parentTweetRef
   ) {
-    const TWEET_ID = uniqid();
+    const tweetId = uniqid();
 
-    const replyRef = doc(db, 'users', `${user.displayName}`, 'comments', `${TWEET_ID}`);
-
-    const commentRef = doc(db, parentTweetRef.path + `/comments/${TWEET_ID}`);
+    const replyRef = doc(db, 'users', `${displayName}`, 'comments', `${tweetId}`);
+    const commentRef = doc(db, parentTweetRef.path + `/comments/${tweetId}`);
 
     const author = new Author(displayName, username);
-    const images = await setImages(TWEET_ID);
+    const images = await setImages(tweetId);
     const comment = new Comment(
-      TWEET_ID,
+      tweetId,
       usersTweet,
       author,
       Timestamp.now(),
       commentRef,
       images,
-      parentTweetId,
+      parentTweetRef,
       parentTweetAuthor
     );
 

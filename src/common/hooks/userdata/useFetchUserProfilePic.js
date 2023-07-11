@@ -7,10 +7,15 @@ function useFetchUserProfilePic() {
 
   function getProfilePic(userId) {
     const profilePicRef = ref(storage, `${userId}/profilePic`);
+
     list(profilePicRef).then((images) => {
-      getDownloadURL(images.items[0]).then((url) => {
-        setProfilePicURL(url);
-      });
+      const image = images.items[0];
+      if (image) {
+        getDownloadURL(image).then((url) => {
+          setProfilePicURL(url);
+        });
+      }
+      return setProfilePicURL(null);
     });
   }
 

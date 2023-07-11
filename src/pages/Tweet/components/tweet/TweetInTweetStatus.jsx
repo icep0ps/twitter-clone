@@ -1,39 +1,32 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useContext } from 'react';
+import { Outlet } from 'react-router-dom';
+
 import Reply from './Reply';
 import { Stats } from './Stats';
-import { Outlet } from 'react-router-dom';
 import { TweetContents } from './TweetContents';
-import React, { useContext, useEffect } from 'react';
-import { UserContext } from '../../../../Context/UserContext';
-import useFollow from '../../../../common/hooks/common/useFollow';
+import AppContext from '../../../../Context/AppContext';
 import { Author } from '../../../../common/components/tweet/Author';
-import { InteractionIcons } from '../../../../common/components/tweet/InteractionIcons';
-import { ProfilePicture } from '../../../../common/components/tweet/ProfilePicture';
+import FollowButton from '../../../../common/components/FollowButton';
 import useFetchStats from '../../../../common/hooks/tweets/useFetchStats';
+import { ProfilePicture } from '../../../../common/components/tweet/ProfilePicture';
+import { InteractionIcons } from '../../../../common/components/tweet/InteractionIcons';
 
-function TweetInTweetStatus({ id, author, tweetData }) {
-  const { likes, retweets, getLikes } = useFetchStats();
-  const { ref, date } = tweetData;
-  const { user, setReplyingTo } = useContext(UserContext);
+function TweetInTweetStatus(props) {
+  const { tweetData, tweetRef } = props;
+  const { ref, date, id, author } = tweetData;
+
+  const { user, setReplyingTo } = useContext(AppContext);
+  const { likes, retweets } = useFetchStats(tweetRef);
   const { displayName } = user;
-  const { follow, isFollowing } = useFollow(author);
-
-  useEffect(() => {
-    getLikes(ref);
-  }, [isFollowing]);
 
   return (
     <>
       <div className="flex flex-col border-b border-gray-200 border-solid gap-3 px-5 pb-3 relative">
         <div className="flex flex-col gap-3 ">
           <div className="flex gap-3">
-            <ProfilePicture></ProfilePicture>
-            {displayName !== author.id && (
-              <button className="right-10 absolute" onClick={(e) => follow()}>
-                {isFollowing ? 'following' : 'follow'}
-              </button>
-            )}
-            <Author author={author} inStatus></Author>
+            <ProfilePicture />
+            {displayName !== author.id && <FollowButton user={author} />}
+            <Author author={author} inStatus />
           </div>
           <TweetContents tweetData={tweetData} />
         </div>
@@ -41,17 +34,9 @@ function TweetInTweetStatus({ id, author, tweetData }) {
         <div className="flex gap-5"></div>
         <Stats id={id} author={author} likes={likes.length} retweets={retweets.length} />
         <div className="flex gap-2 justify-evenly border-b border-b-gray-200 py-3">
-          <InteractionIcons
-            setReplyingTo={setReplyingTo}
-            tweet={tweetData}
-          ></InteractionIcons>
+          <InteractionIcons setReplyingTo={setReplyingTo} tweet={tweetData} />
         </div>
-        <Reply
-          id={id}
-          author={author}
-          username={displayName}
-          parentTweetRef={ref}
-        ></Reply>
+        <Reply id={id} author={author} username={displayName} parentTweetRef={ref} />
       </div>
       <Outlet />
     </>

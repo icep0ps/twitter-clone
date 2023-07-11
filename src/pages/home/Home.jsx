@@ -1,11 +1,12 @@
-import Tweets from './components/Tweets';
 import React, { useContext } from 'react';
 import { Outlet } from 'react-router-dom';
+
+import Tweets from './components/Tweets';
+import AppContext from '../../Context/AppContext';
 import CreateTweet from './components/Create-tweet';
-import { UserContext } from '../../Context/UserContext';
 
 const Home = () => {
-  const { user } = useContext(UserContext);
+  const { user } = useContext(AppContext);
 
   return (
     <div className="col-start-2 flex flex-col gap-5 border-x border-gray-200 border-solid">
@@ -17,7 +18,7 @@ const Home = () => {
       <Tweets />
       <p>Your are logged with {user.email}</p>
 
-      <Outlet></Outlet>
+      <Outlet />
     </div>
   );
 };

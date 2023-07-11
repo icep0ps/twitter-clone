@@ -7,10 +7,16 @@ function useFetchUserBanner() {
 
   function getUserBanner(userId) {
     const bannerRef = ref(storage, `${userId}/banner`);
+
     list(bannerRef).then((images) => {
-      getDownloadURL(images.items[0]).then((url) => {
-        setBannerURL(url);
-      });
+      const image = images.items[0];
+      if (image) {
+        getDownloadURL(image).then((url) => {
+          console.log(url);
+          setBannerURL(url);
+        });
+      }
+      setBannerURL(null);
     });
   }
 

@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import uniqid from 'uniqid';
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
+
+import AppContext from '../../../Context/AppContext';
 import TextareaAutosize from 'react-textarea-autosize';
-import { UserContext } from '../../../Context/UserContext';
 import useFetchUsername from '../../../common/hooks/userdata/useFetchUsername';
 import useSetImages from '../../../common/hooks/common/useSetImages';
 import useFetchUserProfilePic from '../../../common/hooks/userdata/useFetchUserProfilePic';
 import useCreateAndSendTweet from '../../../common/hooks/tweets/useCreateTweet';
-import { useRef } from 'react';
 
 function CreateTweet() {
-  const { user } = useContext(UserContext);
+  const { user } = useContext(AppContext);
   const { displayName } = user;
   const [tweetInput, setTweetInput] = useState();
   const { getUsername, username } = useFetchUsername();

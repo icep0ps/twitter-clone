@@ -1,36 +1,37 @@
 import uniqid from 'uniqid';
 import TextareaAutosize from 'react-textarea-autosize';
-import React, { useState, useContext, useEffect } from 'react';
-import { UserContext } from '../../../../Context/UserContext';
+import React, { useState, useContext, useEffect, useRef } from 'react';
+
+import AppContext from '../../../../Context/AppContext';
 import useSetImages from '../../../../common/hooks/common/useSetImages';
 import useCreateAndSendComment from '../../../../common/hooks/comments/useCreateComment';
 import useFetchUserProfilePic from '../../../../common/hooks/userdata/useFetchUserProfilePic';
-import { useRef } from 'react';
 
-function Reply({ id, username, author, parentTweetRef }) {
-  console.log(parentTweetRef);
+function Reply(props) {
+  const { id, username, author, parentTweetRef } = props;
+
   const imagesInput = useRef();
-  const { user } = useContext(UserContext);
+  const { user } = useContext(AppContext);
   const [tweetInput, setTweetInput] = useState('');
-  const { imagePreviewURL, previewImage, setImages, setImagePreviewURL } = useSetImages();
-  const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
   const { createAndSendComment } = useCreateAndSendComment(id);
+  const { profilePicURL, getProfilePic } = useFetchUserProfilePic();
+  const { imagePreviewURL, previewImage, setImages, setImagePreviewURL } = useSetImages();
+
+  const handleReply = (event) => {
+    event.preventDefault();
+    createAndSendComment(tweetInput, setImages, author, parentTweetRef);
+
+    setTweetInput('');
+    setImagePreviewURL([]);
+    imagesInput.current.value = '';
+  };
 
   useEffect(() => {
     getProfilePic(user.displayName);
   }, []);
 
   return (
-    <form
-      className="flex flex-col relative px-5 pb "
-      onSubmit={(event) => {
-        event.preventDefault();
-        createAndSendComment(username, tweetInput, setImages, author, parentTweetRef);
-        setTweetInput('');
-        setImagePreviewURL([]);
-        imagesInput.current.value = '';
-      }}
-    >
+    <form className="flex flex-col relative px-5 pb " onSubmit={handleReply}>
       <div className="flex gap-5 items-start ">
         <div
           className="min-w-[48px] min-h-[48px] bg-black rounded-3xl bg-cover bg-center bg-no-repeat"

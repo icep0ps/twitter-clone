@@ -3,23 +3,24 @@ import { useContext } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import Infomation from './components/Infomation';
 import React, { useEffect, useState } from 'react';
-import { db } from '../../firebase/firebase-config';
-import useFollow from '../../common/hooks/common/useFollow';
-import { UserContext } from '../../Context/UserContext';
-import TweetCategories from './components/TweetCategories';
-import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
-import useFetchUserProfilePic from '../../common/hooks/userdata/useFetchUserProfilePic';
-import useFetchUserBanner from './../../common/hooks/userdata/useFetchUserBanner';
 import { onAuthStateChanged } from 'firebase/auth';
+
+import Infomation from './components/Infomation';
+import { db } from '../../firebase/firebase-config';
 import { auth } from '../../firebase/firebase-config';
+import  AppContext  from '../../Context/AppContext';
+import TweetCategories from './components/TweetCategories';
+import default_pfp from '../../assets/images/defualt-pfp.png';
+import FollowButton from '../../common/components/FollowButton';
+import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
+import useFetchUserBanner from './../../common/hooks/userdata/useFetchUserBanner';
+import useFetchUserProfilePic from '../../common/hooks/userdata/useFetchUserProfilePic';
 
 function Profile() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user, setUser } = useContext(UserContext);
-  const { follow, isFollowing } = useFollow(id);
+  const { user, setUser } = useContext(AppContext);
   const [following, setFollowing] = useState(0);
   const [followers, setFollowers] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -73,15 +74,15 @@ function Profile() {
   return (
     <div className="border-x border-gray-500 border-solid relative ">
       <div
-        className=" h-64 relative bg-cover bg-center bg-no-repeat"
+        className=" h-64 relative bg-cover bg-center bg-no-repeat bg-sky-700"
         style={{
           backgroundImage: `url(${bannerURL})`,
         }}
       >
         <div
-          className="w-36 h-36 rounded-full absolute top-44 left-5 bg-cover bg-center bg-no-repeat border-white border-4"
+          className="w-36 h-36 rounded-full absolute top-44 left-5 bg-cover bg-center bg-no-repeat border-white border-4 "
           style={{
-            backgroundImage: `url(${profilePicURL})`,
+            backgroundImage: `url(${profilePicURL ? profilePicURL : default_pfp})`,
           }}
         ></div>
       </div>
@@ -93,12 +94,7 @@ function Profile() {
           Edit Profile
         </button>
       ) : (
-        <button
-          className="absolute right-0 bg-black text-white p-3 rounded-full m-3 w-24 text-sm "
-          onClick={() => follow()}
-        >
-          {isFollowing ? 'Following' : 'follow'}
-        </button>
+        <FollowButton user={id} />
       )}
 
       <div className="h-14"></div>

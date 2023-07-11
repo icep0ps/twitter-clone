@@ -1,14 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { auth } from '../../firebase/firebase-config';
+import { setDoc, doc, Timestamp } from 'firebase/firestore';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   updateProfile,
 } from 'firebase/auth';
+
+import AppContext from '../../Context/AppContext';
 import { db } from '../../firebase/firebase-config';
-import { UserContext } from '../../Context/UserContext';
-import { setDoc, doc, Timestamp } from 'firebase/firestore';
-import React, { useState, useEffect, useContext } from 'react';
+import { auth } from '../../firebase/firebase-config';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const Signup = () => {
   const [userHandle, setUserHandle] = useState('');
   const [location, setLocation] = useState('');
   const [password, setPassword] = useState('');
-  const { setUser } = useContext(UserContext);
+  const { setUser } = useContext(AppContext);
 
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
@@ -77,10 +78,7 @@ const Signup = () => {
 
   return (
     <React.Fragment>
-      <form
-        onSubmit={LoginUser}
-        className="flex flex-col bg-black text-white p-5 gap-5"
-      >
+      <form onSubmit={LoginUser} className="flex flex-col bg-black text-white p-5 gap-5">
         <h1>Twitter</h1>
         <input
           type="text"

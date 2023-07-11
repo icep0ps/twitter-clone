@@ -19,6 +19,7 @@ class Comment extends Tweet {
       });
 
       const ref = doc(db, parentTweetRef.path + `/comments/${this.id}`);
+      console.log(comment);
       const sendTweetToCommentsSection = await setDoc(ref, comment);
     } catch (err) {
       console.log(`ERRO SENDING: ${err} `);

@@ -1,12 +1,13 @@
 import React, { useState, useContext } from 'react';
-import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebase/firebase-config';
-import { UserContext } from '../../Context/UserContext';
 import { Link, useNavigate } from 'react-router-dom';
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+
+import { auth } from '../../firebase/firebase-config';
+import AppContext from '../../Context/AppContext';
 
 function SignIn() {
   const navigate = useNavigate();
-  const { setUser } = useContext(UserContext);
+  const { setUser } = useContext(AppContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -30,10 +31,7 @@ function SignIn() {
 
   return (
     <React.Fragment>
-      <form
-        onSubmit={LoginUser}
-        className="flex flex-col bg-black text-white p-5 gap-5"
-      >
+      <form onSubmit={LoginUser} className="flex flex-col bg-black text-white p-5 gap-5">
         <h1>Twitter</h1>
         <input
           type="email"

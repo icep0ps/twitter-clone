@@ -1,25 +1,20 @@
 import uniqid from 'uniqid';
-import { doc, Timestamp } from 'firebase/firestore';
-import { UserContext } from '../../../Context/UserContext';
 import { useContext } from 'react';
-import { db } from '../../../firebase/firebase-config';
-import Author from '../../classes/Author';
+import { doc, Timestamp } from 'firebase/firestore';
+
 import Tweet from '../../classes/Tweet';
+import Author from '../../classes/Author';
+import AppContext from '../../../Context/AppContext';
+import { db } from '../../../firebase/firebase-config';
 
 const useCreateAndSendTweet = () => {
-  const { user } = useContext(UserContext);
+  const { user } = useContext(AppContext);
   const { displayName } = user;
 
   async function createAndSendTweet(username, usersTweet, setImages) {
     const TWEET_ID = uniqid();
 
-    const tweetsRef = doc(
-      db,
-      'users',
-      `${displayName}`,
-      'tweets',
-      `${TWEET_ID}`
-    );
+    const tweetsRef = doc(db, 'users', `${displayName}`, 'tweets', `${TWEET_ID}`);
 
     const author = new Author(displayName, username);
     const images = await setImages(TWEET_ID);
