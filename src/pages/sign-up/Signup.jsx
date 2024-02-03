@@ -70,10 +70,14 @@ const Signup = () => {
   };
 
   const LoginUser = async (event) => {
-    event.preventDefault();
-    const user = await createUserWithEmailAndPassword(auth, email, password);
-    await createUserInFirestore(user.user.displayName);
-    navigate('/');
+    try {
+      event.preventDefault();
+      const user = await createUserWithEmailAndPassword(auth, email, password);
+      await createUserInFirestore(user.user.displayName);
+      navigate('/');
+    } catch (error) {
+      throw new Error('Error creating user: ' + error.message);
+    }
   };
 
   return (
@@ -85,37 +89,37 @@ const Signup = () => {
           placeholder="Username"
           className=" text-black p-1"
           onChange={handleUsername}
-        ></input>
+        />
         <input
           type="text"
           placeholder="handle"
           className=" text-black p-1"
           onChange={handleUserHandle}
-        ></input>
+        />
         <input
           type="text"
           placeholder="Bio"
           className=" text-black p-1"
           onChange={handleBio}
-        ></input>
+        />
         <input
           type="email"
           placeholder="email"
           className=" text-black p-1"
           onChange={handleEmail}
-        ></input>
+        />
         <input
           type="text"
           placeholder="Location"
           className=" text-black p-1"
           onChange={handleLocation}
-        ></input>
+        />
         <input
           type="password"
           placeholder="password"
           className=" text-black p-1 "
           onChange={handlePassword}
-        ></input>
+        />
         <button type="submit" className="bg-white text-black">
           Signup
         </button>

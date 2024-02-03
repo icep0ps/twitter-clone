@@ -24,9 +24,13 @@ function SignIn() {
   };
 
   const LoginUser = async (event) => {
-    event.preventDefault();
-    await signInWithEmailAndPassword(auth, email, password);
-    navigate('/');
+    try {
+      event.preventDefault();
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/');
+    } catch (error) {
+      return error.message;
+    }
   };
 
   return (
@@ -38,13 +42,13 @@ function SignIn() {
           placeholder="email"
           className=" text-black p-1"
           onChange={handleEmail}
-        ></input>
+        />
         <input
           type="password"
           placeholder="password"
           className=" text-black p-1 "
           onChange={handlePassword}
-        ></input>
+        />
         <button type="submit" className="bg-white text-black">
           Login
         </button>
