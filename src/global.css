@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.cdnfonts.com/css/chirp-2');
+
+body {
+  margin: 0;
+  font-family: 'Chirp', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+body,
+html,
+#root {
+  height: 100%;
+}
+
+.line {
+  background-color: rgb(207, 208, 211);
+  height: 100%;
+  width: 2px;
+}
+.image {
+  grid-column: 1/2;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tweet:last-child .line {
+  height: 0;
+  background-color: red;
+}
+
+.category {
+  padding: 12px;
+}
+.category:hover {
+  background-color: rgba(15, 20, 25, 0.1);
+}
+
+svg {
+  font-weight: bolder;
+  stroke: rgb(107 114 128 / var(--tw-border-opacity));
+}
+
+li {
+  font-weight: 100;
+}
