@@ -1,83 +1,28 @@
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { setDoc, doc, Timestamp } from 'firebase/firestore';
-import React, { useState, useEffect, useContext } from 'react';
-import {
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  updateProfile,
-} from 'firebase/auth';
 
-import AppContext from '../../Context/AppContext';
-import { db } from '../../firebase/firebase-config';
-import { auth } from '../../firebase/firebase-config';
+import useCreateUser from '../../common/hooks/user/useCreateUser';
+import useFormInput from '../../common/hooks/common/forms/useFormInput';
 
 const Signup = () => {
   const navigate = useNavigate();
 
-  const [bio, setBio] = useState('');
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [userHandle, setUserHandle] = useState('');
-  const [location, setLocation] = useState('');
-  const [password, setPassword] = useState('');
-  const { setUser } = useContext(AppContext);
+  const id = useFormInput('');
+  const email = useFormInput('');
+  const username = useFormInput('');
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-  });
+  const bio = useFormInput('');
+  const location = useFormInput('');
+  const password = useFormInput('');
 
-  const createUserInFirestore = async () => {
-    const userRef = doc(db, 'users', `${userHandle}`);
-    const userInformation = await setDoc(userRef, {
-      id: userHandle,
-      email: email,
-      username: username,
-      bio: bio,
-      location: location,
-      joined: Timestamp.now(),
-    });
-
-    await updateProfile(auth.currentUser, {
-      displayName: userHandle,
-      photoURL: '',
-    });
-    setUser(userInformation);
-  };
-
-  const handleUsername = (event) => {
-    setUsername(event.target.value);
-  };
-
-  const handleBio = (event) => {
-    setBio(event.target.value);
-  };
-
-  const handleLocation = (event) => {
-    setLocation(event.target.value);
-  };
-
-  const handleEmail = (event) => {
-    setEmail(event.target.value);
-  };
-  const handlePassword = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleUserHandle = (event) => {
-    setUserHandle(event.target.value);
-  };
+  const { createUser } = useCreateUser();
 
   const LoginUser = async (event) => {
-    try {
-      event.preventDefault();
-      const user = await createUserWithEmailAndPassword(auth, email, password);
-      await createUserInFirestore(user.user.displayName);
-      navigate('/');
-    } catch (error) {
+    event.preventDefault();
+    await createUser({ id, email, username, bio, location, password }).catch((error) => {
       throw new Error('Error creating user: ' + error.message);
-    }
+    });
+    return navigate('/');
   };
 
   return (
@@ -88,38 +33,39 @@ const Signup = () => {
           type="text"
           placeholder="Username"
           className=" text-black p-1"
-          onChange={handleUsername}
+          onChange={username.onChange}
         />
         <input
           type="text"
           placeholder="handle"
           className=" text-black p-1"
-          onChange={handleUserHandle}
+          onChange={id.onChange}
         />
         <input
           type="text"
           placeholder="Bio"
           className=" text-black p-1"
-          onChange={handleBio}
+          onChange={bio.onChange}
         />
         <input
           type="email"
           placeholder="email"
           className=" text-black p-1"
-          onChange={handleEmail}
+          onChange={email.onChange}
         />
         <input
           type="text"
           placeholder="Location"
           className=" text-black p-1"
-          onChange={handleLocation}
+          onChange={location.onChange}
         />
         <input
           type="password"
           placeholder="password"
           className=" text-black p-1 "
-          onChange={handlePassword}
+          onChange={password.onChange}
         />
+
         <button type="submit" className="bg-white text-black">
           Signup
         </button>
