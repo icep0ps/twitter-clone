@@ -6,75 +6,92 @@ import useFormInput from '../../common/hooks/common/forms/useFormInput';
 
 const Signup = () => {
   const navigate = useNavigate();
-
-  const id = useFormInput('');
-  const email = useFormInput('');
-  const username = useFormInput('');
-
-  const bio = useFormInput('');
-  const location = useFormInput('');
-  const password = useFormInput('');
-
   const { createUser } = useCreateUser();
 
-  const LoginUser = async (event) => {
+  const formInputs = {
+    id: useFormInput(''),
+    email: useFormInput(''),
+    username: useFormInput(''),
+    bio: useFormInput(''),
+    location: useFormInput(''),
+    password: useFormInput(''),
+  };
+
+  const handleSignUp = async (event) => {
     event.preventDefault();
-    await createUser({ id, email, username, bio, location, password }).catch((error) => {
-      throw new Error('Error creating user: ' + error.message);
-    });
-    return navigate('/');
+    try {
+      await createUser(formInputs).catch((error) => {
+        throw new Error('Error creating user: ' + error.message);
+      });
+      navigate('/');
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   return (
     <React.Fragment>
-      <form onSubmit={LoginUser} className="flex flex-col bg-black text-white p-5 gap-5">
+      <form
+        onSubmit={handleSignUp}
+        className="flex flex-col bg-black text-white p-5 gap-5"
+      >
         <h1>Twitter</h1>
-        <input
+        <FormInput
           type="text"
           placeholder="Username"
-          className=" text-black p-1"
-          onChange={username.onChange}
+          value={formInputs.username.value}
+          onChange={formInputs.username.onChange}
         />
-        <input
+        <FormInput
           type="text"
-          placeholder="handle"
-          className=" text-black p-1"
-          onChange={id.onChange}
+          placeholder="Handle"
+          value={formInputs.id.value}
+          onChange={formInputs.id.onChange}
         />
-        <input
+        <FormInput
           type="text"
           placeholder="Bio"
-          className=" text-black p-1"
-          onChange={bio.onChange}
+          value={formInputs.bio.value}
+          onChange={formInputs.bio.onChange}
         />
-        <input
+        <FormInput
           type="email"
-          placeholder="email"
-          className=" text-black p-1"
-          onChange={email.onChange}
+          placeholder="Email"
+          value={formInputs.email.value}
+          onChange={formInputs.email.onChange}
         />
-        <input
+        <FormInput
           type="text"
           placeholder="Location"
-          className=" text-black p-1"
-          onChange={location.onChange}
+          value={formInputs.location.value}
+          onChange={formInputs.location.onChange}
         />
-        <input
+        <FormInput
           type="password"
-          placeholder="password"
-          className=" text-black p-1 "
-          onChange={password.onChange}
+          placeholder="Password"
+          value={formInputs.password.value}
+          onChange={formInputs.password.onChange}
         />
 
         <button type="submit" className="bg-white text-black">
           Signup
         </button>
         <Link to="/sign-in">
-          <button>sign in</button>
+          <button>Sign In</button>
         </Link>
       </form>
     </React.Fragment>
   );
 };
+
+const FormInput = ({ type, placeholder, value, onChange }) => (
+  <input
+    type={type}
+    placeholder={placeholder}
+    className="text-black p-1"
+    value={value}
+    onChange={onChange}
+  />
+);
 
 export default Signup;
